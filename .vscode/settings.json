@@ -1,0 +1,28 @@
+{
+  "rust-analyzer.linkedProjects": [
+    ".\\src-tauri\\Cargo.toml"
+  ],
+  "editor.tabSize": 2,
+  "editor.indentSize": "tabSize",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.guides.bracketPairs": "active",
+  "html.format.maxPreserveNewLines": 120,
+  "javascript.format.semicolons": "remove",
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.format.semicolons": "remove",
+  "typescript.preferences.quoteStyle": "single",
+  "workbench.editor.wrapTabs": true,
+  "pestIdeTools.checkForUpdates": true,
+  "prettier.printWidth": 120,
+  "[pest]": {
+    "editor.defaultFormatter": "pest.pest-ide-tools"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer"
+  },
+}
