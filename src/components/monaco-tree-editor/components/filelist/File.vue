@@ -57,20 +57,42 @@ const keys = computed<string[]>(() => {
   return folders.concat(files)
 })
 // ================ 右键菜单 contextmenu start ================
-type operation = 'addFile' | 'addFolder' | 'renameFile' | 'renameFolder' | 'deleteFile' | 'deleteFolder'
-const fileContextMenu = ref([
+type _FileOperation = 'renameFile' | 'deleteFile'
+type _FolderOperation = 'addFile' | 'addFolder' | 'renameFolder' | 'deleteFolder'
+type _ContextMenuItem = {
+  value?: _FileOperation | _FolderOperation
+} & {
+  [keys in keyof ContextMenuItem]?: string
+}
+const fileContextMenu = ref<_ContextMenuItem[]>([
   { label: '重命名文件', value: 'renameFile' },
   {},
   { label: '删除文件', value: 'deleteFile' },
 ])
-const folderContextMenu = ref([
+const folderContextMenu = ref<_ContextMenuItem[]>([
   { label: '添加文件', value: 'addFile' },
   { label: '添加文件夹', value: 'addFolder' },
   { label: '重命名文件夹', value: 'renameFolder' },
   {},
   { label: '删除文件夹', value: 'deleteFolder' },
 ])
-const handleSelectFile = (item: ContextMenuItem) => {}
+const handleSelectFile = (item: ContextMenuItem) => {
+  const i = item as _ContextMenuItem
+  switch (i.value) {
+    case 'renameFile':
+      return
+    case 'deleteFile':
+      return
+    case 'addFile':
+      return
+    case 'addFolder':
+      return
+    case 'renameFolder':
+      return
+    case 'deleteFolder':
+      return
+  }
+}
 // ================ 右键菜单 contextmenu end ================
 const handleEditFolder = (e: Event) => {
   e.stopPropagation()
@@ -173,7 +195,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
     </div>
   </ContextMenu>
   <div v-else class="music-monaco-editor-list-file-item">
-    <ContextMenu v-if="file.isDirectory && !root" :menu="folderContextMenu">
+    <ContextMenu v-if="file.isDirectory && !root" :menu="folderContextMenu" @select="handleSelectFile">
       <div @click="handleClick" class="music-monaco-editor-list-file-item-row">
         <IconArrow :collpase="showChild" />
         <Icons :style="{ marginRight: '5px' }" :type="showChild ? 'default_folder_opened' : 'default_folder'" />

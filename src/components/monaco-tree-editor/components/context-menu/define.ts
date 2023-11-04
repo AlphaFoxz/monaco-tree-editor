@@ -30,5 +30,5 @@ export function useContextMenu(container: Ref<HTMLElement | undefined>) {
 
 export type ContextMenuItem = {
   label?: string
-  [key: string]: any
+  value?: string
 }
