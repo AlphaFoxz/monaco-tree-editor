@@ -1,7 +1,15 @@
 {
   "name": "monaco-tree-editor",
   "version": "0.0.1-alpha.0.0",
-  "private": true,
+  "main": "main.ts",
+  "description": "the web ide with file tree based on 'monaco-editor'",
+  "private": false,
+  "keywords": [
+    "moanco-editor",
+    "vue-monaco-editor",
+    "vue-monaco-tree"
+  ],
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",

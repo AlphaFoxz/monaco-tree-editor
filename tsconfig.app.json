@@ -15,6 +15,9 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    "noEmit": false,
+    "declaration": true,
+    "declarationDir": "dist",
   }
 }
