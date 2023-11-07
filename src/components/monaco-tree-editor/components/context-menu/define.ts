@@ -28,7 +28,7 @@ export function useContextMenu(container: Ref<HTMLElement | undefined>) {
   return { x, y, visible }
 }
 
-export type ContextMenuItem = {
+export type ContextMenuItem<T> = {
   label?: string
-  value?: string
+  value?: T
 }

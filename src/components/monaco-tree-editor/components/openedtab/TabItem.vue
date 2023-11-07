@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import ContextMenu from '../context-menu/Index.vue'
 import Confirm from '../modal/Confirm.vue'
+import type { ContextMenuItem } from '../context-menu/define'
 const props = defineProps({
   file: {
     type: Object,
@@ -20,8 +21,9 @@ const emit = defineEmits({
   closeFile: (_path: string) => true,
   saveFile: (_path: string) => true,
   abortSave: (_path: string) => true,
-  closeOtherFiles: (_path: string) => true,
+  closeOtherFiles: (_path?: string) => true,
 })
+//========================= 点击标签 click tab start ==========================
 const itemRef = ref<HTMLDivElement>()
 const name = props.file!.path.split('/').slice(-1)[0]
 let fileType: string
@@ -46,18 +48,26 @@ watch(active, () => {
     })
   }
 })
+//========================= 点击标签 click tab end ==========================
 
 //========================= 右键菜单 contextmenu start ==========================
-const contextMenu = [{ label: '关闭' }, { label: '关闭其他' }, { label: '关闭所有' }]
-const handleSelectContextMenu = (item: { [key: string]: any }) => {
+type _MenuValue = 'close' | 'closeOther' | 'closeAll'
+const contextMenu: ContextMenuItem<_MenuValue>[] = [
+  { label: '关闭', value: 'close' },
+  { label: '关闭其他', value: 'closeOther' },
+  { label: '关闭所有', value: 'closeAll' },
+]
+const handleSelectContextMenu = (item: ContextMenuItem<_MenuValue>) => {
   console.debug('当前选择', item)
-  const label = item.label
-  if (label === '关闭') {
+  const v = item.value
+  if (v === 'close') {
     handleClose()
-  } else if (label === '关闭其他') {
+  } else if (v === 'closeOther') {
     emit('closeOtherFiles', props.file!.path)
-  } else if (label === '关闭所有') {
-    emit('closeOtherFiles', '')
+  } else if (v === 'closeAll') {
+    emit('closeOtherFiles')
+  } else {
+    const _t: undefined = v
   }
 }
 //========================= 右键菜单 contextmenu end ==========================
@@ -129,7 +139,7 @@ const closeVisible = computed(() => {
       </div>
     </template>
   </Confirm>
-  <ContextMenu :menu="contextMenu" @click="handleSelectContextMenu">
+  <ContextMenu :menu="contextMenu" @select="handleSelectContextMenu">
     <div
       ref="itemRef"
       @mouseover="handleOver"
@@ -143,7 +153,7 @@ const closeVisible = computed(() => {
       "
     >
       <Icon :type="fileType" :style="{ marginRight: '2px' }" />
-      <span :style="{ flex: 1, paddingRight: '5px' }">{name}</span>
+      <span :style="{ flex: 1, paddingRight: '5px' }">{{ name }}</span>
       <span
         data-name="editing"
         class="music-monaco-editor-opened-tab-item-editing"

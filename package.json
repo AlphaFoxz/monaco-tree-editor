@@ -1,6 +1,6 @@
 {
   "name": "monaco-tree-editor",
-  "version": "0.0.0",
+  "version": "0.0.0-alpha.0",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "monaco-editor": "^0.44.0",
+    "onigasm": "^2.2.5",
     "pinia": "^2.1.7",
     "vue": "^3.3.4"
   },

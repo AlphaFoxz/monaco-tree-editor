@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import './index.less'
 import { THEMES } from './constants'
-import { onMounted, ref, watch, type Ref, defineEmits, computed } from 'vue'
+import { onMounted, ref, watch, defineEmits } from 'vue'
 import { useMonaco } from './monaco-store'
 import { useHotkey } from './hotkey-store'
 import * as monaco_define from 'monaco-editor'
@@ -12,7 +12,6 @@ import Modal from './components/modal/Index.vue'
 import IconClose from './components/icons/Close'
 import IconSetting from './components/icons/Setting'
 import SelectMenu from './components/select/MenuTemp.vue'
-import { type FileInfo } from './define'
 
 const props = defineProps({
   files: {
@@ -26,8 +25,11 @@ const props = defineProps({
 })
 const emit = defineEmits({
   addFile: (_path: string, _resolve: Function, _reject: Function) => true,
-  addFolder: (_path: string, _resolve: Function, _reject: Function) => true,
   saveFile: (_path: string, _resolve: Function, _reject: Function) => true,
+  renameFile: (_path: string, _resolve: Function, _reject: Function) => true,
+  deleteFile: (_path: string, _resolve: Function, _reject: Function) => true,
+  addFolder: (_path: string, _resolve: Function, _reject: Function) => true,
+  deleteFolder: (_path: string, _resolve: Function, _reject: Function) => true,
 })
 
 // ================ 拖拽功能 dragging start ================
@@ -82,7 +84,6 @@ watch(
     monacoStore.loadFileTree(props.files)
   }
 )
-let editorInstance: monaco_define.editor.IStandaloneCodeEditor
 const editorRef = ref<HTMLElement>()
 const handleFormat = () => {
   monacoStore.format()
@@ -167,7 +168,7 @@ defineExpose({
     <div class="music-monaco-editor-area">
       <OpenedTab />
       <div id="editor" ref="editorRef" :style="{ flex: 1, width: '100%', maxHeight: 'calc(100% - 35px)' }"></div>
-      <div v-if="!monacoStore.isReady" class="music-monaco-editor-area-empty">
+      <div v-show="!monacoStore.isReady || monacoStore.openedFiles.length === 0" class="music-monaco-editor-area-empty">
         <img
           src="//p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/5759801316/fb85/e193/a256/03a81ea60cf94212bbc814f2c82b6940.png"
           class="music-monaco-editor-area-empty-icon"

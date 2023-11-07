@@ -5,17 +5,18 @@ import './index.less'
 
 defineProps({
   menu: {
-    type: Array<ContextMenuItem>,
+    type: Array<ContextMenuItem<any>>,
     required: true,
   },
 })
 const emit = defineEmits({
-  select: (_selected: ContextMenuItem) => true,
+  select: (_selected: ContextMenuItem<any>) => true,
 })
 const containerRef = ref<HTMLElement>()
 const { x, y, visible } = useContextMenu(containerRef)
 
-const handleClick = (item: any) => {
+const handleClick = (item: ContextMenuItem<any>) => {
+  console.debug('当前选择', item)
   emit('select', item)
   visible.value = false
 }

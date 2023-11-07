@@ -1,9 +1,31 @@
 import { defineStore } from 'pinia'
+import { loadWASM } from 'onigasm'
+// import * as monaco_define from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco_define from 'monaco-editor'
-import { ref, nextTick } from 'vue'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.api?worker'
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+import { watch, ref, nextTick } from 'vue'
 import { ASSETSPATH } from './constants'
 import { type FileInfo, type Files } from './define'
 
+self.MonacoEnvironment = {
+  getWorker: function (_moduleId, label: string) {
+    if (label === 'json') {
+      return new jsonWorker()
+    } else if (label === 'ts' || label === 'typescript') {
+      return new tsWorker()
+    } else if (label === 'html' || label === 'handlebars' || label === 'razor') {
+      return new htmlWorker()
+    } else if (label === 'css' || label === 'scss' || label === 'less') {
+      return new cssWorker()
+    }
+    return new editorWorker()
+  },
+  globalAPI: true,
+}
 const worker = new Promise<Worker>(async (resolve) => {
   const codeString = await fetch(`${ASSETSPATH}eslint.worker.js`).then((res) => res.text())
 
@@ -33,6 +55,14 @@ export const useMonaco = defineStore('__monaco', () => {
   const currentValue = ref('')
   const currentPath = ref('')
   const openedFiles = ref<Array<OpenedFileInfo>>([])
+  watch(openedFiles, (n) => {
+    console.debug('openedFiles change', n)
+    if (n.length > 0) {
+      editor.updateOptions({ readOnly: false })
+    } else {
+      editor.updateOptions({ readOnly: true })
+    }
+  })
   let fileTree = ref<FileInfo>({
     isDirectory: true,
     children: {},
@@ -41,6 +71,19 @@ export const useMonaco = defineStore('__monaco', () => {
   //初始化
   function init(dom: HTMLElement) {
     editor = monaco.editor.create(dom, { readOnly: true })
+    const editorService = (editor as any)._codeEditorService
+    const openEditorBase = editorService.openCodeEditor.bind(editorService)
+    editorService.openCodeEditor = async (input: any, source: any, _sideBySide: any) => {
+      const result = await openEditorBase(input, source)
+      if (result == null) {
+        const fullPath = input.resource.path
+        source.setModel(monaco.editor.getModel(input.resource))
+        openOrFocusPath(fullPath)
+        source.setSelection(input.options.selection)
+        source.revealLine(input.options.selection.startLineNumber)
+      }
+      return result
+    }
     configTheme('OneDarkPro').then(() => {
       isReady.value = true
     })
@@ -64,7 +107,8 @@ export const useMonaco = defineStore('__monaco', () => {
     // 设置主题
     monaco.editor.setTheme(name)
   }
-  function loadFileTree(files: Files) {
+  async function loadFileTree(files: Files) {
+    await loadWASM(`${ASSETSPATH}onigasm.wasm`)
     const keys = Object.keys(files)
     const tree: FileInfo = {
       isDirectory: true,
@@ -96,6 +140,58 @@ export const useMonaco = defineStore('__monaco', () => {
       })
     })
     fileTree.value = tree
+    Object.keys(files).forEach((key) => {
+      const value = files[key].content
+      if (typeof value === 'string') {
+        createOrUpdateModel(key, value)
+      }
+    })
+  }
+  function createOrUpdateModel(path: string, value: string) {
+    // model 是否存在
+    let model = monaco.editor.getModels().find((model) => model.uri.path === path)
+
+    if (model) {
+      if (model.getValue() !== value) {
+        model.pushEditOperations(
+          [],
+          [
+            {
+              range: model?.getFullModelRange(),
+              text: value,
+            },
+          ],
+          () => []
+        )
+      }
+    } else if (path) {
+      let type = ''
+      if (path.indexOf('.') !== -1) {
+        type = path.split('.').slice(-1)[0]
+      } else {
+        type = 'javascript'
+      }
+      const config: {
+        [key: string]: string
+      } = {
+        js: 'javascript',
+        ts: 'typescript',
+        less: 'less',
+        jsx: 'javascript',
+        tsx: 'typescript',
+        v: 'verilog',
+        sv: 'systemverilog',
+        restful: 'restful',
+      }
+      model = monaco.editor.createModel(
+        value ?? '',
+        config[type] || type,
+        new monaco_define.Uri().with({ path, scheme: 'music' })
+      )
+      model.updateOptions({
+        tabSize: 2,
+      })
+    }
   }
   function getEditor() {
     return editor
@@ -162,9 +258,43 @@ export const useMonaco = defineStore('__monaco', () => {
       }
     })
     if (!exist) {
-      openedFiles.value.push({ path })
+      openedFiles.value = [...openedFiles.value, { path }]
     }
     currentPath.value = path
+  }
+  function closeFile(path: string) {
+    const pre = openedFiles.value
+    let targetPath = ''
+    if (pre.length) {
+      const res = pre.filter((v, index) => {
+        if (v.path === path) {
+          if (index === 0) {
+            if (pre[index + 1]) {
+              targetPath = pre[index + 1].path
+            }
+          } else {
+            targetPath = pre[index - 1].path
+          }
+        }
+        return v.path !== path
+      })
+      // 目标文件是当前文件，且存在下一激活文件时，执行model及path切换的逻辑
+      if (targetPath && currentPath.value === path) {
+        restoreModel(targetPath)
+        currentPath.value = targetPath
+      }
+      if (res.length === 0) {
+        restoreModel('')
+        currentPath.value = ''
+        prePath.value = ''
+      }
+      openedFiles.value = res
+    }
+    // openedFiles.value.forEach((e, i) => {
+    //   if (e.path === path) {
+    //     openedFiles.value.splice(i, 1)
+    //   }
+    // })
   }
   function format() {
     editor?.getAction('editor.action.formatDocument')?.run()
@@ -178,6 +308,7 @@ export const useMonaco = defineStore('__monaco', () => {
     restoreModel,
     openOrFocusPath,
     isReady,
+    closeFile,
     getEditor,
     format,
     resize,

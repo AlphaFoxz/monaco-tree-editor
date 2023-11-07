@@ -5,6 +5,7 @@ import IconAddfile from '../icons/Addfile'
 import IconArrow from '../icons/Arrow'
 import FileTemp from './File.vue'
 import Confirm from '../modal/Confirm.vue'
+import ContextMenu from '../context-menu/Index.vue'
 import { ref, watch } from 'vue'
 import { useMonaco } from '../../monaco-store'
 
@@ -105,13 +106,15 @@ const handleDeleteFolder = (path: string) => {
     </template>
   </Confirm>
   <div class="music-monaco-editor-list-wrapper">
-    <div class="music-monaco-editor-list-title">{{ title }}</div>
-    <div class="music-monaco-editor-list-split" @click="handleCollapse">
-      <IconArrow :collpase="collpase" />
-      <span :style="{ flex: 1 }">{{ projectName }}</span>
-      <IconAddfile @click="handleAddFile" class="music-monaco-editor-list-split-icon" />
-      <IconAddfolder @click="handleAddFolder" class="music-monaco-editor-list-split-icon" />
-    </div>
+    <ContextMenu :menu="[]">
+      <div class="music-monaco-editor-list-title">{{ title }}</div>
+      <div class="music-monaco-editor-list-split" @click="handleCollapse">
+        <IconArrow :collpase="collpase" />
+        <span :style="{ flex: 1 }">{{ projectName }}</span>
+        <IconAddfile @click="handleAddFile" class="music-monaco-editor-list-split-icon" />
+        <IconAddfolder @click="handleAddFolder" class="music-monaco-editor-list-split-icon" />
+      </div>
+    </ContextMenu>
     <div v-show="!collpase" class="music-monaco-editor-list-files">
       <FileTemp
         @add-file="addFile"

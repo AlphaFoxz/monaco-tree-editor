@@ -1,7 +1,6 @@
 <script setup lang="tsx">
 import { ref, watch } from 'vue'
 import TabItem from './TabItem.vue'
-import { type FileInfo } from '../../define'
 import './index.less'
 import { useMonaco } from '../../monaco-store'
 defineProps({
@@ -13,10 +12,8 @@ defineProps({
 })
 const emit = defineEmits({
   pathChange: (_key: string) => true,
-  closeFile: (_path: string) => true,
   saveFile: (_path: string) => true,
   abortSave: (_path: string) => true,
-  closeOtherFiles: (_path: string) => true,
 })
 
 const monacoStore = useMonaco()
@@ -27,6 +24,10 @@ watch(
     openedFiles.value = n
   }
 )
+const handleCloseFile = (path: string) => {
+  monacoStore.closeFile(path)
+}
+const handleCloseOtherFiles = (path?: string) => {}
 </script>
 
 <template>
@@ -37,12 +38,12 @@ watch(
           @saveFile="(path) => emit('saveFile', path)"
           @abortSave="(path) => emit('abortSave', path)"
           :rootEl="rootEl"
-          @closeFile="(path) => emit('closeFile', path)"
+          @closeFile="handleCloseFile"
           :file="file"
           :key="file.path"
           @pathChange="(key) => emit('pathChange', key)"
           :currentPath="currentPath"
-          @closeOtherFiles="(path) => emit('closeOtherFiles', path)"
+          @closeOtherFiles="handleCloseOtherFiles"
         />
       </span>
     </div>
