@@ -16,7 +16,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     lib: {
-      entry: path.resolve(__dirname, './src/components/monaco-tree-editor/Index.vue'),
+      entry: 'src/main.ts',
       name: 'monaco-tree-editor',
       fileName: 'monaco-tree-editor',
     },
