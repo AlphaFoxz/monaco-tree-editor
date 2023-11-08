@@ -1,6 +1,6 @@
 {
   "name": "monaco-tree-editor",
-  "version": "0.0.1-alpha.0.2",
+  "version": "0.0.1-alpha.0.3",
   "main": "dist/monaco-tree-editor.mjs",
   "description": "the web ide with file tree based on 'monaco-editor'",
   "private": false,
@@ -10,6 +10,14 @@
     "vue-monaco-tree"
   ],
   "license": "Apache-2.0",
+  "author": {
+    "name": "AlphaFoxz",
+    "url": "https://github.com/AlphaFoxz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlphaFoxz/monaco-tree-editor"
+  },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
@@ -20,6 +28,7 @@
   },
   "dependencies": {
     "monaco-editor": "^0.44.0",
+    "nanoid": "^5.0.3",
     "onigasm": "^2.2.5",
     "pinia": "^2.1.7",
     "vue": "^3.3.4"
@@ -37,8 +46,8 @@
     "npm-run-all2": "^6.1.1",
     "terser": "^5.24.0",
     "typescript": "~5.2.0",
-    "vite": "^4.4.11",
+    "vite": "^4.5.0",
     "vitest": "^0.34.6",
-    "vue-tsc": "^1.8.19"
+    "vue-tsc": "^1.8.22"
   }
 }

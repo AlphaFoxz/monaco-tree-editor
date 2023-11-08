@@ -9,7 +9,7 @@ import ContextMenu from '../context-menu/Index.vue'
 import { ref, watch } from 'vue'
 import { useMonaco } from '../../monaco-store'
 
-const props = defineProps({
+defineProps({
   title: {
     type: String,
     default: 'EXPLORER',
@@ -75,37 +75,37 @@ const handleDeleteFolder = (path: string) => {
 //=================== 删除 delete end ==================
 </script>
 <template>
-  <Confirm
-    v-if="fileConfirmVisible"
-    @ok="$emit('deleteFile', confirmPath)"
-    @cancel="fileConfirmVisible = false"
-    @close="fileConfirmVisible = false"
-  >
-    <template #title?>是否确实要删除此文件</template>
-    <template #okText>删除</template>
-    <template #content>
-      <div>
-        <div>删除后无法恢复</div>
-        <div>当前路径: {{ confirmPath }}</div>
-      </div>
-    </template>
-  </Confirm>
-  <Confirm
-    v-if="folderConfirmVisible"
-    @ok="$emit('deleteFolder', confirmPath)"
-    @cancel="folderConfirmVisible = false"
-    @close="folderConfirmVisible = false"
-  >
-    <template #title?>是否确实要删除此文件</template>
-    <template #okText>删除</template>
-    <template #content>
-      <div>
-        <div>删除后无法恢复</div>
-        <div>当前路径: {{ confirmPath }}</div>
-      </div>
-    </template>
-  </Confirm>
   <div class="music-monaco-editor-list-wrapper">
+    <Confirm
+      v-if="fileConfirmVisible"
+      @ok="$emit('deleteFile', confirmPath)"
+      @cancel="fileConfirmVisible = false"
+      @close="fileConfirmVisible = false"
+    >
+      <template #title?>是否确实要删除此文件</template>
+      <template #okText>删除</template>
+      <template #content>
+        <div>
+          <div>删除后无法恢复</div>
+          <div>当前路径: {{ confirmPath }}</div>
+        </div>
+      </template>
+    </Confirm>
+    <Confirm
+      v-if="folderConfirmVisible"
+      @ok="$emit('deleteFolder', confirmPath)"
+      @cancel="folderConfirmVisible = false"
+      @close="folderConfirmVisible = false"
+    >
+      <template #title?>是否确实要删除此文件</template>
+      <template #okText>删除</template>
+      <template #content>
+        <div>
+          <div>删除后无法恢复</div>
+          <div>当前路径: {{ confirmPath }}</div>
+        </div>
+      </template>
+    </Confirm>
     <ContextMenu :menu="[]">
       <div class="music-monaco-editor-list-title">{{ title }}</div>
       <div class="music-monaco-editor-list-split" @click="handleCollapse">

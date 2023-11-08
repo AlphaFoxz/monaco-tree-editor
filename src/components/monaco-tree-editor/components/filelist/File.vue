@@ -34,7 +34,6 @@ const emit = defineEmits({
   editFolderName: (_path: string, _name?: string) => true,
 })
 
-console.debug(props.file)
 const monacoStore = useMonaco()
 const editing = ref(false)
 const showChild = ref(false)
@@ -92,7 +91,7 @@ const handleSelectFile = (item: ContextMenuItem<_FileOperation | _FolderOperatio
   }
 }
 // ================ 右键菜单 contextmenu end ================
-const handleRename = (e: Event) => {
+const handleRename = (_e: Event) => {
   editing.value = true
 }
 const handleDeleteFolder = (e: Event) => {
@@ -165,6 +164,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
 <template>
   <ContextMenu v-if="file.isFile" :menu="fileContextMenu" @select="handleSelectFile">
     <div
+      :title="file.name"
       :data-src="file.path"
       @click="handlePathChange"
       :key="file.path"
@@ -199,14 +199,14 @@ watch([() => props.currentPath, () => props.file], (v) => {
           <IconEdit @click.stop="handleRename" class="music-monaco-editor-list-split-icon" />
           <IconDelete @click.stop="emit('deleteFolder', file.path)" class="music-monaco-editor-list-split-icon" />
           <IconAddfile
-            @click.stop="(e: Event) => {
+            @click.stop="(_e: Event) => {
                       showChild = true
                       emit('addFile', file.path + '/')
                     }"
             class="music-monaco-editor-list-split-icon"
           />
           <IconAddfolder
-            @click.stop="(e: Event) => {
+            @click.stop="(_e: Event) => {
                       showChild = true
                       emit('addFolder', file.path + '/')
                     }"
@@ -228,7 +228,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
     <div
       v-if="showChild || root"
       :style="{ paddingLeft: file.isDirectory ? '7px' : '0' }"
-      v-for="(item, index) in keys"
+      v-for="(item, _index) in keys"
     >
       <FileTemp
         @edit-file-name="(path) => emit('editFileName', path)"

@@ -1,4 +1,33 @@
 {
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": [
+        "/src/*"
+      ]
+    },
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    //Linting
+    "strict": true,
+    "types": [
+      "node",
+    ],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
   "files": [],
   "references": [
     {
@@ -10,5 +39,5 @@
     {
       "path": "./tsconfig.vitest.json"
     }
-  ]
+  ],
 }

@@ -56,6 +56,14 @@
       flex-direction: row;
       align-items: center;
 
+      span,
+      .music-monaco-editor-list-file-item-new {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: calc(100% - 20px);
+      }
+
       &:hover {
         background-color: var(--monaco-list-hoverBackground);
         color: var(--monaco-list-hoverForeground);

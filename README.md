@@ -1,46 +1,113 @@
 # monaco-tree-editor
 
-This template should help get you started developing with Vue 3 in Vite.
+这个我的第一个 npm 库。**_抱歉。这个组件现在还不能用。_** 我会尽可能快地搞定它，并提供一个预发布版本。
 
-## Recommended IDE Setup
+It's my first npm repo. **_Sorry. It still not work now._** I'll try fast that i can to make it and publish a rc-version
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+# 这个库做了什么 What this repo did?
 
-## Type Support for `.vue` Imports in TS
+- [x] 提供 VSCode 风格的文件树 Provide FileTree with VSCode style.
+- [ ] 回调函数采用异步处理（开发中） async callback functions (developing)
+- [ ] 支持自定义的热键处理 hook（开发中） A hook for Hotkey (developing)
+- [x] 提供一个浮动的全局消息 hook。 A hook for global float message box.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+## 前置要求 Prerequisites
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+- vue3 (推荐版本 recommend v.3.3.4+)
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+## 如何安装 How to install
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```shell
+pnpm add monaco-tree-editor
 ```
 
-### Compile and Hot-Reload for Development
+## 示例代码 Demo Code (Alpha)
 
-```sh
-npm run dev
-```
+```vue
+<script setup lang="ts">
+import Editor from 'monaco-tree-editor/src/components/monaco-tree-editor/Index.vue'
+import { useMessage } from 'monaco-tree-editor/src/components/monaco-tree-editor/message-store'
+import { useHotkey } from 'monaco-tree-editor/src/components/monaco-tree-editor/hotkey-store'
+import { useMonaco } from 'monaco-tree-editor/src/components/monaco-tree-editor/monaco-store'
+import { onMounted, ref, watch } from 'vue'
 
-### Type-Check, Compile and Minify for Production
+// ================ 调整大小 resize ================
+const editorRef = ref()
+onMounted(() => {
+  window.onresize = () => {
+    setTimeout(() => {
+      editorRef.value.resize()
+    }, 30)
+  }
+})
 
-```sh
-npm run build
-```
+// ================ 推送消息 push message ================
+const messageStore = useMessage()
+onMounted(() => {
+  const id = messageStore.info({
+    content: 'loading..',
+    loading: true,
+  })
+  setTimeout(() => {
+    messageStore.close(id)
+    messageStore.success({
+      content: 'loading successed!',
+      closeable: true,
+      timeoutMs: 5000,
+    })
+  }, 3000)
+})
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+// ================ 原生功能 original modules of monaco-editor ================
+const monacoStore = useMonaco()
+monacoStore.monaco.languages.register
+onMounted(() => {
+  monacoStore.getEditor().setValue
+})
 
-```sh
-npm run test:unit
+// ================ 快捷键 hotkey ==================
+const hotkeyStore = useHotkey()
+// TODO need to optimize
+// hotkeyStore.init(monacoStore.getEditorDom(), {
+//   preventCtrlKeys: ['r', 'R'], // prevent Ctrl + R
+//   preventKeys: ['F12'], // prevent F12
+// })
+watch(
+  () => hotkeyStore.currentEvent,
+  (event) => {
+    if (event?.ctrlKey && !event.shiftKey && !event.altKey && event.key === '1') {
+      // do something...
+    }
+  }
+)
+
+// ================ 加载文件 load files ================
+const files = ref({
+  '/src/': { isDirectory: true, children: [] },
+  '/index.ts': {
+    content: 'import * as components from "./components"',
+    isFile: true,
+  },
+  '/define.ts': {
+    content: 'define',
+    isFile: true,
+  },
+})
+
+// ================ 回调函数 callback =================
+// TODO need to optimize
+const handleSaveFile = (path: string, resolve: Function, reject: Function) => {}
+const handleDeleteFile = (path: string, resolve: Function, reject: Function) => {}
+const handleAddFile = (path: string, resolve: Function, reject: Function) => {}
+</script>
+
+<template>
+  <Editor
+    :files="files"
+    @delete-file="handleDeleteFile"
+    @save-file="handleSaveFile"
+    @add-file="handleAddFile"
+    ref="editorRef"
+  ></Editor>
+</template>
 ```

@@ -7,21 +7,22 @@ const monacoStore = useMonaco()
 const Prettier = (props: any) => {
   async function loadPrettier() {
     function provideDocumentFormattingEdits(model: any) {
-      const p = window.require('prettier')
-      if (!p.prettier) return
-      const text = p.prettier.format(model.getValue(), {
-        filepath: model.uri.path,
-        plugins: p.prettierPlugins,
-        singleQuote: true,
-        tabWidth: 4,
-      })
+      return null
+      // const p = window.require('prettier')
+      // if (!p.prettier) return
+      // const text = p.prettier.format(model.getValue(), {
+      //   filepath: model.uri.path,
+      //   plugins: p.prettierPlugins,
+      //   singleQuote: true,
+      //   tabWidth: 4,
+      // })
 
-      return [
-        {
-          range: model.getFullModelRange(),
-          text,
-        },
-      ]
+      // return [
+      //   {
+      //     range: model.getFullModelRange(),
+      //     text,
+      //   },
+      // ]
     }
     monacoStore.monaco.languages.registerDocumentFormattingEditProvider('javascript', {
       provideDocumentFormattingEdits,

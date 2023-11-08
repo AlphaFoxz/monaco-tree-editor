@@ -8,6 +8,9 @@ dependencies:
   monaco-editor:
     specifier: ^0.44.0
     version: 0.44.0
+  nanoid:
+    specifier: ^5.0.3
+    version: 5.0.3
   onigasm:
     specifier: ^2.2.5
     version: 2.2.5
@@ -56,13 +59,13 @@ devDependencies:
     specifier: ~5.2.0
     version: 5.2.2
   vite:
-    specifier: ^4.4.11
+    specifier: ^4.5.0
     version: 4.5.0(@types/node@18.18.8)(less@4.2.0)(terser@5.24.0)
   vitest:
     specifier: ^0.34.6
     version: 0.34.6(jsdom@22.1.0)(less@4.2.0)(terser@5.24.0)
   vue-tsc:
-    specifier: ^1.8.19
+    specifier: ^1.8.22
     version: 1.8.22(typescript@5.2.2)
 
 packages:
@@ -1578,6 +1581,12 @@ packages:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
+
+  /nanoid@5.0.3:
+    resolution: {integrity: sha512-I7X2b22cxA4LIHXPSqbBCEQSL+1wv8TuoefejsX4HFWyC6jc5JG7CEaxOltiKjc1M+YCS2YkrZZcj4+dytw9GA==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    dev: false
 
   /needle@3.2.0:
     resolution: {integrity: sha512-oUvzXnyLiVyVGoianLijF9O/RecZUf7TkBfimjGrLM4eQhXyeJwM6GeAWccwfQ9aa4gMCZKqhAOuLaMIcQxajQ==}

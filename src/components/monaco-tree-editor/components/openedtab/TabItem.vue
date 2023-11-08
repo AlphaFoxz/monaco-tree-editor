@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import ContextMenu from '../context-menu/Index.vue'
 import Confirm from '../modal/Confirm.vue'
+import Icons from '../icons'
 import type { ContextMenuItem } from '../context-menu/define'
 const props = defineProps({
   file: {
@@ -146,13 +147,9 @@ const closeVisible = computed(() => {
       @mouseleave="handleLeave"
       :data-src="file!.path"
       :class="`music-monaco-editor-opened-tab-item ${active ? 'music-monaco-editor-opened-tab-item-focused' : ''}`"
-      @click="
-        {
-          handlePathChange
-        }
-      "
+      @click="handlePathChange"
     >
-      <Icon :type="fileType" :style="{ marginRight: '2px' }" />
+      <Icons :type="fileType" :style="{ marginRight: '2px' }" />
       <span :style="{ flex: 1, paddingRight: '5px' }">{{ name }}</span>
       <span
         data-name="editing"

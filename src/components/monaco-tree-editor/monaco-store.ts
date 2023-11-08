@@ -11,7 +11,7 @@ import { watch, ref, nextTick } from 'vue'
 import { ASSETSPATH } from './constants'
 import { type FileInfo, type Files } from './define'
 
-self.MonacoEnvironment = {
+window.MonacoEnvironment = {
   getWorker: function (_moduleId, label: string) {
     if (label === 'json') {
       return new jsonWorker()
@@ -46,10 +46,12 @@ const themes: {
   [key: string]: any
 } = {}
 export const useMonaco = defineStore('__monaco', () => {
+  let originalFileTree: Files
   const monaco = monaco_define
   const isReady = ref(false)
   const valueListener = ref<monaco_define.IDisposable>()
   let editor: monaco_define.editor.IStandaloneCodeEditor
+  let editorDom: HTMLElement
   const prePath = ref<string | null>()
   const editorStates = ref<Map<any, any>>(new Map())
   const currentValue = ref('')
@@ -69,7 +71,8 @@ export const useMonaco = defineStore('__monaco', () => {
     path: '/',
   })
   //初始化
-  function init(dom: HTMLElement) {
+  async function init(dom: HTMLElement) {
+    editorDom = dom
     editor = monaco.editor.create(dom, { readOnly: true })
     const editorService = (editor as any)._codeEditorService
     const openEditorBase = editorService.openCodeEditor.bind(editorService)
@@ -84,9 +87,9 @@ export const useMonaco = defineStore('__monaco', () => {
       }
       return result
     }
-    configTheme('OneDarkPro').then(() => {
-      isReady.value = true
-    })
+    await loadWASM(`${ASSETSPATH}onigasm.wasm`)
+    await configTheme('OneDarkPro')
+    isReady.value = true
   }
   async function configTheme(name: string) {
     let theme = themes[name]
@@ -108,7 +111,7 @@ export const useMonaco = defineStore('__monaco', () => {
     monaco.editor.setTheme(name)
   }
   async function loadFileTree(files: Files) {
-    await loadWASM(`${ASSETSPATH}onigasm.wasm`)
+    originalFileTree = files
     const keys = Object.keys(files)
     const tree: FileInfo = {
       isDirectory: true,
@@ -268,6 +271,8 @@ export const useMonaco = defineStore('__monaco', () => {
     if (pre.length) {
       const res = pre.filter((v, index) => {
         if (v.path === path) {
+          const m = monaco.editor.getModels().find((model) => model.uri.path === path)
+          m?.setValue(originalFileTree[path].content!)
           if (index === 0) {
             if (pre[index + 1]) {
               targetPath = pre[index + 1].path

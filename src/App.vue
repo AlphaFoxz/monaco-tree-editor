@@ -1,9 +1,61 @@
 <script setup lang="ts">
 import Editor from '@/components/monaco-tree-editor/Index.vue'
-import { onMounted, ref } from 'vue'
+import { useMessage } from '@/components/monaco-tree-editor/message-store'
+import { useHotkey } from '@/components/monaco-tree-editor/hotkey-store'
+import { useMonaco } from '@/components/monaco-tree-editor/monaco-store'
+import { onMounted, ref, watch } from 'vue'
 
-const handleAddFile = (path: string) => {}
+// ================ 调整大小 resize ================
 const editorRef = ref()
+onMounted(() => {
+  window.onresize = () => {
+    setTimeout(() => {
+      editorRef.value.resize()
+    }, 30)
+  }
+})
+
+// ================ 推送消息 push message ================
+const messageStore = useMessage()
+onMounted(() => {
+  const id = messageStore.info({
+    content: 'loading..',
+    loading: true,
+  })
+  setTimeout(() => {
+    messageStore.close(id)
+    messageStore.success({
+      content: 'loading successed!',
+      closeable: true,
+      timeoutMs: 5000,
+    })
+  }, 3000)
+})
+
+// ================ 原生功能 original modules of monaco-editor ================
+const monacoStore = useMonaco()
+monacoStore.monaco.languages.register
+onMounted(() => {
+  monacoStore.getEditor().setValue
+})
+
+// ================ 快捷键 hotkey ==================
+const hotkeyStore = useHotkey()
+// TODO need to optimize
+// hotkeyStore.init(monacoStore.getEditorDom(), {
+//   preventCtrlKeys: ['r', 'R'], // prevent Ctrl + R
+//   preventKeys: ['F12'], // prevent F12
+// })
+watch(
+  () => hotkeyStore.currentEvent,
+  (event) => {
+    if (event?.ctrlKey && !event.shiftKey && !event.altKey && event.key === '1') {
+      // do something...
+    }
+  }
+)
+
+// ================ 加载文件 load files ================
 const files = ref({
   '/src/': { isDirectory: true, children: [] },
   '/index.ts': {
@@ -15,18 +67,22 @@ const files = ref({
     isFile: true,
   },
 })
+
+// ================ 回调函数 callback =================
+// TODO need to optimize
 const handleSaveFile = () => {}
-onMounted(() => {
-  window.onresize = () => {
-    setTimeout(() => {
-      editorRef.value.resize()
-    }, 30)
-  }
-})
+const handleDeleteFile = () => {}
+const handleAddFile = (path: string, resolve: Function, reject: Function) => {}
 </script>
 
 <template>
-  <Editor :files="files" @delete-file="" @save-file="handleSaveFile" @add-file="handleAddFile" ref="editorRef"></Editor>
+  <Editor
+    :files="files"
+    @delete-file="handleDeleteFile"
+    @save-file="handleSaveFile"
+    @add-file="handleAddFile"
+    ref="editorRef"
+  ></Editor>
 </template>
 
 <style scoped></style>

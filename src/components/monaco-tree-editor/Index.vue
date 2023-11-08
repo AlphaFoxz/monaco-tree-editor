@@ -1,9 +1,10 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import './index.less'
 import { THEMES } from './constants'
-import { onMounted, ref, watch, defineEmits } from 'vue'
+import { onMounted, ref, watch, defineEmits, nextTick } from 'vue'
 import { useMonaco } from './monaco-store'
 import { useHotkey } from './hotkey-store'
+import { useMessage } from './message-store'
 import * as monaco_define from 'monaco-editor'
 import Prettier from './components/prettier/Index.vue'
 import FileList from './components/filelist/Index.vue'
@@ -12,6 +13,7 @@ import Modal from './components/modal/Index.vue'
 import IconClose from './components/icons/Close'
 import IconSetting from './components/icons/Setting'
 import SelectMenu from './components/select/MenuTemp.vue'
+import Message from './components/message-bar/Index.vue'
 
 const props = defineProps({
   files: {
@@ -34,30 +36,34 @@ const emit = defineEmits({
 
 // ================ 拖拽功能 dragging start ================
 const filelistWidth = ref(props.siderMinWidth)
-const dragInfo = ref<any>({
+let dragInfo = {
   pageX: 0,
   width: 0,
   start: false,
-})
+}
 const handleDragStart = (e: MouseEvent) => {
   console.debug('拖拽开始')
-  dragInfo.value = {
+  dragInfo = {
     pageX: e.pageX,
     width: filelistWidth.value,
     start: true,
   }
 }
 const handleDrag = (e: MouseEvent) => {
+  console.debug('拖拽事件')
   e.stopPropagation()
-  if (dragInfo.value.start && e.pageX != 0) {
-    const w = dragInfo.value.width + (e.pageX - dragInfo.value.pageX)
+  if (dragInfo.start && e.pageX != 0) {
+    const w = dragInfo.width + (e.pageX - dragInfo.pageX)
     console.debug('拖拽中', w < props.siderMinWidth ? props.siderMinWidth : w)
     filelistWidth.value = w < props.siderMinWidth ? props.siderMinWidth : w
+    nextTick(() => {
+      monacoStore.resize()
+    })
   }
 }
-const handleDragEnd = (e: MouseEvent) => {
+const handleDragEnd = (_e: MouseEvent) => {
   console.debug('拖拽结束')
-  dragInfo.value.start = false
+  dragInfo.start = false
 }
 watch(
   () => props.siderMinWidth,
@@ -78,12 +84,9 @@ const handleSetAutoPrettier = (e: any) => {
 }
 const monacoStore = useMonaco()
 monacoStore.loadFileTree(props.files)
-watch(
-  () => props.files,
-  (n) => {
-    monacoStore.loadFileTree(props.files)
-  }
-)
+watch(props.files, (n) => {
+  monacoStore.loadFileTree(n)
+})
 const editorRef = ref<HTMLElement>()
 const handleFormat = () => {
   monacoStore.format()
@@ -94,6 +97,7 @@ onMounted(() => {
 // ================ 编辑器部分 editor end ================
 
 // ================ 回调事件 callback events start ================
+const messageStore = useMessage()
 const handleAddFile = (path: string) => {
   emit(
     'addFile',
@@ -111,11 +115,28 @@ const handleAddFolder = (path: string) => {
   )
 }
 const handleSaveFile = (path: string) => {
+  const id = messageStore.info({
+    content: '正在保存文件',
+    loading: true,
+  })
   emit(
     'saveFile',
     path,
-    () => {},
-    () => {}
+    () => {
+      messageStore.close(id)
+      messageStore.success({
+        content: '保存成功',
+        timeoutMs: 3000,
+        closeable: true,
+      })
+    },
+    (msg?: string) => {
+      messageStore.close(id)
+      messageStore.error({
+        content: `保存失败${msg ? '\n' + msg : ''}`,
+        closeable: true,
+      })
+    }
   )
 }
 // ================ 回调事件 callback events end ================
@@ -131,6 +152,7 @@ watch(
   (e) => {
     if (e?.ctrlKey && e.key.toLowerCase() === 's') {
       console.debug('Ctrl+s保存')
+      handleSaveFile('')
     }
   }
 )
@@ -152,22 +174,32 @@ defineExpose({
 </script>
 <template>
   <div ref="rootRef" id="music-monaco-editor-root" tabIndex="1" class="music-monaco-editor">
+    <Message></Message>
     <FileList
       @add-file="handleAddFile"
       @add-folder="handleAddFolder"
       :rootEl="rootRef"
-      :style="{ width: filelistWidth + 'px', minWidth: '180px' }"
+      :style="{ width: filelistWidth + 'px', minWidth: siderMinWidth + 'px' }"
     />
     <div
-      draggable="true"
+      :draggable="true"
       @dragstart="handleDragStart"
-      @drag="handleDrag"
+      @drag.native="handleDrag"
       @dragend="handleDragEnd"
       class="music-monaco-editor-drag"
     ></div>
     <div class="music-monaco-editor-area">
       <OpenedTab />
-      <div id="editor" ref="editorRef" :style="{ flex: 1, width: '100%', maxHeight: 'calc(100% - 35px)' }"></div>
+      <div
+        id="editor"
+        ref="editorRef"
+        :style="{
+          flex: 1,
+          width: '100%',
+          height: '100%',
+          maxHeight: 'calc(100% - 35px)',
+        }"
+      ></div>
       <div v-show="!monacoStore.isReady || monacoStore.openedFiles.length === 0" class="music-monaco-editor-area-empty">
         <img
           src="//p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/5759801316/fb85/e193/a256/03a81ea60cf94212bbc814f2c82b6940.png"

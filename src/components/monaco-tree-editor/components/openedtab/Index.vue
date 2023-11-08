@@ -11,7 +11,6 @@ defineProps({
   rootEl: HTMLElement,
 })
 const emit = defineEmits({
-  pathChange: (_key: string) => true,
   saveFile: (_path: string) => true,
   abortSave: (_path: string) => true,
 })
@@ -24,6 +23,10 @@ watch(
     openedFiles.value = n
   }
 )
+const handlePathChange = (key: string) => {
+  console.debug('pathChange', key)
+  monacoStore.restoreModel(key)
+}
 const handleCloseFile = (path: string) => {
   monacoStore.closeFile(path)
 }
@@ -41,7 +44,7 @@ const handleCloseOtherFiles = (path?: string) => {}
           @closeFile="handleCloseFile"
           :file="file"
           :key="file.path"
-          @pathChange="(key) => emit('pathChange', key)"
+          @pathChange="handlePathChange"
           :currentPath="currentPath"
           @closeOtherFiles="handleCloseOtherFiles"
         />
