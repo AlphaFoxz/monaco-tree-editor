@@ -147,21 +147,34 @@ const toOriginPath = (path: string): string => {
   }
   return oriPath
 }
-const handleReload = (resolve?: () => void, reject?: (msg?: string) => {}) => {
+const handleReload = (
+  resolve = () => {
+    messageStore.success({
+      content: 'Reload successed!',
+      closeable: true,
+      timeoutMs: 3000,
+    })
+  },
+  reject = (msg = '') => {
+    messageStore.error({
+      content: `Reload failed! ${msg}`,
+      closeable: true,
+    })
+  }
+) => {
+  const msgId = messageStore.info({
+    content: `Reloading...`,
+    loading: true,
+  })
   emit(
     'reload',
     () => {
-      messageStore.success({
-        content: 'Reload successed!',
-        closeable: true,
-        timeoutMs: 3000,
-      })
+      messageStore.close(msgId)
+      resolve()
     },
     (msg = '') => {
-      messageStore.error({
-        content: `Reload failed! ${msg}`,
-        closeable: true,
-      })
+      messageStore.close(msgId)
+      reject(msg)
     }
   )
 }
