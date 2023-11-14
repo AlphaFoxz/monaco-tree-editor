@@ -33,6 +33,14 @@ const props = defineProps({
     type: Number,
     default: 240,
   },
+  fileMenu: {
+    type: Array,
+    default: () => [],
+  },
+  folderMenu: {
+    type: Array,
+    default: () => [],
+  },
 })
 const emit = defineEmits({
   reload: (_resolve: () => void, _reject: (msg?: string) => void) => true,
@@ -43,6 +51,7 @@ const emit = defineEmits({
   newFolder: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
   renameFolder: (_path: string, _newPath: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
   deleteFolder: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
+  contextmenuSelect: (_path: string, _item: { label: string; value: any }) => true,
 })
 
 // ================ 拖拽功能 dragging ================
@@ -433,13 +442,16 @@ defineExpose({
   <div ref="rootRef" id="music-monaco-editor-root" tabIndex="1" class="music-monaco-editor">
     <Message></Message>
     <FileList
+      @reload="handleReload"
       @new-file="handleNewFile"
       @new-folder="handleNewFolder"
       @delete-file="handleDeleteFile"
       @delete-folder="handleDeleteFolder"
       @rename-file="handleRenameFile"
       @rename-folder="handleRenameFolder"
-      @reload="handleReload"
+      :file-menu="fileMenu"
+      :folder-menu="folderMenu"
+      @contextmenu-select="(path, item) => emit('contextmenuSelect', path, item)"
       :project-name="projectName"
       :rootEl="rootRef"
       :style="{ width: filelistWidth + 'px', minWidth: siderMinWidth + 'px' }"

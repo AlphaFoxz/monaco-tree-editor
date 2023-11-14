@@ -21,16 +21,25 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  fileMenu: {
+    type: Array,
+    default: () => [],
+  },
+  folderMenu: {
+    type: Array,
+    default: () => [],
+  },
 })
 const emit = defineEmits({
-  newFile: (_path: string, _resolve: () => void, _reject: () => void) => true,
   confirmNewFile: (_path: string) => true,
-  deleteFile: (_path: string) => true,
-  renameFile: (_path: string, _name: string) => true,
-  newFolder: (_path: string, _resolve: () => void, _reject: () => void) => true,
   confirmNewFolder: (_path: string) => true,
+  newFile: (_path: string, _resolve: () => void, _reject: () => void) => true,
+  newFolder: (_path: string, _resolve: () => void, _reject: () => void) => true,
+  deleteFile: (_path: string) => true,
   deleteFolder: (_path: string) => true,
+  renameFile: (_path: string, _name: string) => true,
   renameFolder: (_path: string, _name: string) => true,
+  contextmenuSelect: (_path: string, _item: { label: string; value: any }) => true,
 })
 
 // =================== 初始化 handle init ===================
@@ -60,48 +69,77 @@ const keys = computed<string[]>(() => {
 })
 
 // ================ 右键菜单 contextmenu ================
-type _FileOperation = 'openFile' | 'copyPath' | 'copyRelativePath' | 'renameFile' | 'deleteFile'
-type _FolderOperation = 'newFile' | 'newFolder' | 'copyPath' | 'copyRelativePath' | 'renameFolder' | 'deleteFolder'
-const fileContextMenu = ref<ContextMenuItem<_FileOperation | _FolderOperation>[]>([
-  { label: 'Open File', value: 'openFile' },
+type _FileOperation = '@openFile' | '@copyPath' | '@copyRelativePath' | '@renameFile' | '@deleteFile' | string
+type _FolderOperation =
+  | '@newFile'
+  | '@newFolder'
+  | '@copyPath'
+  | '@copyRelativePath'
+  | '@renameFolder'
+  | '@deleteFolder'
+  | string
+const initFileContextMenu = [
+  { label: 'Open File', value: '@openFile' },
   {},
-  { label: 'Copy Path', value: 'copyPath' },
-  { label: 'Copy Relative Path', value: 'copyRelativePath' },
+  { label: 'Copy Path', value: '@copyPath' },
+  { label: 'Copy Relative Path', value: '@copyRelativePath' },
   {},
-  { label: 'Rename File', value: 'renameFile' },
-  { label: 'Delete File', value: 'deleteFile' },
-])
-const folderContextMenu = ref<ContextMenuItem<_FileOperation | _FolderOperation>[]>([
-  { label: 'New File', value: 'newFile' },
-  { label: 'New Folder', value: 'newFolder' },
+  { label: 'Rename File', value: '@renameFile' },
+  { label: 'Delete File', value: '@deleteFile' },
+]
+const fileContextMenu = computed(() => {
+  const arr = JSON.parse(JSON.stringify(initFileContextMenu))
+  if (props.fileMenu.length > 0) {
+    for (let i = props.fileMenu.length - 1; i >= 0; i--) {
+      const v = JSON.parse(JSON.stringify(props.fileMenu[i]))
+      arr.splice(1, 0, v)
+    }
+    arr.splice(1, 0, {})
+  }
+  return arr
+})
+const initFolderContextMenu = [
+  { label: 'New File', value: '@newFile' },
+  { label: 'New Folder', value: '@newFolder' },
   {},
-  { label: 'Copy Path', value: 'copyPath' },
-  { label: 'Copy Relative Path', value: 'copyRelativePath' },
+  { label: 'Copy Path', value: '@copyPath' },
+  { label: 'Copy Relative Path', value: '@copyRelativePath' },
   {},
-  { label: 'Rename Folder', value: 'renameFolder' },
-  { label: 'Delete Folder', value: 'deleteFolder' },
-])
+  { label: 'Rename Folder', value: '@renameFolder' },
+  { label: 'Delete Folder', value: '@deleteFolder' },
+]
+const folderContextMenu = computed(() => {
+  const arr = JSON.parse(JSON.stringify(initFolderContextMenu))
+  if (props.folderMenu.length > 0) {
+    for (let i = props.folderMenu.length - 1; i >= 0; i--) {
+      const v = JSON.parse(JSON.stringify(props.folderMenu[i]))
+      arr.splice(2, 0, v)
+    }
+    arr.splice(2, 0, {})
+  }
+  return arr
+})
 const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderOperation>) => {
   switch (item.value) {
-    case 'openFile':
+    case '@openFile':
       handlePathChange()
-      return
-    case 'renameFile':
+      break
+    case '@renameFile':
       editing.value = true
-      return
-    case 'deleteFile':
+      break
+    case '@deleteFile':
       handleDeleteFile()
-      return
-    case 'newFile':
+      break
+    case '@newFile':
       handleConfirmNewFile()
-      return
-    case 'newFolder':
+      break
+    case '@newFolder':
       handleConfirmNewFolder()
-      return
-    case 'renameFolder':
+      break
+    case '@renameFolder':
       editing.value = true
-      return
-    case 'copyPath':
+      break
+    case '@copyPath':
       let path = monacoStore.prefix + props.file.path
       if (monacoStore.fileSeparator === '\\') {
         path = path.replace(/\//g, '\\')
@@ -111,20 +149,20 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
       } else {
         // TODO
       }
-      return
-    case 'copyRelativePath':
+      break
+    case '@copyRelativePath':
       if (navigator.clipboard) {
         navigator.clipboard.writeText(props.file.path)
       } else {
         // TODO
       }
-      return
-    case 'deleteFolder':
+      break
+    case '@deleteFolder':
       handleDeleteFolder()
-      return
-    default:
-      const n: undefined = item.value
-      console.debug(n)
+      break
+  }
+  if (item.value && item.label) {
+    emit('contextmenuSelect', props.file.path, { label: item.label, value: item.value })
   }
 }
 
@@ -303,6 +341,9 @@ watch([() => props.currentPath, () => props.file], (v) => {
         @new-folder="(path, resolve, reject) => emit('newFolder', path, resolve, reject)"
         @confirm-new-file="(path) => emit('confirmNewFile', path)"
         @confirm-new-folder="(path) => emit('confirmNewFolder', path)"
+        :file-menu="fileMenu"
+        :folder-menu="folderMenu"
+        @contextmenu-select="(path, item) => emit('contextmenuSelect', path, item)"
         :currentPath="currentPath"
         :root="false"
         :file="file.children[item]"

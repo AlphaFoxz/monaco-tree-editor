@@ -27,15 +27,22 @@ defineProps({
     type: HTMLElement,
     default: null,
   },
+  fileMenu: {
+    type: Array,
+  },
+  folderMenu: {
+    type: Array,
+  },
 })
 const emit = defineEmits({
-  newFile: (_path: string, _resolve: () => void, _reject: () => void) => true,
-  deleteFile: (_path: string) => true,
-  renameFile: (_path: string, _name: string) => true,
-  newFolder: (_path: string, _resolve: () => void, _reject: () => void) => true,
-  deleteFolder: (_path: string) => true,
-  renameFolder: (_path: string, _name: string) => true,
   reload: () => true,
+  newFile: (_path: string, _resolve: () => void, _reject: () => void) => true,
+  newFolder: (_path: string, _resolve: () => void, _reject: () => void) => true,
+  deleteFile: (_path: string) => true,
+  deleteFolder: (_path: string) => true,
+  renameFile: (_path: string, _name: string) => true,
+  renameFolder: (_path: string, _name: string) => true,
+  contextmenuSelect: (_path: string, _item: { label: string; value: any }) => true,
 })
 
 //=================== 初始化 init ==================
@@ -152,14 +159,17 @@ const handleRenameFolder = (path: string, name: string) => {
     </ContextMenu>
     <div v-show="!collpase" class="music-monaco-editor-list-files">
       <FileTemp
-        @new-file="handleNewFile"
         @confirm-new-file="handleConfirmNewFile"
-        @new-folder="handleNewFolder"
         @confirm-new-folder="handleConfirmNewFolder"
+        @new-file="handleNewFile"
+        @new-folder="handleNewFolder"
         @delete-file="handleDeleteFile"
         @delete-folder="handleDeleteFolder"
         @rename-file="handleRenameFile"
         @rename-folder="handleRenameFolder"
+        :file-menu="fileMenu"
+        :folder-menu="folderMenu"
+        @contextmenu-select="(path, item) => emit('contextmenuSelect', path, item)"
         :currentPath="currentPath"
         root
         :file="fileTree"

@@ -199,6 +199,13 @@ const handleRename = (path: string, name: string, resolve: () => void, reject: (
       reject(e.message)
     })
 }
+
+// ================ 自定义菜单 custom menu =================
+const fileMenu = ref([{ label: 'Custom Selection', value: 'c1' }])
+const folderMenu = ref([{ label: 'Custom Selection', value: 'c2' }])
+const handleContextMenuSelect = (path: string, item: { label: string; value: string }) => {
+  alert('path: ' + path + '\ntrigger: ' + item.label)
+}
 </script>
 
 <template>
@@ -212,6 +219,9 @@ const handleRename = (path: string, name: string, resolve: () => void, reject: (
     @delete-folder="handleDeleteFolder"
     @rename-file="handleRename"
     @rename-folder="handleRename"
+    :file-menu="fileMenu"
+    :folder-menu="folderMenu"
+    @contextmenu-select="handleContextMenuSelect"
     ref="editorRef"
   ></Editor>
 </template>
