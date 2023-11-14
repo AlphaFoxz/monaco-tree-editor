@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { type Ref, onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount } from 'vue'
 
 export const useHotkey = defineStore('__hotkey', () => {
   let domMap: Map<string, HTMLElement> = new Map()

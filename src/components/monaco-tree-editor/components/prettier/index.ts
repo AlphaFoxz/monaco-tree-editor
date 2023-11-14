@@ -6,7 +6,7 @@ import './index.less'
 const monacoStore = useMonaco()
 const Prettier = (props: any) => {
   async function loadPrettier() {
-    function provideDocumentFormattingEdits(model: any) {
+    function provideDocumentFormattingEdits(_model: any) {
       return null
       // const p = window.require('prettier')
       // if (!p.prettier) return
