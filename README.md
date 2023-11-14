@@ -225,6 +225,21 @@ const handleRename = (path: string, name: string, resolve: () => void, reject: (
       reject(e.message)
     })
 }
+
+// ================ 自定义菜单 custom menu =================
+/**
+ * fileMenu and folderMenu Will insert into the context menu of sider file list
+ */
+const fileMenu = ref([
+  { label: 'Custom Selection 1', value: 'any type that not null' },
+  { label: 'Custom Selection 2', value: 2 },
+  { label: '自定义文件选项 3', value: { id: 3, decription: 'value可以是任意非空值' } },
+])
+const folderMenu = ref([{ label: 'backup', value: 'backupFolder' }])
+
+const handleContextMenuSelect = (path: string, item: { label: string; value: string }) => {
+  alert('path: ' + path + '\ntrigger: ' + item.label)
+}
 </script>
 
 <template>
@@ -238,6 +253,9 @@ const handleRename = (path: string, name: string, resolve: () => void, reject: (
     @delete-folder="handleDeleteFolder"
     @rename-file="handleRename"
     @rename-folder="handleRename"
+    :file-menu="fileMenu"
+    :folder-menu="folderMenu"
+    @contextmenu-select="handleContextMenuSelect"
     ref="editorRef"
   ></Editor>
 </template>
