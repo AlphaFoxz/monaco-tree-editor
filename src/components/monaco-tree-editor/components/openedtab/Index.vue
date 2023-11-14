@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, getCurrentInstance, ComponentInternalInstance } from 'vue'
+import { onMounted, ref, watch, getCurrentInstance, type ComponentInternalInstance } from 'vue'
 import TabItem from './TabItem.vue'
 import './index.less'
 import { useMonaco } from '../../monaco-store'

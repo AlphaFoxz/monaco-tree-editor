@@ -18,7 +18,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  placeholder: {
+  textTip: {
     type: String,
     default: undefined,
   },
@@ -53,7 +53,7 @@ defineEmits({
 })
 </script>
 <template>
-  <div class="message-container-box" :title="placeholder" :style="{ boxShadow: shadow }">
+  <div class="message-container-box" :title="textTip" :style="{ boxShadow: shadow }">
     <IconClose
       v-if="closeable"
       @click="$emit('close', id)"

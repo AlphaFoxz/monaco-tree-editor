@@ -2,7 +2,7 @@ export type Files = {
   [path: string]: FileInfo
 }
 export type FileInfo = {
-  path: string
+  path?: string
   name?: string
   content?: string
   editing?: boolean
@@ -18,7 +18,7 @@ export type MessageOptions = {
   content: string
   closeable?: boolean
   loading?: boolean
-  placeholder?: string
+  textTip?: string
   timeoutMs?: number
   id?: string
   type?: MessageType

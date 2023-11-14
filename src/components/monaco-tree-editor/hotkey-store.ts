@@ -8,7 +8,7 @@ export const useHotkey = defineStore('__hotkey', () => {
   let preventCtrlAltShiftKeys: string[] = []
   let preventCtrlShiftKeys: string[] = []
   let preventCtrlAltKeys: string[] = []
-  let preventCtrlKeys = ['r', 'R', 's', 'S', 'd', 'D', 't', 'T']
+  let preventCtrlKeys = ['r', 'R', 's', 'S', 'd', 'D', 't', 'T', 'w', 'W']
 
   let preventAltShiftKeys: string[] = []
   let preventAltKeys: string[] = ['ArrowLeft', 'ArrowRight']

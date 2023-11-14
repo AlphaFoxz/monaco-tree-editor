@@ -35,7 +35,7 @@ const props = defineProps({
   },
 })
 const emit = defineEmits({
-  reload: () => true,
+  reload: (_resolve: () => void, _reject: (msg?: string) => void) => true,
   newFile: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
   saveFile: (_path: string, _value: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
   renameFile: (_path: string, _newPath: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
@@ -86,7 +86,7 @@ watch(
 const settingVisible = ref(false)
 
 // ================ 编辑器部分 editor ================
-const projectName = ref('project')
+const projectName = ref<any>('project')
 let fileSeparator = '/'
 let projectPrefix = ''
 const autoPrettierRef = ref(true)
@@ -102,9 +102,12 @@ const handleFormat = () => {
 const fixFilesPath = (files: Files): Files => {
   const fixedFiles: Files = {}
   projectPrefix = longestCommonPrefix(Object.keys(files))
+  if (projectPrefix.endsWith('\\') || projectPrefix.endsWith('/')) {
+    projectPrefix = projectPrefix.substring(0, projectPrefix.length - 1)
+  }
   let _projectName = projectPrefix.replace(/\\/g, '/')
   _projectName = _projectName.substring(_projectName.lastIndexOf('/') + 1)
-  projectName.value = _projectName
+  projectName.value = _projectName || undefined
   console.debug('projectName', _projectName)
   Object.keys(files).forEach((path) => {
     if (path.includes('\\')) {
@@ -130,6 +133,7 @@ watch(
   }
 )
 onMounted(() => {
+  handleReload()
   monacoStore.loadFileTree(fixFilesPath(props.files))
   monacoStore.init(editorRef.value!)
 })
@@ -142,6 +146,24 @@ const toOriginPath = (path: string): string => {
     oriPath = oriPath.replace(/\//g, '\\')
   }
   return oriPath
+}
+const handleReload = (resolve?: () => void, reject?: (msg?: string) => {}) => {
+  emit(
+    'reload',
+    () => {
+      messageStore.success({
+        content: 'Reload successed!',
+        closeable: true,
+        timeoutMs: 3000,
+      })
+    },
+    (msg = '') => {
+      messageStore.error({
+        content: `Reload failed! ${msg}`,
+        closeable: true,
+      })
+    }
+  )
 }
 const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
   const oriPath = toOriginPath(path)
@@ -159,6 +181,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
         timeoutMs: 3000,
         closeable: true,
       })
+      handleReload()
       resolve()
     },
     (msg = '') => {
@@ -187,6 +210,7 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
         timeoutMs: 3000,
         closeable: true,
       })
+      handleReload()
       resolve()
     },
     (msg = '') => {
@@ -221,6 +245,7 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
         timeoutMs: 3000,
         closeable: true,
       })
+      handleReload()
       resolve()
     },
     (msg = '') => {
@@ -250,6 +275,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
         timeoutMs: 3000,
         closeable: true,
       })
+      handleReload()
       resolve()
     },
     (msg = '') => {
@@ -279,6 +305,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
         timeoutMs: 3000,
         closeable: true,
       })
+      handleReload()
       resolve()
     },
     (msg = '') => {
@@ -313,6 +340,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
         timeoutMs: 3000,
         closeable: true,
       })
+      handleReload()
       resolve()
     },
     (msg = '') => {
@@ -347,6 +375,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
         timeoutMs: 3000,
         closeable: true,
       })
+      handleReload()
       resolve()
     },
     (msg = '') => {
@@ -397,7 +426,7 @@ defineExpose({
       @delete-folder="handleDeleteFolder"
       @rename-file="handleRenameFile"
       @rename-folder="handleRenameFolder"
-      @reload="$emit('reload')"
+      @reload="handleReload"
       :project-name="projectName"
       :rootEl="rootRef"
       :style="{ width: filelistWidth + 'px', minWidth: siderMinWidth + 'px' }"

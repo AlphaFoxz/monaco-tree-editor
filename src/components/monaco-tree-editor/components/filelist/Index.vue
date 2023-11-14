@@ -29,10 +29,10 @@ defineProps({
   },
 })
 const emit = defineEmits({
-  newFile: (_path: string, _resolve?: () => void, _reject?: () => void) => true,
+  newFile: (_path: string, _resolve: () => void, _reject: () => void) => true,
   deleteFile: (_path: string) => true,
   renameFile: (_path: string, _name: string) => true,
-  newFolder: (_path: string, _resolve?: () => void, _reject?: () => void) => true,
+  newFolder: (_path: string, _resolve: () => void, _reject: () => void) => true,
   deleteFolder: (_path: string) => true,
   renameFolder: (_path: string, _name: string) => true,
   reload: () => true,
@@ -63,11 +63,11 @@ const handleConfirmNewFile = (path: string) => {
 const handleConfirmNewFolder = (path: string) => {
   monaocStore.newFolder(path)
 }
-const handleNewFile = (path: string) => {
-  emit('newFile', path)
+const handleNewFile = (path: string, resolve: () => void, reject: () => void) => {
+  emit('newFile', path, resolve, reject)
 }
-const handleNewFolder = (path: string) => {
-  emit('newFolder', path)
+const handleNewFolder = (path: string, resolve: () => void, reject: () => void) => {
+  emit('newFolder', path, resolve, reject)
 }
 const handleDeleteFile = (path: string) => {
   fileConfirmVisible.value = true

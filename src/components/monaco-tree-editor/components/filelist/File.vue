@@ -23,11 +23,11 @@ const props = defineProps({
   },
 })
 const emit = defineEmits({
-  newFile: (_path: string, _resolve?: () => void, _reject?: () => void) => true,
+  newFile: (_path: string, _resolve: () => void, _reject: () => void) => true,
   confirmNewFile: (_path: string) => true,
   deleteFile: (_path: string) => true,
   renameFile: (_path: string, _name: string) => true,
-  newFolder: (_path: string, _resolve?: () => void, _reject?: () => void) => true,
+  newFolder: (_path: string, _resolve: () => void, _reject: () => void) => true,
   confirmNewFolder: (_path: string) => true,
   deleteFolder: (_path: string) => true,
   renameFolder: (_path: string, _name: string) => true,
@@ -66,6 +66,7 @@ const fileContextMenu = ref<ContextMenuItem<_FileOperation | _FolderOperation>[]
   { label: 'Open File', value: 'openFile' },
   {},
   { label: 'Copy Path', value: 'copyPath' },
+  { label: 'Copy Relative Path', value: 'copyRelativePath' },
   {},
   { label: 'Rename File', value: 'renameFile' },
   { label: 'Delete File', value: 'deleteFile' },
@@ -103,7 +104,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
     case 'copyPath':
       let path = monacoStore.prefix + props.file.path
       if (monacoStore.fileSeparator === '\\') {
-        path = path.replaceAll('/', '\\')
+        path = path.replace(/\//g, '\\')
       }
       if (navigator.clipboard) {
         navigator.clipboard.writeText(path)
@@ -298,8 +299,8 @@ watch([() => props.currentPath, () => props.file], (v) => {
         @rename-folder="(path, name) => emit('renameFolder', path, name)"
         @delete-file="(path) => emit('deleteFile', path)"
         @delete-folder="(path) => emit('deleteFolder', path)"
-        @new-file="(path) => emit('newFile', path)"
-        @new-folder="(path) => emit('newFolder', path)"
+        @new-file="(path, resolve, reject) => emit('newFile', path, resolve, reject)"
+        @new-folder="(path, resolve, reject) => emit('newFolder', path, resolve, reject)"
         @confirm-new-file="(path) => emit('confirmNewFile', path)"
         @confirm-new-folder="(path) => emit('confirmNewFolder', path)"
         :currentPath="currentPath"
