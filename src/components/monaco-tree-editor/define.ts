@@ -9,6 +9,7 @@ export type FileInfo = {
   status?: string
   isFile?: boolean
   isDirectory?: boolean
+  readonly?: boolean
   children?: { [path: string]: FileInfo } | null
 }
 
@@ -17,6 +18,7 @@ export type MessageOptions = {
   content: string
   closeable?: boolean
   loading?: boolean
+  placeholder?: string
   timeoutMs?: number
   id?: string
   type?: MessageType

@@ -26,6 +26,7 @@ watch(
           :id="item.id!"
           :closeable="item.closeable"
           :loading="item.loading"
+          :placeholder="item.placeholder"
           :type="item.type"
         >
           {{ item.content }}

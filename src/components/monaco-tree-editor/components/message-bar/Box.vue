@@ -18,6 +18,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  placeholder: {
+    type: String,
+    default: undefined,
+  },
   type: {
     type: String,
     default: 'info',
@@ -49,18 +53,19 @@ defineEmits({
 })
 </script>
 <template>
-  <div class="message-container-box" :style="{ boxShadow: shadow }">
+  <div class="message-container-box" :title="placeholder" :style="{ boxShadow: shadow }">
     <IconClose
       v-if="closeable"
       @click="$emit('close', id)"
       :style="{ display: 'block', float: 'right', width: '16px', height: '16px', cursor: 'pointer' }"
     />
-    <label><slot></slot></label>
-    <IconLoading
-      v-if="loading"
-      :width="16"
-      :height="16"
-      :style="{ display: 'inline-block', marginLeft: '8px', color: 'rgb(106,227,251)' }"
-    />
+    <label>
+      <slot></slot
+      ><IconLoading
+        v-if="loading"
+        :width="16"
+        :height="16"
+        :style="{ display: 'inline-block', marginLeft: '8px', color: 'rgb(106,227,251)' }"
+    /></label>
   </div>
 </template>

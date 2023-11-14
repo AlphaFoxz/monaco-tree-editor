@@ -2,8 +2,8 @@ import { defineStore } from 'pinia'
 import { type Ref, onBeforeUnmount, ref } from 'vue'
 
 export const useHotkey = defineStore('__hotkey', () => {
-  let dom: HTMLElement
-  let currentEvent = ref<KeyboardEvent>()
+  let domMap: Map<string, HTMLElement> = new Map()
+  let callbackMap: Map<string, Array<Function>> = new Map()
 
   let preventCtrlAltShiftKeys: string[] = []
   let preventCtrlShiftKeys: string[] = []
@@ -11,34 +11,42 @@ export const useHotkey = defineStore('__hotkey', () => {
   let preventCtrlKeys = ['r', 'R', 's', 'S', 'd', 'D', 't', 'T']
 
   let preventAltShiftKeys: string[] = []
-  let preventAltKeys: string[] = []
+  let preventAltKeys: string[] = ['ArrowLeft', 'ArrowRight']
 
   let preventKeys = ['F5', 'F12']
 
-  function onKeyDown(e: KeyboardEvent) {
-    e.key
-    if (e.ctrlKey) {
-      if (e.altKey && e.shiftKey && preventCtrlAltShiftKeys.includes(e.key)) {
-        e.preventDefault()
-      } else if (e.altKey && preventCtrlAltKeys.includes(e.key)) {
-        e.preventDefault()
-      } else if (e.shiftKey && preventCtrlShiftKeys.includes(e.key)) {
-        e.preventDefault()
-      } else if (preventCtrlKeys.includes(e.key)) {
+  function listenKeyDown(name: string) {
+    return function (e: KeyboardEvent) {
+      e.stopPropagation()
+      if (e.ctrlKey) {
+        if (e.altKey && e.shiftKey && preventCtrlAltShiftKeys.includes(e.key)) {
+          e.preventDefault()
+        } else if (e.altKey && preventCtrlAltKeys.includes(e.key)) {
+          e.preventDefault()
+        } else if (e.shiftKey && preventCtrlShiftKeys.includes(e.key)) {
+          e.preventDefault()
+        } else if (preventCtrlKeys.includes(e.key)) {
+          e.preventDefault()
+        }
+      } else if (e.altKey) {
+        if (e.shiftKey && preventAltShiftKeys.includes(e.key)) {
+          e.preventDefault()
+        } else if (preventAltKeys.includes(e.key)) {
+          e.preventDefault()
+        }
+      } else if (preventKeys.includes(e.key)) {
         e.preventDefault()
       }
-    } else if (e.altKey) {
-      if (e.shiftKey && preventAltShiftKeys.includes(e.key)) {
-        e.preventDefault()
-      } else if (preventAltKeys.includes(e.key)) {
-        e.preventDefault()
+      const funs = callbackMap.get(name)
+      if (funs) {
+        funs.forEach((fun) => {
+          fun(e)
+        })
       }
-    } else if (preventKeys.includes(e.key)) {
-      e.preventDefault()
     }
-    currentEvent.value = e
   }
   function init(
+    name: string,
     bind: HTMLElement,
     options: {
       preventCtrlAltShiftKeys?: string[]
@@ -50,7 +58,7 @@ export const useHotkey = defineStore('__hotkey', () => {
       preventKeys?: string[]
     } = {}
   ) {
-    dom = bind
+    domMap.set(name, bind)
     if (options.preventCtrlAltShiftKeys !== undefined) {
       preventCtrlAltShiftKeys = options.preventCtrlAltShiftKeys
     }
@@ -72,13 +80,22 @@ export const useHotkey = defineStore('__hotkey', () => {
     if (options.preventKeys !== undefined) {
       preventKeys = options.preventKeys
     }
-    dom.addEventListener('keydown', onKeyDown)
+    const onKeyDown = listenKeyDown(name)
+    bind.addEventListener('keydown', onKeyDown)
+    onBeforeUnmount(() => {
+      bind.removeEventListener('keydown', onKeyDown)
+    })
   }
-  onBeforeUnmount(() => {
-    dom.removeEventListener('keydown', onKeyDown)
-  })
+  function listen(name: string, callback: (e: KeyboardEvent) => void) {
+    const funs = callbackMap.get(name)
+    if (funs) {
+      funs.push(callback)
+    } else {
+      callbackMap.set(name, [callback])
+    }
+  }
   return {
     init,
-    currentEvent,
+    listen,
   }
 })

@@ -3,7 +3,7 @@ import Editor from '@/components/monaco-tree-editor/Index.vue'
 import { useMessage } from '@/components/monaco-tree-editor/message-store'
 import { useHotkey } from '@/components/monaco-tree-editor/hotkey-store'
 import { useMonaco } from '@/components/monaco-tree-editor/monaco-store'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 
 // ================ 调整大小 resize ================
 const editorRef = ref()
@@ -41,23 +41,16 @@ onMounted(() => {
 
 // ================ 快捷键 hotkey ==================
 const hotkeyStore = useHotkey()
-// TODO need to optimize
-// hotkeyStore.init(monacoStore.getEditorDom(), {
-//   preventCtrlKeys: ['r', 'R'], // prevent Ctrl + R
-//   preventKeys: ['F12'], // prevent F12
-// })
-watch(
-  () => hotkeyStore.currentEvent,
-  (event) => {
-    if (event?.ctrlKey && !event.shiftKey && !event.altKey && event.key === '1') {
-      // do something...
-    }
+hotkeyStore.listen('root', (event: KeyboardEvent) => {})
+hotkeyStore.listen('editor', (event: KeyboardEvent) => {
+  if (event?.ctrlKey && !event.shiftKey && !event.altKey && event.key === '1') {
+    // do something...
   }
-)
+})
 
 // ================ 加载文件 load files ================
 const files = ref({
-  '/src/': { isDirectory: true, children: [] },
+  '/src': { isDirectory: true, children: [] },
   '/index.ts': {
     content: 'import * as components from "./components"',
     isFile: true,

@@ -29,3 +29,15 @@ export function throttle(fn: Function, delay: number = 500): Function {
     }, delay)
   }
 }
+
+export function longestCommonPrefix(strs: string[]): string {
+  if (!strs.length) return ''
+  let [a, ...b] = strs
+  let result = ''
+  for (let i = 0; i < a.length; i++) {
+    let flag = b.every((item) => item[i] === a[i])
+    if (flag) result += a[i]
+    else break
+  }
+  return result
+}

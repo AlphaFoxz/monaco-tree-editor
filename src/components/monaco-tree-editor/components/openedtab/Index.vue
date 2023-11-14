@@ -1,28 +1,40 @@
-<script setup lang="tsx">
-import { ref, watch } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref, watch, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import TabItem from './TabItem.vue'
 import './index.less'
 import { useMonaco } from '../../monaco-store'
 defineProps({
-  currentPath: {
-    type: String,
-    default: '',
-  },
   rootEl: HTMLElement,
 })
 const emit = defineEmits({
-  saveFile: (_path: string) => true,
-  abortSave: (_path: string) => true,
+  saveFile: (_path: string, _value?: string, _resolve?: () => void, _reject?: () => void) => true,
 })
 
+//========================= 初始化 init =========================
 const monacoStore = useMonaco()
 const openedFiles = ref(monacoStore.openedFiles)
+const currentPath = ref('')
+let instanceRef: ComponentInternalInstance | null
 watch(
   () => monacoStore.openedFiles,
   (n) => {
     openedFiles.value = n
   }
 )
+watch(
+  () => monacoStore.currentPath,
+  (n) => {
+    currentPath.value = n
+  }
+)
+onMounted(() => {
+  instanceRef = getCurrentInstance()
+})
+
+//========================= 回调 callback =========================
+const handleSaveFile = (path: string, value: string, resolve?: () => void, reject?: () => void) => {
+  emit('saveFile', path, value, resolve, reject)
+}
 const handlePathChange = (key: string) => {
   console.debug('pathChange', key)
   monacoStore.restoreModel(key)
@@ -30,22 +42,36 @@ const handlePathChange = (key: string) => {
 const handleCloseFile = (path: string) => {
   monacoStore.closeFile(path)
 }
-const handleCloseOtherFiles = (path?: string) => {}
+const handleCloseOtherFiles = (path?: string) => {
+  console.debug('handleCloseOtherFiles', path)
+  if (!instanceRef) {
+    return
+  }
+  Object.keys(instanceRef.refs).forEach((key) => {
+    if (path === key) {
+      return
+    }
+    const target = instanceRef?.refs[key] as any
+    if (target) {
+      target[0].tryClose()
+    }
+  })
+}
 </script>
 
 <template>
   <div class="music-monaco-editor-opened-tab-wrapper">
     <div class="music-monaco-editor-opened-tab">
-      <span v-for="file in openedFiles">
+      <span v-for="(file, index) in openedFiles">
         <TabItem
-          @saveFile="(path) => emit('saveFile', path)"
-          @abortSave="(path) => emit('abortSave', path)"
           :rootEl="rootEl"
-          @closeFile="handleCloseFile"
           :file="file"
-          :key="file.path"
-          @pathChange="handlePathChange"
+          :key="index"
+          :ref="file.path"
           :currentPath="currentPath"
+          @saveFile="handleSaveFile"
+          @closeFile="handleCloseFile"
+          @pathChange="handlePathChange"
           @closeOtherFiles="handleCloseOtherFiles"
         />
       </span>

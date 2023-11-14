@@ -2,6 +2,8 @@
 import './index.less'
 import { THEMES } from './constants'
 import { onMounted, ref, watch, defineEmits, nextTick } from 'vue'
+import { type Files } from './define'
+import { longestCommonPrefix } from './common'
 import { useMonaco } from './monaco-store'
 import { useHotkey } from './hotkey-store'
 import { useMessage } from './message-store'
@@ -20,21 +22,30 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  prefix: {
+    type: String,
+  },
+  timeoutMs: {
+    type: Number,
+    default: 5000,
+  },
   siderMinWidth: {
     type: Number,
-    default: 180,
+    default: 240,
   },
 })
 const emit = defineEmits({
-  addFile: (_path: string, _resolve: Function, _reject: Function) => true,
-  saveFile: (_path: string, _resolve: Function, _reject: Function) => true,
-  renameFile: (_path: string, _resolve: Function, _reject: Function) => true,
-  deleteFile: (_path: string, _resolve: Function, _reject: Function) => true,
-  addFolder: (_path: string, _resolve: Function, _reject: Function) => true,
-  deleteFolder: (_path: string, _resolve: Function, _reject: Function) => true,
+  reload: () => true,
+  newFile: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
+  saveFile: (_path: string, _value: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
+  renameFile: (_path: string, _newPath: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
+  deleteFile: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
+  newFolder: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
+  renameFolder: (_path: string, _newPath: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
+  deleteFolder: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
 })
 
-// ================ 拖拽功能 dragging start ================
+// ================ 拖拽功能 dragging ================
 const filelistWidth = ref(props.siderMinWidth)
 let dragInfo = {
   pageX: 0,
@@ -42,7 +53,7 @@ let dragInfo = {
   start: false,
 }
 const handleDragStart = (e: MouseEvent) => {
-  console.debug('拖拽开始')
+  console.debug('dragStart')
   dragInfo = {
     pageX: e.pageX,
     width: filelistWidth.value,
@@ -50,11 +61,10 @@ const handleDragStart = (e: MouseEvent) => {
   }
 }
 const handleDrag = (e: MouseEvent) => {
-  console.debug('拖拽事件')
   e.stopPropagation()
   if (dragInfo.start && e.pageX != 0) {
     const w = dragInfo.width + (e.pageX - dragInfo.pageX)
-    console.debug('拖拽中', w < props.siderMinWidth ? props.siderMinWidth : w)
+    console.debug('Dragging')
     filelistWidth.value = w < props.siderMinWidth ? props.siderMinWidth : w
     nextTick(() => {
       monacoStore.resize()
@@ -62,7 +72,7 @@ const handleDrag = (e: MouseEvent) => {
   }
 }
 const handleDragEnd = (_e: MouseEvent) => {
-  console.debug('拖拽结束')
+  console.debug('dragEnd')
   dragInfo.start = false
 }
 watch(
@@ -71,93 +81,298 @@ watch(
     filelistWidth.value = filelistWidth.value < n ? n : filelistWidth.value
   }
 )
-// ================ 拖拽功能 dragging end ================
 
-// =============== 设置部分 setting start ================
+// =============== 设置部分 setting ================
 const settingVisible = ref(false)
-// ================ 设置部分 setting end ================
 
-// ================ 编辑器部分 editor start ================
+// ================ 编辑器部分 editor ================
+const projectName = ref('project')
+let fileSeparator = '/'
+let projectPrefix = ''
 const autoPrettierRef = ref(true)
 const handleSetAutoPrettier = (e: any) => {
   autoPrettierRef.value = e.target!.checked
 }
 const monacoStore = useMonaco()
 monacoStore.loadFileTree(props.files)
-watch(props.files, (n) => {
-  monacoStore.loadFileTree(n)
-})
 const editorRef = ref<HTMLElement>()
 const handleFormat = () => {
   monacoStore.format()
 }
+const fixFilesPath = (files: Files): Files => {
+  const fixedFiles: Files = {}
+  projectPrefix = longestCommonPrefix(Object.keys(files))
+  let _projectName = projectPrefix.replace(/\\/g, '/')
+  _projectName = _projectName.substring(_projectName.lastIndexOf('/') + 1)
+  projectName.value = _projectName
+  console.debug('projectName', _projectName)
+  Object.keys(files).forEach((path) => {
+    if (path.includes('\\')) {
+      fileSeparator = '\\'
+    }
+    const info = files[path]
+    path = path.replace(projectPrefix, '')
+    path = path.replace(/\\/g, '/')
+    fixedFiles[path] = {
+      ...info,
+      path: path,
+    }
+  })
+  files = fixedFiles
+  monacoStore.prefix = projectPrefix
+  monacoStore.fileSeparator = fileSeparator
+  return files
+}
+watch(
+  () => props.files,
+  (n) => {
+    monacoStore.loadFileTree(fixFilesPath(n))
+  }
+)
 onMounted(() => {
+  monacoStore.loadFileTree(fixFilesPath(props.files))
   monacoStore.init(editorRef.value!)
 })
-// ================ 编辑器部分 editor end ================
 
-// ================ 回调事件 callback events start ================
+// ================ 回调事件 callback events ================
 const messageStore = useMessage()
-const handleAddFile = (path: string) => {
+const toOriginPath = (path: string): string => {
+  let oriPath = projectPrefix + path
+  if (fileSeparator === '\\') {
+    oriPath = oriPath.replace(/\//g, '\\')
+  }
+  return oriPath
+}
+const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
+  const oriPath = toOriginPath(path)
+  const msgId = messageStore.info({
+    content: `[ ${path} ] Creating...`,
+    loading: true,
+  })
   emit(
-    'addFile',
-    path,
-    () => {},
-    () => {}
+    'newFile',
+    oriPath,
+    () => {
+      messageStore.close(msgId)
+      messageStore.success({
+        content: 'Creating successed!',
+        timeoutMs: 3000,
+        closeable: true,
+      })
+      resolve()
+    },
+    (msg = '') => {
+      messageStore.close(msgId)
+      messageStore.error({
+        content: `Creating failed! ${msg}`,
+        closeable: true,
+      })
+      reject()
+    }
   )
 }
-const handleAddFolder = (path: string) => {
+const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) => {
+  const oriPath = toOriginPath(path)
+  const msgId = messageStore.info({
+    content: `[ ${path} ] Creating...`,
+    loading: true,
+  })
   emit(
-    'addFolder',
-    path,
-    () => {},
-    () => {}
+    'newFolder',
+    oriPath,
+    () => {
+      messageStore.close(msgId)
+      messageStore.success({
+        content: 'Creating successed!',
+        timeoutMs: 3000,
+        closeable: true,
+      })
+      resolve()
+    },
+    (msg = '') => {
+      messageStore.close(msgId)
+      messageStore.error({
+        content: `Creating failed! ${msg}`,
+        closeable: true,
+      })
+      reject()
+    }
   )
 }
-const handleSaveFile = (path: string) => {
-  const id = messageStore.info({
-    content: '正在保存文件',
+const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolve = () => {}, reject = () => {}) => {
+  if (!value || !path || !monacoStore.hasChanged(path)) {
+    console.debug('there is nothing to save.')
+    resolve()
+    return
+  }
+  const oriPath = toOriginPath(path)
+  const msgId = messageStore.info({
+    content: `[ ${path} ] Saving...`,
     loading: true,
   })
   emit(
     'saveFile',
-    path,
+    oriPath,
+    value,
     () => {
-      messageStore.close(id)
+      messageStore.close(msgId)
       messageStore.success({
-        content: '保存成功',
+        content: 'Save successed!',
         timeoutMs: 3000,
         closeable: true,
       })
+      resolve()
     },
-    (msg?: string) => {
-      messageStore.close(id)
+    (msg = '') => {
+      messageStore.close(msgId)
       messageStore.error({
-        content: `保存失败${msg ? '\n' + msg : ''}`,
+        content: `Save failed! ${msg}`,
         closeable: true,
       })
+      reject()
     }
   )
 }
-// ================ 回调事件 callback events end ================
 
-// ================ 快捷键部分 hotkey start ================
+const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) => {
+  const oriPath = toOriginPath(path)
+  const msgId = messageStore.info({
+    content: `[ ${path} ] Deleting File...`,
+    loading: true,
+  })
+  emit(
+    'deleteFile',
+    oriPath,
+    () => {
+      messageStore.close(msgId)
+      messageStore.success({
+        content: 'Delete successed!',
+        timeoutMs: 3000,
+        closeable: true,
+      })
+      resolve()
+    },
+    (msg = '') => {
+      messageStore.close(msgId)
+      messageStore.error({
+        content: `Delete failed! ${msg}`,
+        closeable: true,
+      })
+      reject()
+    }
+  )
+}
+
+const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {}) => {
+  const oriPath = toOriginPath(path)
+  const msgId = messageStore.info({
+    content: `[ ${path}] Deleting Folder...`,
+    loading: true,
+  })
+  emit(
+    'deleteFolder',
+    oriPath,
+    () => {
+      messageStore.close(msgId)
+      messageStore.success({
+        content: 'Delete successed!',
+        timeoutMs: 3000,
+        closeable: true,
+      })
+      resolve()
+    },
+    (msg = '') => {
+      messageStore.close(msgId)
+      messageStore.error({
+        content: `Delete failed! ${msg}`,
+        closeable: true,
+      })
+      reject()
+    }
+  )
+}
+
+const handleRenameFile = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
+  const oriPath = toOriginPath(path)
+  let tmpArr = oriPath.split(fileSeparator)
+  tmpArr.pop()
+  tmpArr.push(newName)
+  const newPath = tmpArr.join(fileSeparator)
+  const msgId = messageStore.info({
+    content: `[ ${path} ] Renaming File...`,
+    loading: true,
+  })
+  emit(
+    'renameFile',
+    oriPath,
+    newPath,
+    () => {
+      messageStore.close(msgId)
+      messageStore.success({
+        content: 'Rename successed!',
+        timeoutMs: 3000,
+        closeable: true,
+      })
+      resolve()
+    },
+    (msg = '') => {
+      messageStore.close(msgId)
+      messageStore.error({
+        content: `Rename failed! ${msg}`,
+        closeable: true,
+      })
+      reject()
+    }
+  )
+}
+
+const handleRenameFolder = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
+  const oriPath = toOriginPath(path)
+  let tmpArr = oriPath.split(fileSeparator)
+  tmpArr.pop()
+  tmpArr.push(newName)
+  const newPath = tmpArr.join(fileSeparator)
+  const msgId = messageStore.info({
+    content: `[ ${path} ] Renaming Folder...`,
+    loading: true,
+  })
+  emit(
+    'renameFolder',
+    oriPath,
+    newPath,
+    () => {
+      messageStore.close(msgId)
+      messageStore.success({
+        content: 'Rename successed!',
+        timeoutMs: 3000,
+        closeable: true,
+      })
+      resolve()
+    },
+    (msg = '') => {
+      messageStore.close(msgId)
+      messageStore.error({
+        content: `Rename failed! ${msg}`,
+        closeable: true,
+      })
+      reject()
+    }
+  )
+}
+
+// ================ 快捷键部分 hotkey ================
 const hotkeyStore = useHotkey()
 const rootRef = ref<HTMLElement>()
 onMounted(() => {
-  hotkeyStore.init(rootRef.value!)
-})
-watch(
-  () => hotkeyStore.currentEvent,
-  (e) => {
+  hotkeyStore.init('root', rootRef.value!)
+  hotkeyStore.init('editor', editorRef.value!)
+  hotkeyStore.listen('editor', (e) => {
     if (e?.ctrlKey && e.key.toLowerCase() === 's') {
-      console.debug('Ctrl+s保存')
-      handleSaveFile('')
+      console.debug('hotkey', 'Ctrl+s')
+      handleSaveFile(monacoStore.currentPath)
     }
-  }
-)
-
-// ================ 快捷键部分 hotkey end ================
+  })
+})
 
 // 暴露方法 expose functions
 defineExpose({
@@ -176,20 +391,26 @@ defineExpose({
   <div ref="rootRef" id="music-monaco-editor-root" tabIndex="1" class="music-monaco-editor">
     <Message></Message>
     <FileList
-      @add-file="handleAddFile"
-      @add-folder="handleAddFolder"
+      @new-file="handleNewFile"
+      @new-folder="handleNewFolder"
+      @delete-file="handleDeleteFile"
+      @delete-folder="handleDeleteFolder"
+      @rename-file="handleRenameFile"
+      @rename-folder="handleRenameFolder"
+      @reload="$emit('reload')"
+      :project-name="projectName"
       :rootEl="rootRef"
       :style="{ width: filelistWidth + 'px', minWidth: siderMinWidth + 'px' }"
     />
     <div
       :draggable="true"
       @dragstart="handleDragStart"
-      @drag.native="handleDrag"
+      @drag="handleDrag"
       @dragend="handleDragEnd"
       class="music-monaco-editor-drag"
     ></div>
     <div class="music-monaco-editor-area">
-      <OpenedTab />
+      <OpenedTab @save-file="handleSaveFile" />
       <div
         id="editor"
         ref="editorRef"
@@ -201,11 +422,7 @@ defineExpose({
         }"
       ></div>
       <div v-show="!monacoStore.isReady || monacoStore.openedFiles.length === 0" class="music-monaco-editor-area-empty">
-        <img
-          src="//p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/5759801316/fb85/e193/a256/03a81ea60cf94212bbc814f2c82b6940.png"
-          class="music-monaco-editor-area-empty-icon"
-        />
-        <div>web editor</div>
+        <label>web editor</label>
       </div>
     </div>
     <div class="music-monaco-editor-setting-button" @click="settingVisible = true">
@@ -226,7 +443,7 @@ defineExpose({
     >
       <div class="music-monaco-editor-setting">
         <div class="music-monaco-editor-setting-header">
-          设置
+          setting
           <div @click="settingVisible = false" class="music-monaco-editor-setting-header-close">
             <IconClose :style="{ width: '12px', height: '12px' }" />
           </div>
@@ -245,7 +462,7 @@ defineExpose({
             </div>
           </div>
           <div class="music-monaco-editor-input-row">
-            <div class="music-monaco-editor-input-name">主题选择</div>
+            <div class="music-monaco-editor-input-name">theme</div>
             <div class="music-monaco-editor-input-value">
               <!-- <Select v-for="item in THEMES" defaultValue="OneDarkPro" @change="(v) => configTheme(v.value)">
                 <SelectMenu :label="item" :value="item" :key="item" />

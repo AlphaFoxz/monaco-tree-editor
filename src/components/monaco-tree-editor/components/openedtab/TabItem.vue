@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, defineExpose } from 'vue'
 import ContextMenu from '../context-menu/Index.vue'
 import Confirm from '../modal/Confirm.vue'
 import Icons from '../icons'
 import type { ContextMenuItem } from '../context-menu/define'
+import { useMonaco } from '../../monaco-store'
 const props = defineProps({
   file: {
     type: Object,
@@ -20,11 +21,11 @@ const props = defineProps({
 const emit = defineEmits({
   pathChange: (_key: string) => true,
   closeFile: (_path: string) => true,
-  saveFile: (_path: string) => true,
+  saveFile: (_path: string, _value: string, _resolve?: () => void, _reject?: () => void) => true,
   abortSave: (_path: string) => true,
   closeOtherFiles: (_path?: string) => true,
 })
-//========================= 点击标签 click tab start ==========================
+//========================= 点击标签 click tab ==========================
 const itemRef = ref<HTMLDivElement>()
 const name = props.file!.path.split('/').slice(-1)[0]
 let fileType: string
@@ -35,7 +36,15 @@ if (props.file!.path && props.file!.path.indexOf('.') !== -1) {
 }
 const active = computed(() => props.currentPath === props.file!.path)
 
-const handlePathChange = (e: MouseEvent) => {
+const handleClick = (e: MouseEvent) => {
+  console.debug('active', props.currentPath)
+  if (e.buttons === 4) {
+    handleClose(e)
+  } else if (e.buttons === 1) {
+    pathChange(e)
+  }
+}
+const pathChange = (e: MouseEvent) => {
   if (!e.currentTarget || !(e.currentTarget instanceof HTMLElement) || !e.currentTarget.dataset) {
     return
   }
@@ -49,31 +58,29 @@ watch(active, () => {
     })
   }
 })
-//========================= 点击标签 click tab end ==========================
 
-//========================= 右键菜单 contextmenu start ==========================
-type _MenuValue = 'close' | 'closeOther' | 'closeAll'
+//========================= 右键菜单 contextmenu ==========================
+type _MenuValue = 'close' | 'closeOthers' | 'closeAll'
 const contextMenu: ContextMenuItem<_MenuValue>[] = [
-  { label: '关闭', value: 'close' },
-  { label: '关闭其他', value: 'closeOther' },
-  { label: '关闭所有', value: 'closeAll' },
+  { label: 'Close', value: 'close' },
+  { label: 'Close Others', value: 'closeOthers' },
+  { label: 'Close All', value: 'closeAll' },
 ]
 const handleSelectContextMenu = (item: ContextMenuItem<_MenuValue>) => {
-  console.debug('当前选择', item)
   const v = item.value
   if (v === 'close') {
     handleClose()
-  } else if (v === 'closeOther') {
+  } else if (v === 'closeOthers') {
     emit('closeOtherFiles', props.file!.path)
   } else if (v === 'closeAll') {
     emit('closeOtherFiles')
   } else {
-    const _t: undefined = v
+    const t: undefined = v
+    console.debug(t)
   }
 }
-//========================= 右键菜单 contextmenu end ==========================
 
-//========================= 鼠标悬停效果 mousehover start ==========================
+//========================= 鼠标悬停效果 mousehover ==========================
 const hover = ref(false)
 const hoverRight = ref(false)
 const handleOver = (e: MouseEvent) => {
@@ -90,9 +97,9 @@ const handleLeave = () => {
   hover.value = false
   hoverRight.value = false
 }
-//========================= 鼠标悬停效果 mousehover end ==========================
 
-//========================= 关闭文件 closeFile start ==========================
+//========================= 回调 callback ==========================
+const monacoStore = useMonaco()
 const confirmVisible = ref(false)
 const handleClose = (e?: Event) => {
   e?.stopPropagation()
@@ -105,8 +112,20 @@ const handleClose = (e?: Event) => {
   }
 }
 const handleSaveAndClose = () => {
-  emit('saveFile', props.file!.path)
-  emit('closeFile', props.file!.path)
+  const path = props.file!.path
+  const value = monacoStore.getValue(path)
+  if (!value) {
+    return
+  }
+  emit(
+    'saveFile',
+    path,
+    value,
+    () => {
+      emit('closeFile', props.file!.path)
+    },
+    () => {}
+  )
   confirmVisible.value = false
 }
 const handleCloseWithoutSave = () => {
@@ -121,7 +140,11 @@ const closeVisible = computed(() => {
   }
   return true
 })
-//========================= 关闭文件 closeFile end ==========================
+
+//========================= 回调 expose ==========================
+defineExpose({
+  tryClose: handleClose,
+})
 </script>
 <template>
   <Confirm
@@ -143,11 +166,13 @@ const closeVisible = computed(() => {
   <ContextMenu :menu="contextMenu" @select="handleSelectContextMenu">
     <div
       ref="itemRef"
+      draggable="true"
       @mouseover="handleOver"
       @mouseleave="handleLeave"
+      @mousedown="handleClick"
       :data-src="file!.path"
+      :style="active ? 'background-color: rgb(30, 30, 30);' : ''"
       :class="`music-monaco-editor-opened-tab-item ${active ? 'music-monaco-editor-opened-tab-item-focused' : ''}`"
-      @click="handlePathChange"
     >
       <Icons :type="fileType" :style="{ marginRight: '2px' }" />
       <span :style="{ flex: 1, paddingRight: '5px' }">{{ name }}</span>

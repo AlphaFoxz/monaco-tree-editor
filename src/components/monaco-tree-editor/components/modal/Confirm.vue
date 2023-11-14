@@ -2,11 +2,11 @@
 import './index.less'
 import CloseIcon from '../icons/Close'
 import Button from '../button'
-import { isVNode, onMounted, ref, render } from 'vue'
+import { computed } from 'vue'
 const props = defineProps({
   title: {
     type: String,
-    default: '提示',
+    default: 'Confirm',
   },
   content: {
     type: null,
@@ -16,11 +16,22 @@ const props = defineProps({
     type: null,
     default: () => document.body,
   },
+  type: {
+    type: String,
+    default: 'info',
+  },
 })
 defineEmits({
   close: () => true,
   cancel: () => true,
   ok: () => true,
+})
+
+const primaryColor = computed(() => {
+  if (props.type === 'warn') {
+    return 'darkred'
+  }
+  return '#528bff'
 })
 </script>
 
@@ -37,10 +48,10 @@ defineEmits({
         </div>
         <div class="music-monaco-editor-modal-content-footer">
           <Button @click="$emit('cancel')">
-            <slot name="cancelText">取消</slot>
+            <slot name="cancelText">cancel</slot>
           </Button>
-          <Button @click="$emit('ok')" type="primary" :style="{ marginLeft: '4px' }">
-            <slot name="okText">确认</slot>
+          <Button @click="$emit('ok')" type="primary" :style="{ marginLeft: '4px', backgroundColor: primaryColor }">
+            <slot name="okText">ok</slot>
           </Button>
         </div>
         <div class="music-monaco-editor-modal-content-close" @click="$emit('close')">

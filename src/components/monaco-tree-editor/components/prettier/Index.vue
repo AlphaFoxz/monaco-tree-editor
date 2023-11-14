@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import PrettierIcon from '../icons/Prettier'
 import { useMonaco } from '../../monaco-store'
 
