@@ -1,6 +1,6 @@
 {
   "name": "monaco-tree-editor",
-  "version": "0.0.1-alpha.0.3",
+  "version": "1.0.0-beta.0",
   "main": "dist/monaco-tree-editor.mjs",
   "description": "the web ide with file tree based on 'monaco-editor'",
   "private": false,

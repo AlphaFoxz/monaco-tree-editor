@@ -7,7 +7,7 @@ It's my first npm repo. **_Sorry. It still not work now._** I'll try fast that i
 # 这个库做了什么 What this repo did?
 
 - [x] 提供 VSCode 风格的文件树 Provide FileTree with VSCode style.
-- [ ] 回调函数采用异步处理（开发中） async callback functions (developing)
+- [x] 回调函数采用异步处理 async callback functions
 - [ ] 支持自定义的热键处理 hook（开发中） A hook for Hotkey (developing)
 - [x] 提供一个浮动的全局消息 hook。 A hook for global float message box.
 
@@ -21,7 +21,7 @@ It's my first npm repo. **_Sorry. It still not work now._** I'll try fast that i
 pnpm add monaco-tree-editor
 ```
 
-## 示例代码 Demo Code (Alpha)
+## 示例代码 Demo Code (Beta)
 
 ```vue
 <script setup lang="ts">
@@ -29,7 +29,8 @@ import Editor from 'monaco-tree-editor/src/components/monaco-tree-editor/Index.v
 import { useMessage } from 'monaco-tree-editor/src/components/monaco-tree-editor/message-store'
 import { useHotkey } from 'monaco-tree-editor/src/components/monaco-tree-editor/hotkey-store'
 import { useMonaco } from 'monaco-tree-editor/src/components/monaco-tree-editor/monaco-store'
-import { onMounted, ref, watch } from 'vue'
+import { type Files } from 'monaco-tree-editor/src/components/monaco-tree-editor/define'
+import { onMounted, ref } from 'vue'
 
 // ================ 调整大小 resize ================
 const editorRef = ref()
@@ -45,17 +46,18 @@ onMounted(() => {
 const messageStore = useMessage()
 onMounted(() => {
   const id = messageStore.info({
-    content: 'loading..',
+    content: 'testing..',
     loading: true,
   })
   setTimeout(() => {
     messageStore.close(id)
     messageStore.success({
-      content: 'loading successed!',
+      content: 'Hello Editor',
       closeable: true,
-      timeoutMs: 5000,
+      timeoutMs: 15000,
+      textTip: 'testing successed!',
     })
-  }, 3000)
+  }, 5000)
 })
 
 // ================ 原生功能 original modules of monaco-editor ================
@@ -67,46 +69,156 @@ onMounted(() => {
 
 // ================ 快捷键 hotkey ==================
 const hotkeyStore = useHotkey()
-// TODO need to optimize
-// hotkeyStore.init(monacoStore.getEditorDom(), {
-//   preventCtrlKeys: ['r', 'R'], // prevent Ctrl + R
-//   preventKeys: ['F12'], // prevent F12
-// })
-watch(
-  () => hotkeyStore.currentEvent,
-  (event) => {
-    if (event?.ctrlKey && !event.shiftKey && !event.altKey && event.key === '1') {
-      // do something...
+hotkeyStore.listen('root', (event: KeyboardEvent) => {})
+hotkeyStore.listen('editor', (event: KeyboardEvent) => {
+  if (event.ctrlKey && !event.shiftKey && !event.altKey && event.key === 's') {
+    // do something...
+  }
+})
+
+// ================ 模拟服务端 mock server ================
+namespace server {
+  let fileSeparator = '\\'
+  let responseFiles: Files = {
+    'F:\\test_project\\components': {
+      isDirectory: true,
+    },
+    'F:\\test_project\\index.ts': {
+      isFile: true,
+      content: 'console.log("hello world")',
+    },
+  }
+  export const fetchFiles = async () => {
+    return await JSON.parse(JSON.stringify(responseFiles))
+  }
+  export const createOrSaveFile = async (path: string, content: string) => {
+    if (responseFiles[path]) {
+      if (!responseFiles[path].isFile) {
+        throw new Error(`[ ${path} ] is not a file!`)
+      }
+      responseFiles[path].content = content
+    } else {
+      responseFiles[path] = {
+        isFile: true,
+        content,
+      }
     }
   }
-)
+  export const newFile = async (path: string) => {
+    if (responseFiles[path]) {
+      throw new Error(`[ ${path} ] already exists!`)
+    }
+    responseFiles[path] = {
+      isFile: true,
+      content: '',
+    }
+  }
+  export const newFolder = async (path: string) => {
+    if (responseFiles[path]) {
+      throw new Error(`[ ${path} ] already exists!`)
+    }
+    responseFiles[path] = {
+      isDirectory: true,
+    }
+  }
+  export const rename = async (path: string, newName: string) => {
+    if (!responseFiles) {
+      throw new Error(`[ ${path} ] not exists!`)
+    }
+    let tmp = path.split(fileSeparator)
+    tmp[tmp.length - 1] = newName
+    responseFiles[tmp.join(fileSeparator)] = responseFiles[path]
+    delete responseFiles[path]
+    return true
+  }
+  export const deleteFile = async (path: string) => {
+    delete responseFiles[path]
+    return true
+  }
+}
 
 // ================ 加载文件 load files ================
-const files = ref({
-  '/src/': { isDirectory: true, children: [] },
-  '/index.ts': {
-    content: 'import * as components from "./components"',
-    isFile: true,
-  },
-  '/define.ts': {
-    content: 'define',
-    isFile: true,
-  },
-})
+const files = ref<Files>()
+const handleReload = (resolve: () => void, reject: (msg?: string) => void) => {
+  server
+    .fetchFiles()
+    .then((response) => {
+      files.value = response
+      resolve()
+    })
+    .catch((e: Error) => {
+      reject(e.message)
+    })
+}
 
 // ================ 回调函数 callback =================
 // TODO need to optimize
-const handleSaveFile = (path: string, resolve: Function, reject: Function) => {}
-const handleDeleteFile = (path: string, resolve: Function, reject: Function) => {}
-const handleAddFile = (path: string, resolve: Function, reject: Function) => {}
+const handleSaveFile = (path: string, content: string, resolve: () => void, reject: (msg?: string) => void) => {
+  server
+    .createOrSaveFile(path, content)
+    .then((_response) => {
+      resolve()
+    })
+    .catch((e: Error) => {
+      reject(e.message)
+    })
+}
+const handleDeleteFile = (path: string, resolve: () => void, reject: (msg?: string) => void) => {
+  server
+    .deleteFile(path)
+    .then((_response) => {
+      resolve()
+    })
+    .catch((e: Error) => {
+      reject(e.message)
+    })
+}
+const handleDeleteFolder = (path: string, resolve: () => void, reject: (msg?: string) => void) => {
+  reject('Operation of delete folder is not supported!')
+}
+const handleNewFile = (path: string, resolve: Function, reject: Function) => {
+  server
+    .newFile(path)
+    .then((_response) => {
+      resolve()
+    })
+    .catch((e: Error) => {
+      reject(e.message)
+    })
+}
+const handleNewFolder = (path: string, resolve: Function, reject: Function) => {
+  server
+    .newFolder(path)
+    .then((_response) => {
+      resolve()
+    })
+    .catch((e: Error) => {
+      reject(e.message)
+    })
+}
+const handleRename = (path: string, name: string, resolve: () => void, reject: (msg?: string) => void) => {
+  server
+    .rename(path, name)
+    .then((_response) => {
+      resolve()
+    })
+    .catch((e: Error) => {
+      reject(e.message)
+    })
+}
 </script>
 
 <template>
   <Editor
     :files="files"
-    @delete-file="handleDeleteFile"
+    @reload="handleReload"
+    @new-file="handleNewFile"
+    @new-folder="handleNewFolder"
     @save-file="handleSaveFile"
-    @add-file="handleAddFile"
+    @delete-file="handleDeleteFile"
+    @delete-folder="handleDeleteFolder"
+    @rename-file="handleRename"
+    @rename-folder="handleRename"
     ref="editorRef"
   ></Editor>
 </template>

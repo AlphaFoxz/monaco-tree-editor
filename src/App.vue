@@ -196,5 +196,3 @@ const handleRename = (path: string, name: string, resolve: () => void, reject: (
     ref="editorRef"
   ></Editor>
 </template>
-
-<style scoped></style>
