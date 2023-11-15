@@ -16,6 +16,7 @@ export default defineConfig({
   esbuild: {
     drop: ['console', 'debugger'],
   },
+  base: '/monaco-tree-editor/',
   build: {
     minify: 'esbuild',
     outDir: 'dist',
@@ -24,7 +25,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, './lib/index.ts'),
       name: 'monaco-tree-editor',
-      fileName: 'monaco-tree-editor',
+      fileName: 'index',
       formats: ['es', 'umd'],
     },
     rollupOptions: {

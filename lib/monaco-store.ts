@@ -6,8 +6,9 @@ import editorWorker from 'monaco-editor/esm/vs/editor/editor.api?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
-import wasmUrl from '/onigasm.wasm?url'
-import oneDarkProUrl from '/themes/OneDarkPro.json?url'
+import wasmUrl from '/monaco-tree-editor-statics/bin/onigasm.wasm?url'
+import oneDarkProUrl from '/monaco-tree-editor-statics/themes/OneDarkPro.json?url'
+import eslintStr from '/monaco-tree-editor-statics/eslint.worker.js.txt?raw'
 import { ref, nextTick } from 'vue'
 import { type FileInfo, type Files } from './define'
 
@@ -27,7 +28,7 @@ window.MonacoEnvironment = {
   globalAPI: true,
 }
 const worker = new Promise<Worker>(async (resolve) => {
-  const codeString = await fetch(`eslint.worker.js`).then((res) => res.text())
+  const codeString = eslintStr //await fetch(eslintUrl).then((res) => res.text())
   const localWorkerUrl = window.URL.createObjectURL(
     new Blob([codeString], {
       type: 'application/javascript',
@@ -56,7 +57,6 @@ let fileTree = ref<FileInfo>({
 })
 //初始化
 async function init(dom: HTMLElement) {
-  debugger
   editor = monaco.editor.create(dom, {})
   const editorService = (editor as any)._codeEditorService
   const openEditorBase = editorService.openCodeEditor.bind(editorService)

@@ -377,7 +377,6 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
 }
 
 const handleRenameFolder = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
-  debugger
   const oriPath = toOriginPath(path)
   let tmpArr = oriPath.split(fileSeparator)
   tmpArr.pop()

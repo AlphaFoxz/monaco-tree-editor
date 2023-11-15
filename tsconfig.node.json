@@ -13,6 +13,11 @@
     "moduleResolution": "Bundler",
     "types": [
       "node"
-    ]
+    ],
+    "paths": {
+      "@/*": [
+        "/lib/*"
+      ]
+    },
   }
 }

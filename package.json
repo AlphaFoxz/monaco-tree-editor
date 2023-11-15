@@ -1,12 +1,12 @@
 {
   "name": "monaco-tree-editor",
-  "version": "0.0.1-beta.6",
+  "version": "0.0.1-beta.7",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/monaco-tree-editor.umd.cjs",
-  "module": "./dist/monaco-tree-editor.js",
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
   "description": "the web ide with file tree based on 'monaco-editor'",
   "private": false,
   "keywords": [
@@ -26,7 +26,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "pnpm build-only && pnpm type-check",
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",

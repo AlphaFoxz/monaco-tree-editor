@@ -91,13 +91,11 @@ namespace server {
       isDirectory: true,
     }
   }
-  export const rename = async (path: string, newName: string) => {
+  export const rename = async (path: string, newPath: string) => {
     if (!responseFiles[path]) {
       throw new Error(`[ ${path} ] not exists!`)
     }
-    let tmp = path.split(fileSeparator)
-    tmp[tmp.length - 1] = newName
-    responseFiles[tmp.join(fileSeparator)] = responseFiles[path]
+    responseFiles[newPath] = responseFiles[path]
     delete responseFiles[path]
     return true
   }
@@ -185,9 +183,9 @@ const handleNewFolder = (path: string, resolve: Function, reject: Function) => {
       reject(e.message)
     })
 }
-const handleRename = (path: string, name: string, resolve: () => void, reject: (msg?: string) => void) => {
+const handleRename = (path: string, newPath: string, resolve: () => void, reject: (msg?: string) => void) => {
   server
-    .rename(path, name)
+    .rename(path, newPath)
     .then((_response) => {
       resolve()
     })

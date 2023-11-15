@@ -1,10 +1,6 @@
 # monaco-tree-editor
 
-这个我的第一个 npm 库。**_抱歉。这个组件现在还不能用。_** 我会尽可能快地搞定它，并提供一个预发布版本。
-
-It's my first npm repo. **_Sorry. It still not work now._** I'll try fast that i can to make it and publish a rc-version
-
-# 这个库做了什么 What this repo did?
+## 这个库做了什么 What this repo did?
 
 - [x] 提供 VSCode 风格的文件树 Provide FileTree with VSCode style.
 - [x] 回调函数采用异步处理 async callback functions
@@ -17,19 +13,24 @@ It's my first npm repo. **_Sorry. It still not work now._** I'll try fast that i
 
 ## 如何安装 How to install
 
+### 1.执行命令 Execute command to install
+
 ```shell
 pnpm add monaco-tree-editor
+#or
+npm i monaco-tree-editor
 ```
+
+### 2.复制必要的静态文件 Copy the necessary static files
+
+node_modules/monaco-tree-editor/`assets` => {root}/public/`assets`
+node_modules/monaco-tree-editor/`monaco-tree-editor-statics` => {root}/public/`monaco-tree-editor-statics`
 
 ## 示例代码 Demo Code (Beta)
 
 ```vue
 <script setup lang="ts">
-import Editor from 'monaco-tree-editor/src/components/monaco-tree-editor/Index.vue'
-import { useMessage } from 'monaco-tree-editor/src/components/monaco-tree-editor/message-store'
-import { useHotkey } from 'monaco-tree-editor/src/components/monaco-tree-editor/hotkey-store'
-import { useMonaco } from 'monaco-tree-editor/src/components/monaco-tree-editor/monaco-store'
-import { type Files } from 'monaco-tree-editor/src/components/monaco-tree-editor/define'
+import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from 'monaco-tree-editor'
 import { onMounted, ref } from 'vue'
 
 // ================ 调整大小 resize ================
@@ -121,13 +122,11 @@ namespace server {
       isDirectory: true,
     }
   }
-  export const rename = async (path: string, newName: string) => {
-    if (!responseFiles) {
+  export const rename = async (path: string, newPath: string) => {
+    if (!responseFiles[path]) {
       throw new Error(`[ ${path} ] not exists!`)
     }
-    let tmp = path.split(fileSeparator)
-    tmp[tmp.length - 1] = newName
-    responseFiles[tmp.join(fileSeparator)] = responseFiles[path]
+    responseFiles[newPath] = responseFiles[path]
     delete responseFiles[path]
     return true
   }
@@ -215,9 +214,9 @@ const handleNewFolder = (path: string, resolve: Function, reject: Function) => {
       reject(e.message)
     })
 }
-const handleRename = (path: string, name: string, resolve: () => void, reject: (msg?: string) => void) => {
+const handleRename = (path: string, newPath: string, resolve: () => void, reject: (msg?: string) => void) => {
   server
-    .rename(path, name)
+    .rename(path, newPath)
     .then((_response) => {
       resolve()
     })
@@ -243,7 +242,7 @@ const handleContextMenuSelect = (path: string, item: { label: string; value: str
 </script>
 
 <template>
-  <Editor
+  <MonacoTreeEditor
     :files="files"
     @reload="handleReload"
     @new-file="handleNewFile"
@@ -257,6 +256,6 @@ const handleContextMenuSelect = (path: string, item: { label: string; value: str
     :folder-menu="folderMenu"
     @contextmenu-select="handleContextMenuSelect"
     ref="editorRef"
-  ></Editor>
+  ></MonacoTreeEditor>
 </template>
 ```
