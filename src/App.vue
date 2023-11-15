@@ -95,7 +95,7 @@ namespace server {
     }
   }
   export const rename = async (path: string, newName: string) => {
-    if (!responseFiles) {
+    if (!responseFiles[path]) {
       throw new Error(`[ ${path} ] not exists!`)
     }
     let tmp = path.split(fileSeparator)

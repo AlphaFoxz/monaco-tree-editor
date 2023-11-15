@@ -6,13 +6,10 @@ import { useMessage } from '../message-store'
 import { watch, ref } from 'vue'
 
 const messageStore = useMessage()
-const messages = ref<MessageOptions[]>(messageStore.messages)
-watch(
-  () => messageStore.messages,
-  (n) => {
-    messages.value = n
-  }
-)
+const messages = ref<MessageOptions[]>(messageStore.messages.value)
+watch(messageStore.messages, (n) => {
+  messages.value = n
+})
 </script>
 
 <template>

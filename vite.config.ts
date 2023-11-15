@@ -15,10 +15,12 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    target: 'esnext',
     lib: {
       entry: path.resolve(__dirname, './src/components/monaco-tree-editor/index.ts'),
       name: 'monaco-tree-editor',
       fileName: 'monaco-tree-editor',
+      formats: ['es'],
     },
     rollupOptions: {
       external: ['vue'],

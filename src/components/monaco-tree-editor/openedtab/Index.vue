@@ -12,21 +12,15 @@ const emit = defineEmits({
 
 //========================= 初始化 init =========================
 const monacoStore = useMonaco()
-const openedFiles = ref(monacoStore.openedFiles)
+const openedFiles = ref(monacoStore.openedFiles.value)
 const currentPath = ref('')
 let instanceRef: ComponentInternalInstance | null
-watch(
-  () => monacoStore.openedFiles,
-  (n) => {
-    openedFiles.value = n
-  }
-)
-watch(
-  () => monacoStore.currentPath,
-  (n) => {
-    currentPath.value = n
-  }
-)
+watch(monacoStore.openedFiles, (n) => {
+  openedFiles.value = n
+})
+watch(monacoStore.currentPath, (n) => {
+  currentPath.value = n
+})
 onMounted(() => {
   instanceRef = getCurrentInstance()
 })

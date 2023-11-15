@@ -1,13 +1,14 @@
 {
   "name": "monaco-tree-editor",
-  "version": "0.0.1-beta.2",
-  "main": "dist/monaco-tree-editor.mjs",
+  "version": "0.0.1-beta.3",
+  "main": "monaco-tree-editor.mjs",
   "description": "the web ide with file tree based on 'monaco-editor'",
   "private": false,
   "keywords": [
     "moanco-editor",
     "vue-monaco-editor",
-    "vue-monaco-tree"
+    "vue-monaco-tree",
+    "web-editor"
   ],
   "license": "Apache-2.0",
   "author": {
@@ -24,14 +25,13 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
+    "type-check": "vue-tsc -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
     "monaco-editor": "^0.44.0",
     "nanoid": "^5.0.3",
     "onigasm": "^2.2.5",
-    "pinia": "^2.1.7",
     "vue": "^3.3.4"
   },
   "devDependencies": {

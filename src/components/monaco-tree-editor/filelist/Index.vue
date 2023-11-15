@@ -47,15 +47,12 @@ const emit = defineEmits({
 
 //=================== 初始化 init ==================
 const collpase = ref(false)
-const monaocStore = useMonaco()
-const fileTree = ref(monaocStore.fileTree)
+const monacoStore = useMonaco()
+const fileTree = ref(monacoStore.fileTree.value)
 
-watch(
-  () => monaocStore.fileTree,
-  (n) => {
-    fileTree.value = n
-  }
-)
+watch(monacoStore.fileTree, (n) => {
+  fileTree.value = n
+})
 
 //=================== 回调 callback ==================
 const fileConfirmVisible = ref(false)
@@ -65,10 +62,10 @@ const handleCollapse = () => {
   collpase.value = !collpase.value
 }
 const handleConfirmNewFile = (path: string) => {
-  monaocStore.newFile(path)
+  monacoStore.newFile(path)
 }
 const handleConfirmNewFolder = (path: string) => {
-  monaocStore.newFolder(path)
+  monacoStore.newFolder(path)
 }
 const handleNewFile = (path: string, resolve: () => void, reject: () => void) => {
   emit('newFile', path, resolve, reject)

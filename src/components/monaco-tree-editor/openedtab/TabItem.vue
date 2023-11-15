@@ -25,6 +25,7 @@ const emit = defineEmits({
   abortSave: (_path: string) => true,
   closeOtherFiles: (_path?: string) => true,
 })
+const monacoStore = useMonaco()
 //========================= 点击标签 click tab ==========================
 const itemRef = ref<HTMLDivElement>()
 const name = props.file!.path.split('/').slice(-1)[0]
@@ -34,8 +35,10 @@ if (props.file!.path && props.file!.path.indexOf('.') !== -1) {
 } else {
   fileType = 'default_file'
 }
-const active = computed(() => props.currentPath === props.file!.path)
-
+const active = ref(monacoStore.currentPath.value === props.file!.path)
+watch(monacoStore.currentPath, (n) => {
+  active.value = n === props.file!.path
+})
 const handleClick = (e: MouseEvent) => {
   console.debug('active', props.currentPath)
   if (e.buttons === 4) {
@@ -99,7 +102,6 @@ const handleLeave = () => {
 }
 
 //========================= 回调 callback ==========================
-const monacoStore = useMonaco()
 const confirmVisible = ref(false)
 const handleClose = (e?: Event) => {
   e?.stopPropagation()

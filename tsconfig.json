@@ -14,9 +14,11 @@
         "/src/*"
       ]
     },
-    "allowImportingTsExtensions": true,
     "isolatedModules": true,
-    "noEmit": true,
+    // "noEmit": true,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "dist",
     "jsx": "preserve",
     "jsxImportSource": "vue",
     //Linting

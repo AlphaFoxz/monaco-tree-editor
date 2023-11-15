@@ -16,8 +16,10 @@
         "./src/*"
       ]
     },
-    "noEmit": false,
+    "emitDeclarationOnly": true,
     "declaration": true,
     "declarationDir": "dist",
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
   }
 }

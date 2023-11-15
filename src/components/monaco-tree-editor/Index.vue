@@ -131,8 +131,8 @@ const fixFilesPath = (files: Files): Files => {
     }
   })
   files = fixedFiles
-  monacoStore.prefix = projectPrefix
-  monacoStore.fileSeparator = fileSeparator
+  monacoStore.prefix.value = projectPrefix
+  monacoStore.fileSeparator.value = fileSeparator
   return files
 }
 watch(
@@ -377,6 +377,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
 }
 
 const handleRenameFolder = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
+  debugger
   const oriPath = toOriginPath(path)
   let tmpArr = oriPath.split(fileSeparator)
   tmpArr.pop()
@@ -420,7 +421,7 @@ onMounted(() => {
   hotkeyStore.listen('editor', (e) => {
     if (e?.ctrlKey && e.key.toLowerCase() === 's') {
       console.debug('hotkey', 'Ctrl+s')
-      handleSaveFile(monacoStore.currentPath)
+      handleSaveFile(monacoStore.currentPath.value)
     }
   })
 })
@@ -475,7 +476,10 @@ defineExpose({
           maxHeight: 'calc(100% - 35px)',
         }"
       ></div>
-      <div v-show="!monacoStore.isReady || monacoStore.openedFiles.length === 0" class="music-monaco-editor-area-empty">
+      <div
+        v-show="!monacoStore.isReady || monacoStore.openedFiles.value.length === 0"
+        class="music-monaco-editor-area-empty"
+      >
         <label>web editor</label>
       </div>
     </div>
