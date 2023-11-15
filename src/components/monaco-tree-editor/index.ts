@@ -5,11 +5,3 @@ import { useHotkey } from './hotkey-store'
 import { type Files } from './define'
 
 export { Editor, useMessage, useHotkey, useMonaco, type Files }
-
-const MonacoTreeEditor = {
-  install(Vue: any) {
-    Vue.component('MonacoTreeEditor', Editor)
-  },
-}
-
-export default MonacoTreeEditor

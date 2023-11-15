@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { useMessage } from '@/components/monaco-tree-editor/message-store'
-import { useHotkey } from '@/components/monaco-tree-editor/hotkey-store'
-import { useMonaco } from '@/components/monaco-tree-editor/monaco-store'
-import { type Files } from '@/components/monaco-tree-editor/define'
+import {
+  Editor as MonacoTreeEditor,
+  useMessage,
+  useHotkey,
+  useMonaco,
+  type Files,
+} from '@/components/monaco-tree-editor'
 import { onMounted, ref } from 'vue'
 
 // ================ 调整大小 resize ================

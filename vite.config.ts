@@ -25,7 +25,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, './src/components/monaco-tree-editor/index.ts'),
       name: 'monaco-tree-editor',
       fileName: 'monaco-tree-editor',
-      formats: ['es'],
+      formats: ['es', 'umd'],
     },
     rollupOptions: {
       external: ['vue'],

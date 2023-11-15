@@ -1,8 +1,18 @@
 {
   "name": "monaco-tree-editor",
-  "type": "module",
   "version": "0.0.1-beta.4",
-  "main": "monaco-tree-editor.js",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/monaco-tree-editor.umd.cjs",
+  "module": "./dist/monaco-tree-editor.js",
+  "exports": {
+    ".": {
+      "import": "./dist/monaco-tree-editor.js",
+      "require": "./dist/monaco-tree-editor.umd.cjs"
+    }
+  },
   "description": "the web ide with file tree based on 'monaco-editor'",
   "private": false,
   "keywords": [
