@@ -14,7 +14,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'monaco-tree-editor',
+    outDir: 'dist',
     lib: {
       entry: path.resolve(__dirname, './src/components/monaco-tree-editor/index.ts'),
       name: 'monaco-tree-editor',
