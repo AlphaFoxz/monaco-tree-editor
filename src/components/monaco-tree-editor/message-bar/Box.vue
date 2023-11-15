@@ -3,7 +3,7 @@ import './index.less'
 import IconLoading from '../icons/Loading.vue'
 import IconClose from '../icons/Close'
 import { computed } from 'vue'
-import { type MessageType } from '../../define'
+import { type MessageType } from '../define'
 
 const props = defineProps({
   id: {

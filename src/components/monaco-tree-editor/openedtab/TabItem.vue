@@ -4,7 +4,7 @@ import ContextMenu from '../context-menu/Index.vue'
 import Confirm from '../modal/Confirm.vue'
 import Icons from '../icons'
 import type { ContextMenuItem } from '../context-menu/define'
-import { useMonaco } from '../../monaco-store'
+import { useMonaco } from '../monaco-store'
 const props = defineProps({
   file: {
     type: Object,

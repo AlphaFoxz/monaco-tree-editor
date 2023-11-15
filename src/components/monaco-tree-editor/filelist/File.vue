@@ -7,9 +7,9 @@ import IconAddfile from '../icons/Addfile'
 import IconAddfolder from '../icons/Addfolder'
 import Icons from '../icons/index'
 import FileTemp from './File.vue'
-import { type Files } from '../../define'
+import { type Files } from '../define'
 import { computed, nextTick, ref, watch } from 'vue'
-import { useMonaco } from '../../monaco-store'
+import { useMonaco } from '../monaco-store'
 import { type ContextMenuItem } from '../context-menu/define'
 const props = defineProps({
   file: {

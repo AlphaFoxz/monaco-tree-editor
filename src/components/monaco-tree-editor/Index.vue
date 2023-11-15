@@ -8,14 +8,14 @@ import { useMonaco } from './monaco-store'
 import { useHotkey } from './hotkey-store'
 import { useMessage } from './message-store'
 import * as monaco_define from 'monaco-editor'
-import Prettier from './components/prettier/Index.vue'
-import FileList from './components/filelist/Index.vue'
-import OpenedTab from './components/openedtab/Index.vue'
-import Modal from './components/modal/Index.vue'
-import IconClose from './components/icons/Close'
-import IconSetting from './components/icons/Setting'
-import SelectMenu from './components/select/MenuTemp.vue'
-import Message from './components/message-bar/Index.vue'
+import Prettier from './prettier/Index.vue'
+import FileList from './filelist/Index.vue'
+import OpenedTab from './openedtab/Index.vue'
+import Modal from './modal/Index.vue'
+import IconClose from './icons/Close'
+import IconSetting from './icons/Setting'
+import SelectMenu from './select/MenuTemp.vue'
+import Message from './message-bar/Index.vue'
 
 const props = defineProps({
   files: {
@@ -531,4 +531,3 @@ defineExpose({
     </Modal>
   </div>
 </template>
-./monaco ./monaco-store

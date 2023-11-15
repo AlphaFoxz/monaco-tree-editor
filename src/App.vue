@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Editor from '@/components/monaco-tree-editor/Index.vue'
 import { useMessage } from '@/components/monaco-tree-editor/message-store'
 import { useHotkey } from '@/components/monaco-tree-editor/hotkey-store'
 import { useMonaco } from '@/components/monaco-tree-editor/monaco-store'
@@ -217,7 +216,7 @@ const handleContextMenuSelect = (path: string, item: { label: string; value: str
 </script>
 
 <template>
-  <Editor
+  <MonacoTreeEditor
     :files="files"
     @reload="handleReload"
     @new-file="handleNewFile"
@@ -231,5 +230,5 @@ const handleContextMenuSelect = (path: string, item: { label: string; value: str
     :folder-menu="folderMenu"
     @contextmenu-select="handleContextMenuSelect"
     ref="editorRef"
-  ></Editor>
+  ></MonacoTreeEditor>
 </template>

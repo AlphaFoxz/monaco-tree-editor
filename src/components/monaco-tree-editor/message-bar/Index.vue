@@ -1,8 +1,8 @@
 <script setup lang="tsx">
 import './index.less'
 import BoxTemp from './Box.vue'
-import { type MessageOptions } from '../../define'
-import { useMessage } from '../../message-store'
+import { type MessageOptions } from '../define'
+import { useMessage } from '../message-store'
 import { watch, ref } from 'vue'
 
 const messageStore = useMessage()

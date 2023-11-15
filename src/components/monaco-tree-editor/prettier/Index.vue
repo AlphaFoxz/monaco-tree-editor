@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PrettierIcon from '../icons/Prettier'
-import { useMonaco } from '../../monaco-store'
+import { useMonaco } from '../monaco-store'
 
 const monacoStore = useMonaco()
 const handleClick = () => {

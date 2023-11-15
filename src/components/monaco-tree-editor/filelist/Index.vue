@@ -8,7 +8,7 @@ import FileTemp from './File.vue'
 import Confirm from '../modal/Confirm.vue'
 import ContextMenu from '../context-menu/Index.vue'
 import { ref, watch } from 'vue'
-import { useMonaco } from '../../monaco-store'
+import { useMonaco } from '../monaco-store'
 
 defineProps({
   title: {
