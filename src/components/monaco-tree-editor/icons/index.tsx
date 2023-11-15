@@ -1,5 +1,10 @@
 import { ref, watch, defineComponent } from 'vue'
 import './index.less'
+import defaultFileUrl from '/icons/default_file.svg'
+import jsUrl from '/icons/file_type_js.svg'
+import tsUrl from '/icons/file_type_typescript.svg'
+import tsxUrl from '/icons/file_type_reactts.svg'
+import jsxUrl from '/icons/file_type_reactjs.svg'
 
 export default defineComponent({
   props: {
@@ -14,24 +19,21 @@ export default defineComponent({
       const config: {
         [index: string]: string
       } = {
-        ts: 'typescript',
-        js: 'js',
-        tsx: 'reactts',
-        jsx: 'reactjs',
+        ts: tsUrl,
+        js: jsUrl,
+        tsx: tsxUrl,
+        jsx: jsxUrl,
       }
-      return config[type] ? `file_type_${config[type]}` : fileType
+      return config[type] ? config[type] : fileType
     }
-    const getSvgPath = (fileName: string) => {
-      return new URL(`/icons/${fileName}.svg`, import.meta.url).href
-    }
-    const imgSrc = ref('/icons/default_file.svg')
+    const imgSrc = ref(defaultFileUrl)
     const handleError = () => {
-      imgSrc.value = getSvgPath('default_file')
+      imgSrc.value = defaultFileUrl
     }
     watch(
       () => props.type,
       (v) => {
-        imgSrc.value = getSvgPath(fileTypeMap(v))
+        imgSrc.value = fileTypeMap(v)
       }
     )
     return () => {

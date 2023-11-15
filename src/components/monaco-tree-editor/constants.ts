@@ -1,5 +1,3 @@
-export const ASSETSPATH: string = '/'
-
 const DARKTHEMES = [
   'AtlanticNight',
   'Nebula',

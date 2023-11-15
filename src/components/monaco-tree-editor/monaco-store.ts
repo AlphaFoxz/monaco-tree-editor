@@ -7,7 +7,6 @@ import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import { ref, nextTick } from 'vue'
-import { ASSETSPATH } from './constants'
 import { type FileInfo, type Files } from './define'
 
 window.MonacoEnvironment = {
@@ -26,7 +25,7 @@ window.MonacoEnvironment = {
   globalAPI: true,
 }
 const worker = new Promise<Worker>(async (resolve) => {
-  const codeString = await fetch(`${ASSETSPATH}eslint.worker.js`).then((res) => res.text())
+  const codeString = await fetch(`eslint.worker.js`).then((res) => res.text())
   const localWorkerUrl = window.URL.createObjectURL(
     new Blob([codeString], {
       type: 'application/javascript',
@@ -73,14 +72,14 @@ async function init(dom: HTMLElement) {
     }
     return result
   }
-  await loadWASM(`${ASSETSPATH}onigasm.wasm`)
+  await loadWASM(`onigasm.wasm`)
   await configTheme('OneDarkPro')
   isReady.value = true
 }
 async function configTheme(name: string) {
   let theme = themes[name]
   if (!theme) {
-    theme = JSON.parse(await (await fetch(`${ASSETSPATH}themes/${name}.json`)).text())
+    theme = JSON.parse(await (await fetch(`themes/${name}.json`)).text())
     themes[name] = theme
     // 定义主题
     monaco.editor.defineTheme(name, theme)

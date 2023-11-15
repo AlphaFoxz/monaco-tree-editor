@@ -1,7 +1,8 @@
 {
   "name": "monaco-tree-editor",
-  "version": "0.0.1-beta.3",
-  "main": "monaco-tree-editor.mjs",
+  "type": "module",
+  "version": "0.0.1-beta.4",
+  "main": "monaco-tree-editor.js",
   "description": "the web ide with file tree based on 'monaco-editor'",
   "private": false,
   "keywords": [

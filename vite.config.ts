@@ -13,9 +13,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
   build: {
+    minify: 'esbuild',
     outDir: 'dist',
     target: 'esnext',
+    cssCodeSplit: true,
     lib: {
       entry: path.resolve(__dirname, './src/components/monaco-tree-editor/index.ts'),
       name: 'monaco-tree-editor',
