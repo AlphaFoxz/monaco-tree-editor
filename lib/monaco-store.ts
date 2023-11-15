@@ -6,6 +6,8 @@ import editorWorker from 'monaco-editor/esm/vs/editor/editor.api?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+import wasmUrl from '/onigasm.wasm?url'
+import oneDarkProUrl from '/themes/OneDarkPro.json?url'
 import { ref, nextTick } from 'vue'
 import { type FileInfo, type Files } from './define'
 
@@ -35,10 +37,6 @@ const worker = new Promise<Worker>(async (resolve) => {
 })
 type OpenedFileInfo = { status?: string; path: string }
 
-const themes: {
-  [key: string]: any
-} = {}
-
 let originalFileTree: Files
 const monaco = monaco_define
 const isReady = ref(false)
@@ -58,6 +56,7 @@ let fileTree = ref<FileInfo>({
 })
 //初始化
 async function init(dom: HTMLElement) {
+  debugger
   editor = monaco.editor.create(dom, {})
   const editorService = (editor as any)._codeEditorService
   const openEditorBase = editorService.openCodeEditor.bind(editorService)
@@ -72,25 +71,18 @@ async function init(dom: HTMLElement) {
     }
     return result
   }
-  await loadWASM(`onigasm.wasm`)
-  await configTheme('OneDarkPro')
+  await configTheme('oneDarkPro', oneDarkProUrl)
+  await loadWASM(wasmUrl)
   isReady.value = true
 }
-async function configTheme(name: string) {
-  let theme = themes[name]
-  if (!theme) {
-    theme = JSON.parse(await (await fetch(`themes/${name}.json`)).text())
-    themes[name] = theme
-    // 定义主题
-    monaco.editor.defineTheme(name, theme)
-    console.debug('加载monaco主题', name)
-  }
+async function configTheme(name: string, themeUrl: string) {
+  let theme = JSON.parse(await (await fetch(themeUrl)).text())
+  // 定义主题
+  monaco.editor.defineTheme(name, theme)
+  console.debug('加载monaco主题', name)
   const prefix = '--monaco-'
   Object.keys(theme.colors).forEach((v) => {
-    document.documentElement.style.setProperty(
-      `${prefix}${v.replace('.', '-')}`,
-      theme.colors[v] || themes.OneDarkPro.colors[v] || 'rgba(0, 0, 0, 0)'
-    )
+    document.documentElement.style.setProperty(`${prefix}${v.replace('.', '-')}`, theme.colors[v] || 'rgba(0, 0, 0, 0)')
   })
   // 设置主题
   monaco.editor.setTheme(name)

@@ -1,10 +1,10 @@
 import { ref, watch, defineComponent } from 'vue'
 import './index.less'
-import defaultFileUrl from '/icons/default_file.svg'
-import jsUrl from '/icons/file_type_js.svg'
-import tsUrl from '/icons/file_type_typescript.svg'
-import tsxUrl from '/icons/file_type_reactts.svg'
-import jsxUrl from '/icons/file_type_reactjs.svg'
+import defaultFileUrl from '/icons/default_file.svg?url'
+import jsUrl from '/icons/file_type_js.svg?url'
+import tsUrl from '/icons/file_type_typescript.svg?url'
+import tsxUrl from '/icons/file_type_reactts.svg?url'
+import jsxUrl from '/icons/file_type_reactjs.svg?url'
 
 export default defineComponent({
   props: {

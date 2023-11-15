@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@': fileURLToPath(new URL('./lib', import.meta.url)),
     },
   },
   esbuild: {
@@ -22,7 +22,7 @@ export default defineConfig({
     target: 'esnext',
     cssCodeSplit: true,
     lib: {
-      entry: path.resolve(__dirname, './src/components/monaco-tree-editor/index.ts'),
+      entry: path.resolve(__dirname, './lib/index.ts'),
       name: 'monaco-tree-editor',
       fileName: 'monaco-tree-editor',
       formats: ['es', 'umd'],

@@ -2,8 +2,8 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": [
     "env.d.ts",
-    "src/**/*",
-    "src/**/*.vue"
+    "lib/**/*",
+    "lib/**/*.vue"
   ],
   "exclude": [
     "src/**/__tests__/*"
@@ -13,7 +13,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./lib/*"
       ]
     },
     "emitDeclarationOnly": true,
