@@ -16,7 +16,7 @@ export default defineConfig({
   esbuild: {
     drop: ['console', 'debugger'],
   },
-  base: '/monaco-tree-editor/',
+  // base: '/monaco-tree-editor/',
   build: {
     minify: 'esbuild',
     outDir: 'dist',
