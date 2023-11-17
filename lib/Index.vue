@@ -411,6 +411,10 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
   )
 }
 
+const handleContextmenuSelect = (path: string, item: { label: string; value: any }) => {
+  emit('contextmenuSelect', toOriginPath(path), item)
+}
+
 // ================ 快捷键部分 hotkey ================
 const hotkeyStore = useHotkey()
 const rootRef = ref<HTMLElement>()
@@ -451,7 +455,7 @@ defineExpose({
       @rename-folder="handleRenameFolder"
       :file-menu="fileMenu"
       :folder-menu="folderMenu"
-      @contextmenu-select="(path, item) => emit('contextmenuSelect', path, item)"
+      @contextmenu-select="handleContextmenuSelect"
       :project-name="projectName"
       :rootEl="rootRef"
       :style="{ width: filelistWidth + 'px', minWidth: siderMinWidth + 'px' }"

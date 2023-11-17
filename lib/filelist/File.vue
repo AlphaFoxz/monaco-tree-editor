@@ -8,7 +8,7 @@ import IconAddfolder from '../icons/Addfolder'
 import Icons from '../icons/index'
 import FileTemp from './File.vue'
 import { type Files } from '../define'
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useMonaco } from '../monaco-store'
 import { type ContextMenuItem } from '../context-menu/define'
 const props = defineProps({
@@ -66,6 +66,18 @@ const keys = computed<string[]>(() => {
     .filter((key) => childs[key].isFile)
     .sort()
   return folders.concat(files)
+})
+onMounted(() => {
+  if (!props.root && !props.file.name) {
+    nameRef.value?.focus()
+  }
+})
+watch([() => props.file, () => props.root], (v) => {
+  if (!v[1] && !v[0].name) {
+    nextTick(() => {
+      nameRef.value?.focus()
+    })
+  }
 })
 
 // ================ 右键菜单 contextmenu ================
@@ -189,13 +201,16 @@ const handleDeleteFolder = (e?: Event) => {
 const handleKeyDown = (e: KeyboardEvent) => {
   if (e.keyCode === 13) {
     e.preventDefault()
-    handleBlur(e)
+    handleBlur()
   }
 }
 const handleClick = () => {
   showChild.value = !showChild.value
 }
-const handleBlur = (_e: Event) => {
+const handleBlur = (_e?: Event) => {
+  if (!nameRef.value) {
+    return
+  }
   const name = nameRef.value?.textContent
   if (!name || /^\s*$/.test(name)) {
     //remove component
@@ -234,19 +249,15 @@ const handleBlur = (_e: Event) => {
   }
 }
 const handlePathChange = (_e?: MouseEvent) => {
+  if (editing.value) {
+    return
+  }
   const key = props.file.path
   const model = monacoStore.restoreModel(key)
   if (model) {
     monacoStore.openOrFocusPath(key)
   }
 }
-watch([() => props.file, () => props.root], (v) => {
-  if (!v[1] && !v[0].name) {
-    nextTick(() => {
-      nameRef.value?.focus()
-    })
-  }
-})
 watch([editing, () => props.file], (v) => {
   if (v[0]) {
     nextTick(() => {

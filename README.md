@@ -23,14 +23,16 @@ npm i monaco-tree-editor
 
 ### 2.复制必要的静态文件 Copy the necessary static files
 
-node_modules/monaco-tree-editor/`assets` => {root}/public/`assets`
-node_modules/monaco-tree-editor/`monaco-tree-editor-statics` => {root}/public/`monaco-tree-editor-statics`
+{root}/node_modules/monaco-tree-editor/`assets` => {root}/public/`assets`
+
+{root}/node_modules/monaco-tree-editor/`monaco-tree-editor-statics` => {root}/public/`monaco-tree-editor-statics`
 
 ## 示例代码 Demo Code (Beta)
 
 ```vue
 <script setup lang="ts">
 import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from 'monaco-tree-editor'
+import 'monaco-tree-editor/index.css'
 import { onMounted, ref } from 'vue'
 
 // ================ 调整大小 resize ================
@@ -95,7 +97,7 @@ namespace server {
   export const createOrSaveFile = async (path: string, content: string) => {
     if (responseFiles[path]) {
       if (!responseFiles[path].isFile) {
-        throw new Error(`[ ${path} ] is not a file!`)
+        throw new Error(`save file:[ ${path} ] is not a file!`)
       }
       responseFiles[path].content = content
     } else {
@@ -107,7 +109,7 @@ namespace server {
   }
   export const newFile = async (path: string) => {
     if (responseFiles[path]) {
-      throw new Error(`[ ${path} ] already exists!`)
+      throw new Error(`new file: [ ${path} ] already exists!`)
     }
     responseFiles[path] = {
       isFile: true,
@@ -116,21 +118,29 @@ namespace server {
   }
   export const newFolder = async (path: string) => {
     if (responseFiles[path]) {
-      throw new Error(`[ ${path} ] already exists!`)
+      throw new Error(`new folder: [ ${path} ] already exists!`)
     }
     responseFiles[path] = {
       isDirectory: true,
     }
   }
   export const rename = async (path: string, newPath: string) => {
+    if (path === newPath) {
+      return true
+    }
     if (!responseFiles[path]) {
-      throw new Error(`[ ${path} ] not exists!`)
+      throw new Error(`rename: source file/folder name [ ${path} ] not exists!`)
+    } else if (responseFiles[newPath]) {
+      throw new Error(`rename: target file/folder name [ ${newPath} ] already exists!`)
     }
     responseFiles[newPath] = responseFiles[path]
     delete responseFiles[path]
     return true
   }
   export const deleteFile = async (path: string) => {
+    if (!responseFiles[path]) {
+      throw new Error(`delete: file name [ ${path} ] not exists!`)
+    }
     delete responseFiles[path]
     return true
   }

@@ -64,7 +64,7 @@ namespace server {
   export const createOrSaveFile = async (path: string, content: string) => {
     if (responseFiles[path]) {
       if (!responseFiles[path].isFile) {
-        throw new Error(`[ ${path} ] is not a file!`)
+        throw new Error(`save file:[ ${path} ] is not a file!`)
       }
       responseFiles[path].content = content
     } else {
@@ -76,7 +76,7 @@ namespace server {
   }
   export const newFile = async (path: string) => {
     if (responseFiles[path]) {
-      throw new Error(`[ ${path} ] already exists!`)
+      throw new Error(`new file: [ ${path} ] already exists!`)
     }
     responseFiles[path] = {
       isFile: true,
@@ -85,7 +85,7 @@ namespace server {
   }
   export const newFolder = async (path: string) => {
     if (responseFiles[path]) {
-      throw new Error(`[ ${path} ] already exists!`)
+      throw new Error(`new folder: [ ${path} ] already exists!`)
     }
     responseFiles[path] = {
       isDirectory: true,
@@ -93,13 +93,20 @@ namespace server {
   }
   export const rename = async (path: string, newPath: string) => {
     if (!responseFiles[path]) {
-      throw new Error(`[ ${path} ] not exists!`)
+      throw new Error(`rename: source file/folder name [ ${path} ] not exists!`)
+    } else if (responseFiles[newPath]) {
+      throw new Error(`rename: target file/folder name [ ${newPath} ] already exists!`)
     }
     responseFiles[newPath] = responseFiles[path]
-    delete responseFiles[path]
+    if (path !== newPath) {
+      delete responseFiles[path]
+    }
     return true
   }
   export const deleteFile = async (path: string) => {
+    if (!responseFiles[path]) {
+      throw new Error(`delete: file name [ ${path} ] not exists!`)
+    }
     delete responseFiles[path]
     return true
   }
@@ -206,7 +213,7 @@ const fileMenu = ref([
 const folderMenu = ref([{ label: 'backup', value: 'backupFolder' }])
 
 const handleContextMenuSelect = (path: string, item: { label: string; value: string }) => {
-  alert('path: ' + path + '\ntrigger: ' + item.label)
+  alert('path: ' + path + '\nitem: ' + JSON.stringify(item))
 }
 </script>
 
