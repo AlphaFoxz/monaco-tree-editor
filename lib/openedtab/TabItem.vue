@@ -177,7 +177,7 @@ defineExpose({
       :class="`music-monaco-editor-opened-tab-item ${active ? 'music-monaco-editor-opened-tab-item-focused' : ''}`"
     >
       <Icons :type="fileType" :style="{ marginRight: '2px' }" />
-      <span :style="{ flex: 1, paddingRight: '5px' }">{{ name }}</span>
+      <span :style="{ flex: 1, paddingRight: '5px', fontStyle: !file.status ? 'italic' : 'normal' }">{{ name }}</span>
       <span
         data-name="editing"
         class="music-monaco-editor-opened-tab-item-editing"
