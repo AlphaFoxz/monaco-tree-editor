@@ -246,7 +246,7 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
   )
 }
 const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolve = () => {}, reject = () => {}) => {
-  if (!value || !path || !monacoStore.hasChanged(path)) {
+  if (value === undefined || !path || !monacoStore.hasChanged(path)) {
     console.debug('there is nothing to save.')
     resolve()
     return
