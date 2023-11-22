@@ -219,6 +219,7 @@ const handleContextMenuSelect = (path: string, item: { label: string; value: str
 
 <template>
   <MonacoTreeEditor
+    :fontSize="14"
     :files="files"
     @reload="handleReload"
     @new-file="handleNewFile"

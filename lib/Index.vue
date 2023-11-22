@@ -41,6 +41,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  fontSize: {
+    type: Number,
+    default: 14,
+  },
 })
 const emit = defineEmits({
   reload: (_resolve: () => void, _reject: (msg?: string) => void) => true,
@@ -141,10 +145,16 @@ watch(
     monacoStore.loadFileTree(fixFilesPath(n))
   }
 )
+watch(
+  () => props.fontSize,
+  (n) => {
+    monacoStore.updateOptions({ fontSize: n })
+  }
+)
 onMounted(() => {
   handleReload()
   monacoStore.loadFileTree(fixFilesPath(props.files))
-  monacoStore.init(editorRef.value!)
+  monacoStore.init(editorRef.value!, { fontSize: props.fontSize })
 })
 
 // ================ 回调事件 callback events ================
@@ -458,6 +468,7 @@ defineExpose({
       @contextmenu-select="handleContextmenuSelect"
       :project-name="projectName"
       :rootEl="rootRef"
+      :fontSize="fontSize"
       :style="{ width: filelistWidth + 'px', minWidth: siderMinWidth + 'px' }"
     />
     <div
@@ -468,7 +479,7 @@ defineExpose({
       class="music-monaco-editor-drag"
     ></div>
     <div class="music-monaco-editor-area">
-      <OpenedTab @save-file="handleSaveFile" />
+      <OpenedTab :fontSize="fontSize" @save-file="handleSaveFile" />
       <div
         id="editor"
         ref="editorRef"

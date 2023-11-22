@@ -56,8 +56,8 @@ let fileTree = ref<FileInfo>({
   path: '/',
 })
 //初始化
-async function init(dom: HTMLElement) {
-  editor = monaco.editor.create(dom, {})
+async function init(dom: HTMLElement, options?: monaco_define.editor.IStandaloneEditorConstructionOptions) {
+  editor = monaco.editor.create(dom, options)
   const editorService = (editor as any)._codeEditorService
   const openEditorBase = editorService.openCodeEditor.bind(editorService)
   editorService.openCodeEditor = async (input: any, source: any, _sideBySide: any) => {
@@ -86,6 +86,9 @@ async function configTheme(name: string, themeUrl: string) {
   })
   // 设置主题
   monaco.editor.setTheme(name)
+}
+function updateOptions(options: monaco_define.editor.IStandaloneEditorConstructionOptions) {
+  editor.updateOptions(options)
 }
 async function loadFileTree(files: Files) {
   originalFileTree = files
@@ -386,6 +389,7 @@ export const useMonaco = () => {
     monaco,
     init,
     restoreModel,
+    updateOptions,
     openOrFocusPath,
     isReady,
     hasChanged,

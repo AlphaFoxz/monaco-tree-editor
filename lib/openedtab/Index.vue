@@ -5,6 +5,10 @@ import './index.less'
 import { useMonaco } from '../monaco-store'
 defineProps({
   rootEl: HTMLElement,
+  fontSize: {
+    type: Number,
+    default: 14,
+  },
 })
 const emit = defineEmits({
   saveFile: (_path: string, _value?: string, _resolve?: () => void, _reject?: () => void) => true,
@@ -55,7 +59,7 @@ const handleCloseOtherFiles = (path?: string) => {
 
 <template>
   <div class="music-monaco-editor-opened-tab-wrapper">
-    <div class="music-monaco-editor-opened-tab">
+    <div class="music-monaco-editor-opened-tab" :style="{ fontSize: `${fontSize}px` }">
       <span v-for="(file, index) in openedFiles">
         <TabItem
           :rootEl="rootEl"

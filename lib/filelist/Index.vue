@@ -33,6 +33,10 @@ defineProps({
   folderMenu: {
     type: Array,
   },
+  fontSize: {
+    type: Number,
+    default: 14,
+  },
 })
 const emit = defineEmits({
   reload: () => true,
@@ -89,7 +93,7 @@ const handleRenameFolder = (path: string, name: string) => {
 }
 </script>
 <template>
-  <div class="music-monaco-editor-list-wrapper">
+  <div class="music-monaco-editor-list-wrapper" :style="{ fontSize: `${fontSize}px` }">
     <Confirm
       v-if="fileConfirmVisible"
       type="warn"
