@@ -154,7 +154,7 @@ watch(
 onMounted(() => {
   handleReload()
   monacoStore.loadFileTree(fixFilesPath(props.files))
-  monacoStore.init(editorRef.value!, { fontSize: props.fontSize })
+  monacoStore.init(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
 })
 
 // ================ 回调事件 callback events ================

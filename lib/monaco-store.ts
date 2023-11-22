@@ -1,31 +1,28 @@
 import { loadWASM } from 'onigasm'
 // import * as monaco_define from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco_define from 'monaco-editor'
-import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.api?worker'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import wasmUrl from '/monaco-tree-editor-statics/bin/onigasm.wasm?url'
 import oneDarkProUrl from '/monaco-tree-editor-statics/themes/OneDarkPro.json?url'
 import eslintStr from '/monaco-tree-editor-statics/eslint.worker.js.txt?raw'
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, onMounted } from 'vue'
 import { type FileInfo, type Files } from './define'
 
-window.MonacoEnvironment = {
-  getWorker: function (_moduleId, label: string) {
-    if (label === 'json') {
-      return new jsonWorker()
-    } else if (label === 'ts' || label === 'typescript') {
-      return new tsWorker()
-    } else if (label === 'html' || label === 'handlebars' || label === 'razor') {
-      return new htmlWorker()
-    } else if (label === 'css' || label === 'scss' || label === 'less') {
-      return new cssWorker()
-    }
-    return new editorWorker()
-  },
-  globalAPI: true,
+const typeMap: {
+  [key: string]: string
+} = {
+  js: 'javascript',
+  ts: 'typescript',
+  less: 'less',
+  jsx: 'javascript',
+  tsx: 'typescript',
+  v: 'verilog',
+  sv: 'systemverilog',
+  restful: 'restful',
 }
 const worker = new Promise<Worker>(async (resolve) => {
   const codeString = eslintStr //await fetch(eslintUrl).then((res) => res.text())
@@ -57,7 +54,22 @@ let fileTree = ref<FileInfo>({
 })
 //初始化
 async function init(dom: HTMLElement, options?: monaco_define.editor.IStandaloneEditorConstructionOptions) {
-  editor = monaco.editor.create(dom, options)
+  window.MonacoEnvironment = {
+    getWorker: function (_moduleId, label: string) {
+      if (label === 'json') {
+        return new jsonWorker()
+      } else if (label === 'ts' || label === 'typescript') {
+        return new tsWorker()
+      } else if (label === 'html' || label === 'handlebars' || label === 'razor') {
+        return new htmlWorker()
+      } else if (label === 'css' || label === 'scss' || label === 'less') {
+        return new cssWorker()
+      }
+      return new editorWorker()
+    },
+    globalAPI: true,
+  }
+  editor = monaco.editor.create(dom, { ...options, model: null })
   const editorService = (editor as any)._codeEditorService
   const openEditorBase = editorService.openCodeEditor.bind(editorService)
   editorService.openCodeEditor = async (input: any, source: any, _sideBySide: any) => {
@@ -187,23 +199,8 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
     } else {
       type = 'javascript'
     }
-    const config: {
-      [key: string]: string
-    } = {
-      js: 'javascript',
-      ts: 'typescript',
-      less: 'less',
-      jsx: 'javascript',
-      tsx: 'typescript',
-      v: 'verilog',
-      sv: 'systemverilog',
-      restful: 'restful',
-    }
-    model = monaco.editor.createModel(
-      value ?? '',
-      config[type] || type,
-      new monaco_define.Uri().with({ path, scheme: 'music' })
-    )
+    type = typeMap[type] || type
+    model = monaco.editor.createModel(value ?? '', type, new monaco_define.Uri().with({ path, scheme: 'music' }))
     model.updateOptions({
       tabSize: 2,
     })

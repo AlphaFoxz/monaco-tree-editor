@@ -35,16 +35,6 @@ import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type File
 import 'monaco-tree-editor/index.css'
 import { onMounted, ref } from 'vue'
 
-// ================ 调整大小 resize ================
-const editorRef = ref()
-onMounted(() => {
-  window.onresize = () => {
-    setTimeout(() => {
-      editorRef.value.resize()
-    }, 30)
-  }
-})
-
 // ================ 推送消息 push message ================
 const messageStore = useMessage()
 onMounted(() => {
