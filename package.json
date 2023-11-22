@@ -26,11 +26,12 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "pnpm build-only && pnpm type-check",
-    "preview": "vite preview",
-    "test:unit": "vitest",
+    "build": "pnpm build-only && pnpm type-check && pnpm copy-file",
     "build-only": "vite build",
-    "type-check": "vue-tsc -p tsconfig.vitest.json --composite false"
+    "type-check": "vue-tsc -p tsconfig.vitest.json --composite false",
+    "copy-file": "ncp LICENSE dist/LICENSE && ncp package.publish.json dist/package.json",
+    "preview": "vite preview",
+    "test:unit": "vitest"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
@@ -49,6 +50,7 @@
     "@vue/tsconfig": "^0.4.0",
     "jsdom": "^22.1.0",
     "less": "^4.2.0",
+    "ncp": "^2.0.0",
     "npm-run-all2": "^6.1.1",
     "terser": "^5.24.0",
     "typescript": "~5.2.0",

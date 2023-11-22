@@ -1,0 +1,26 @@
+{
+  "name": "monaco-tree-editor",
+  "version": "0.0.1-beta.7.2",
+  "type": "module",
+  "main": "index.umd.cjs",
+  "module": "index.js",
+  "description": "the web ide with file tree based on 'monaco-editor'",
+  "private": false,
+  "keywords": ["moanco-editor", "vue-monaco-editor", "vue-monaco-tree", "web-editor"],
+  "license": "Apache-2.0",
+  "author": {
+    "name": "AlphaFoxz",
+    "url": "https://github.com/AlphaFoxz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlphaFoxz/monaco-tree-editor"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "monaco-editor": "^0.44.0",
+    "nanoid": "^5.0.3",
+    "onigasm": "^2.2.5",
+    "vue": "^3.3.4"
+  }
+}

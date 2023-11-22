@@ -49,6 +49,9 @@ devDependencies:
   less:
     specifier: ^4.2.0
     version: 4.2.0
+  ncp:
+    specifier: ^2.0.0
+    version: 2.0.0
   npm-run-all2:
     specifier: ^6.1.1
     version: 6.1.1
@@ -1608,6 +1611,11 @@ packages:
     engines: {node: ^18 || >=20}
     hasBin: true
     dev: false
+
+  /ncp@2.0.0:
+    resolution: {integrity: sha512-zIdGUrPRFTUELUvr3Gmc7KZ2Sw/h1PiVM0Af/oHB6zgnV1ikqSfRk+TOufi79aHYCW3NiOXmr1BP5nWbzojLaA==}
+    hasBin: true
+    dev: true
 
   /needle@3.2.0:
     resolution: {integrity: sha512-oUvzXnyLiVyVGoianLijF9O/RecZUf7TkBfimjGrLM4eQhXyeJwM6GeAWccwfQ9aa4gMCZKqhAOuLaMIcQxajQ==}
