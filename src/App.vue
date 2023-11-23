@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '@'
+import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '@/'
 import { onMounted, ref } from 'vue'
+import { nanoid } from 'nanoid'
+import * as commonUtil from '@/common'
 
 // ================ 推送消息 push message ================
 const messageStore = useMessage()
@@ -44,6 +46,14 @@ namespace server {
       isDirectory: true,
     },
     'F:\\test_project\\index.ts': {
+      isFile: true,
+      content: 'console.log("hello world")',
+    },
+    'F:\\test_project\\api\\TestApi.ts': {
+      isFile: true,
+      content: 'console.log("hello world")',
+    },
+    'F:\\test_project\\dto\\TestDto.ts': {
       isFile: true,
       content: 'console.log("hello world")',
     },
@@ -205,6 +215,52 @@ const folderMenu = ref([{ label: 'backup', value: 'backupFolder' }])
 const handleContextMenuSelect = (path: string, item: { label: string; value: string }) => {
   alert('path: ' + path + '\nitem: ' + JSON.stringify(item))
 }
+
+// ================ 拖拽事件 drag event =================
+/**
+ * 当把拖动文件树中的数据拖进编辑器时，在当前光标处插入自定义的import语句
+ * When drag filelist data into monaco editor, insert custom statement at cursor position
+ */
+function _longestCommonPrefix(strs: string[]): string {
+  if (!strs.length) return ''
+  let [a, ...b] = strs
+  let result = ''
+  for (let i = 0; i < a.length; i++) {
+    let flag = b.every((item) => item[i] === a[i])
+    if (flag) result += a[i]
+    else break
+  }
+  return result
+}
+
+const handleDragInEditor = (srcPath: string, targetPath: string) => {
+  if (!targetPath.endsWith('.ts')) {
+    return
+  }
+  const editor = monacoStore.getEditor()
+  const pos = editor.getPosition()
+  const v = editor.getValue().split('\n')
+  v[pos.lineNumber - 1] += 'import "' + relativePathFrom(srcPath, targetPath) + '"'
+  editor.setValue(v.join('\n'))
+  editor.trigger(nanoid(), 'paste')
+}
+
+//计算相对路径 getRelativePath
+const relativePathFrom = (returnPath: string, fromPath: string): string => {
+  const prefix = _longestCommonPrefix([returnPath, fromPath])
+  returnPath = returnPath.replace(prefix, '').replace(/\\/g, '/')
+  fromPath = fromPath.replace(prefix, '').replace(/\\/g, '/')
+  const fromPathArr = fromPath.split('/')
+  let relativePath = ''
+  if (fromPathArr.length === 1) {
+    relativePath = './'
+  } else {
+    for (let i = fromPathArr.length - 2; i >= 0; i--) {
+      relativePath += '../'
+    }
+  }
+  return (relativePath += returnPath)
+}
 </script>
 
 <template>
@@ -222,6 +278,7 @@ const handleContextMenuSelect = (path: string, item: { label: string; value: str
     :file-menu="fileMenu"
     :folder-menu="folderMenu"
     @contextmenu-select="handleContextMenuSelect"
+    @drag-in-editor="handleDragInEditor"
     ref="editorRef"
   ></MonacoTreeEditor>
 </template>

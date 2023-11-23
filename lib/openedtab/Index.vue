@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, getCurrentInstance, type ComponentInternalInstance } from 'vue'
+import { onMounted, ref, watch, getCurrentInstance, type ComponentInternalInstance, nextTick } from 'vue'
 import TabItem from './TabItem.vue'
 import './index.less'
 import { useMonaco } from '../monaco-store'
@@ -55,12 +55,49 @@ const handleCloseOtherFiles = (path?: string) => {
     }
   })
 }
+
+//========================= 拖动 drag =========================
+const handleDragStart = (e: DragEvent, index: number) => {
+  console.debug('tab dragstart')
+  e.dataTransfer?.setData('component', 'openedtab')
+  e.dataTransfer?.setData('index', index.toString())
+}
+const handleDrop = (e: DragEvent, index: number) => {
+  e.preventDefault()
+  const componentName = e.dataTransfer?.getData('component')
+  const srcIndex: number = parseInt(e.dataTransfer?.getData('index')!)
+  if (componentName !== 'openedtab' || srcIndex === index) {
+    return
+  }
+  swap(srcIndex, index)
+}
+const swap = (srcIndex: number, tarIndex: number) => {
+  const result = openedFiles.value
+  const tmp = result[srcIndex]
+  result[srcIndex] = result[tarIndex]
+  result[tarIndex] = tmp
+  monacoStore.openedFiles.value = result
+  flush()
+}
+const visible = ref(true)
+const flush = () => {
+  visible.value = false
+  nextTick(() => {
+    visible.value = true
+  })
+}
 </script>
 
 <template>
   <div class="music-monaco-editor-opened-tab-wrapper">
-    <div class="music-monaco-editor-opened-tab" :style="{ fontSize: `${fontSize}px` }">
-      <span v-for="(file, index) in openedFiles">
+    <div class="music-monaco-editor-opened-tab" v-if="visible" :style="{ fontSize: `${fontSize}px` }">
+      <span
+        draggable="true"
+        @dragstart="(e) => handleDragStart(e, index)"
+        @dragover.prevent
+        @drop="(e) => handleDrop(e, index)"
+        v-for="(file, index) in openedFiles"
+      >
         <TabItem
           :rootEl="rootEl"
           :file="file"

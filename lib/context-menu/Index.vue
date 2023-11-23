@@ -64,16 +64,7 @@ const handleAfterEnter = (el: Element) => {
               >
                 {{ item.label }}
               </div>
-              <div
-                v-else
-                class="line"
-                @click="
-                  (e) => {
-                    e.stopPropagation()
-                    e.preventDefault()
-                  }
-                "
-              ></div>
+              <div v-else class="line" @click.prevent.stop></div>
             </template>
           </div>
         </div>

@@ -206,7 +206,8 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
     })
   }
 }
-function getEditor() {
+function getEditor(): monaco_define.editor.IStandaloneCodeEditor {
+  editor.trigger
   return editor
 }
 function getValue(path: string) {
@@ -239,7 +240,7 @@ function restoreModel(path: string) {
             if (hasChanged(path)) {
               v.status = 'editing'
             } else {
-              v.status = undefined
+              v.status = 'saved'
             }
           }
           return v

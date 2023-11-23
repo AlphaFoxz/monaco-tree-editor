@@ -178,6 +178,12 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
   }
 }
 
+// ================ 拖拽 drag ================
+const handleDragStart = (e: DragEvent) => {
+  e.dataTransfer?.setData('component', 'filelist')
+  e.dataTransfer?.setData('path', props.file.path)
+}
+
 // ================ 回调方法 callback ================
 const handleConfirmNewFile = (_e?: Event) => {
   showChild.value = true
@@ -292,7 +298,9 @@ watch([() => props.currentPath, () => props.file], (v) => {
     >
       <Icons :type="fileType" />
       <template v-if="file.name && !editing">
-        <span :style="{ flex: 1 }">{{ file.name }}</span>
+        <span draggable="true" :data-path="file.path" @dragstart="handleDragStart" :style="{ flex: 1 }">{{
+          file.name
+        }}</span>
         <IconEdit @click.stop="handleRenameStart" class="music-monaco-editor-list-split-icon" />
         <IconDelete @click="handleDeleteFile" class="music-monaco-editor-list-split-icon" />
       </template>
