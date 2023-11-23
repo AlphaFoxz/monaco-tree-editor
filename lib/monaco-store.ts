@@ -1,7 +1,7 @@
 import { loadWASM } from 'onigasm'
 // import * as monaco_define from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco_define from 'monaco-editor'
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.api?worker'
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
@@ -9,7 +9,7 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import wasmUrl from '/monaco-tree-editor-statics/bin/onigasm.wasm?url'
 import oneDarkProUrl from '/monaco-tree-editor-statics/themes/OneDarkPro.json?url'
 import eslintStr from '/monaco-tree-editor-statics/eslint.worker.js.txt?raw'
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick } from 'vue'
 import { type FileInfo, type Files } from './define'
 
 const typeMap: {
