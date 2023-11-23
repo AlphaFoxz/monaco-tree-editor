@@ -56,7 +56,7 @@ const emit = defineEmits({
   renameFolder: (_path: string, _newPath: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
   deleteFolder: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
   contextmenuSelect: (_path: string, _item: { label: string; value: any }) => true,
-  dragInEditor: (_srcPath: string, _targetPath: string) => true,
+  dragInEditor: (_srcPath: string, _targetPath: string, _type: 'file' | 'dir') => true,
 })
 
 // ================ 拖拽功能 dragging ================
@@ -432,7 +432,12 @@ const dragInEditor = (e: DragEvent) => {
     return
   }
   const srcPath: string = e.dataTransfer?.getData('path').toString() || ''
-  emit('dragInEditor', toOriginPath(srcPath), toOriginPath(monacoStore.currentPath.value))
+  emit(
+    'dragInEditor',
+    toOriginPath(srcPath),
+    toOriginPath(monacoStore.currentPath.value),
+    e.dataTransfer.getData('type') as 'file' | 'dir'
+  )
 }
 
 // ================ 快捷键部分 hotkey ================

@@ -74,8 +74,8 @@ const handleDrop = (e: DragEvent, index: number) => {
 const swap = (srcIndex: number, tarIndex: number) => {
   const result = openedFiles.value
   const tmp = result[srcIndex]
-  result[srcIndex] = result[tarIndex]
-  result[tarIndex] = tmp
+  result.splice(srcIndex, 1)
+  result.splice(tarIndex, 0, tmp)
   monacoStore.openedFiles.value = result
   flush()
 }

@@ -233,7 +233,7 @@ function _longestCommonPrefix(strs: string[]): string {
   return result
 }
 
-const handleDragInEditor = (srcPath: string, targetPath: string) => {
+const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 'dir') => {
   if (!targetPath.endsWith('.ts')) {
     return
   }

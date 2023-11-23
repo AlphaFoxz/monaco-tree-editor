@@ -182,6 +182,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
 const handleDragStart = (e: DragEvent) => {
   e.dataTransfer?.setData('component', 'filelist')
   e.dataTransfer?.setData('path', props.file.path)
+  e.dataTransfer?.setData('type', props.file.isFile ? 'file' : 'dir')
 }
 
 // ================ 回调方法 callback ================
@@ -320,7 +321,9 @@ watch([() => props.currentPath, () => props.file], (v) => {
       <div :title="file.name" @click="handleClick" class="music-monaco-editor-list-file-item-row">
         <IconArrow :collpase="!showChild" />
         <template v-if="file.name && !editing">
-          <span :style="{ flex: 1 }">{{ file.name }}</span>
+          <span draggable="true" :data-path="file.path" @dragstart="handleDragStart" :style="{ flex: 1 }">{{
+            file.name
+          }}</span>
           <IconEdit v-if="!file.readonly" @click.stop="handleRenameStart" class="music-monaco-editor-list-split-icon" />
           <IconDelete
             v-if="!file.readonly"
@@ -332,11 +335,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
         </template>
         <div
           v-else
-          @click="
-            (e: MouseEvent) => {
-              e.stopPropagation()
-            }
-          "
+          @click.stop
           :spell-check="false"
           @keydown="handleKeyDown"
           @blur="handleBlur"
