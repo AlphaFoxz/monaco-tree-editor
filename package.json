@@ -29,7 +29,7 @@
     "build": "pnpm build-only && pnpm type-check && pnpm copy-file",
     "build-only": "vite build",
     "type-check": "vue-tsc -p tsconfig.vitest.json --composite false",
-    "copy-file": "ncp LICENSE dist/LICENSE && ncp package.publish.json dist/package.json",
+    "copy-file": "ncp README.md dist/README.md && ncp LICENSE dist/LICENSE && ncp package.publish.json dist/package.json",
     "preview": "vite preview",
     "test": "vitest"
   },
