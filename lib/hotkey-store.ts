@@ -44,7 +44,7 @@ function listenKeyDown(name: string) {
   }
 }
 function init(
-  name: string,
+  name: 'root' | 'editor',
   bind: HTMLElement,
   options: {
     preventCtrlAltShiftKeys?: string[]
@@ -84,7 +84,7 @@ function init(
     bind.removeEventListener('keydown', onKeyDown)
   })
 }
-function listen(name: string, callback: (e: KeyboardEvent) => void) {
+function listen(name: 'root' | 'editor', callback: (e: KeyboardEvent) => void) {
   const funs = callbackMap.get(name)
   if (funs) {
     funs.push(callback)

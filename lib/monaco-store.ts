@@ -212,7 +212,6 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
   }
 }
 function getEditor(): monaco_define.editor.IStandaloneCodeEditor {
-  editor.trigger
   return editor
 }
 function getValue(path: string) {
@@ -220,7 +219,7 @@ function getValue(path: string) {
   return model?.getValue()
 }
 //恢复视图
-function restoreModel(path: string) {
+function restoreModel(path: string): monaco_define.editor.ITextModel | undefined {
   const model = monaco.editor.getModels().find((model) => model.uri.path === path)
   if (path !== prePath.value && prePath.value) {
     editorStates.value.set(prePath.value, editor?.saveViewState())
@@ -276,7 +275,7 @@ function restoreModel(path: string) {
     currentPath.value = path
     return model
   }
-  return false
+  return undefined
 }
 const openOrFocusPath = (path: string) => {
   let exist = false
