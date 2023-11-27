@@ -4,7 +4,6 @@
 
 - [x] 提供 VSCode 风格的文件树 Provide FileTree with VSCode style.
 - [x] 回调函数采用异步处理 async callback functions
-- [ ] 支持自定义的热键处理 hook（开发中） A hook for Hotkey (developing)
 - [x] 提供一个浮动的全局消息 hook。 A hook for global float message box.
 
 ## 前置要求 Prerequisites
@@ -26,6 +25,11 @@ npm i monaco-tree-editor
 {root}/node_modules/monaco-tree-editor/`assets` => {root}/public/`assets`
 
 {root}/node_modules/monaco-tree-editor/`monaco-tree-editor-statics` => {root}/public/`monaco-tree-editor-statics`
+
+## TODO
+
+- [ ] 导出内部 monaco api
+- [ ] 将组件内部钩子中的变量局部化
 
 ## 示例代码 Demo Code (Beta)
 

@@ -194,15 +194,20 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
     }
   } else if (path) {
     let type = ''
+    let tabSize = 2
     if (path.indexOf('.') !== -1) {
-      type = path.split('.').slice(-1)[0]
+      const extName = path.split('.').slice(-1)[0]
+      type = extName
+      if (['java', 'sql', 'py', 'sh', 'cpp', 'cs', 'c', 'h'].includes(extName)) {
+        tabSize = 4
+      }
     } else {
       type = 'javascript'
     }
     type = typeMap[type] || type
     model = monaco.editor.createModel(value ?? '', type, new monaco_define.Uri().with({ path, scheme: 'music' }))
     model.updateOptions({
-      tabSize: 2,
+      tabSize,
     })
   }
 }
