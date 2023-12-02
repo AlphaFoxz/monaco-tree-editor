@@ -1,13 +1,9 @@
 {
   "recommendations": [
-    "tauri-apps.tauri-vscode",
     "codeium.codeium",
     "vue.vscode-typescript-vue-plugin",
-    "rust-lang.rust-analyzer",
-    "vadimcn.vscode-lldb",
     "vue.volar",
     "bradlc.vscode-tailwindcss",
     "esbenp.prettier-vscode",
-    "pest.pest-ide-tools"
   ]
 }
