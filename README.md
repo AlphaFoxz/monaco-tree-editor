@@ -78,7 +78,7 @@ namespace server {
   let fileSeparator = '\\'
   let responseFiles: Files = {
     'F:\\test_project\\components': {
-      isDirectory: true,
+      isFolder: true,
     },
     'F:\\test_project\\index.ts': {
       isFile: true,
@@ -115,7 +115,7 @@ namespace server {
       throw new Error(`new folder: [ ${path} ] already exists!`)
     }
     responseFiles[path] = {
-      isDirectory: true,
+      isFolder: true,
     }
   }
   export const rename = async (path: string, newPath: string) => {
@@ -261,7 +261,7 @@ function _longestCommonPrefix(strs: string[]): string {
   return result
 }
 
-const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 'dir') => {
+const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 'folder') => {
   if (!targetPath.endsWith('.ts')) {
     return
   }

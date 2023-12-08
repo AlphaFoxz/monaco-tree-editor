@@ -8,7 +8,7 @@ export type FileInfo = {
   editing?: boolean
   status?: string
   isFile?: boolean
-  isDirectory?: boolean
+  isFolder?: boolean
   readonly?: boolean
   children?: { [path: string]: FileInfo } | null
 }

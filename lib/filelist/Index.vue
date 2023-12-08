@@ -19,10 +19,6 @@ defineProps({
     type: String,
     default: 'project',
   },
-  currentPath: {
-    type: String,
-    default: '/',
-  },
   rootEl: {
     type: HTMLElement,
     default: null,
@@ -53,7 +49,10 @@ const emit = defineEmits({
 const collpase = ref(false)
 const monacoStore = useMonaco()
 const fileTree = ref(monacoStore.fileTree.value)
-
+const currentPath = ref(monacoStore.currentPath.value)
+watch(monacoStore.currentPath, (n) => {
+  currentPath.value = n
+})
 watch(monacoStore.fileTree, (n) => {
   fileTree.value = n
 })

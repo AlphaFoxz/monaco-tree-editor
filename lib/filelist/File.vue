@@ -182,7 +182,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
 const handleDragStart = (e: DragEvent) => {
   e.dataTransfer?.setData('component', 'filelist')
   e.dataTransfer?.setData('path', props.file.path)
-  e.dataTransfer?.setData('type', props.file.isFile ? 'file' : 'dir')
+  e.dataTransfer?.setData('type', props.file.isFile ? 'file' : 'folder')
 }
 
 // ================ 回调方法 callback ================
@@ -227,14 +227,14 @@ const handleBlur = (_e?: Event) => {
   if (editing.value) {
     editing.value = false
     if (props.file.name !== name) {
-      if (props.file.isDirectory) {
+      if (props.file.isFolder) {
         emit('renameFolder', props.file.path, name!)
       } else {
         emit('renameFile', props.file.path, name!)
       }
     }
   } else {
-    if (props.file.isDirectory) {
+    if (props.file.isFolder) {
       emit(
         'newFolder',
         props.file.path + name,
@@ -317,7 +317,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
     </div>
   </ContextMenu>
   <div v-else class="music-monaco-editor-list-file-item">
-    <ContextMenu v-if="file.isDirectory && !root" :menu="folderContextMenu" @select="handleSelectContextMenu">
+    <ContextMenu v-if="file.isFolder && !root" :menu="folderContextMenu" @select="handleSelectContextMenu">
       <div :title="file.name" @click="handleClick" class="music-monaco-editor-list-file-item-row">
         <IconArrow :collpase="!showChild" />
         <template v-if="file.name && !editing">
@@ -346,8 +346,8 @@ watch([() => props.currentPath, () => props.file], (v) => {
       </div>
     </ContextMenu>
     <div
-      v-if="showChild || root"
-      :style="{ paddingLeft: file.isDirectory ? '7px' : '0' }"
+      v-show="showChild || root"
+      :style="{ paddingLeft: file.isFolder ? '7px' : '0' }"
       v-for="(item, _index) in keys"
     >
       <FileTemp

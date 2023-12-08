@@ -48,7 +48,7 @@ const openedFiles = ref<Array<OpenedFileInfo>>([])
 const prefix = ref('')
 const fileSeparator = ref('/')
 let fileTree = ref<FileInfo>({
-  isDirectory: true,
+  isFolder: true,
   children: {},
   path: '/',
 })
@@ -107,7 +107,7 @@ async function loadFileTree(files: Files) {
   const keys = Object.keys(files)
   const tree: FileInfo = {
     isFile: false,
-    isDirectory: true,
+    isFolder: true,
     children: {},
     path: '/',
   }
@@ -127,12 +127,12 @@ async function loadFileTree(files: Files) {
           content: files[key].isFile ? files[key].content || '' : undefined,
           readonly: files[key].readonly,
           isFile: files[key].isFile,
-          isDirectory: files[key].isDirectory,
-          children: files[key].isDirectory ? {} : undefined,
+          isFolder: files[key].isFolder,
+          children: files[key].isFolder ? {} : undefined,
         }
       } else {
         temp[v] = {
-          isDirectory: true,
+          isFolder: true,
           children: {},
           path: '/' + path.slice(0, index + 1).join('/'),
           readonly: files[key].readonly,
@@ -332,7 +332,7 @@ function newFile(path: string) {
         content: '',
         readonly: false,
         isFile: true,
-        isDirectory: false,
+        isFolder: false,
         children: undefined,
       }
     } else if (temp[v]) {
@@ -353,7 +353,7 @@ function newFolder(path: string) {
         content: '',
         readonly: false,
         isFile: false,
-        isDirectory: true,
+        isFolder: true,
         children: {},
       }
     } else if (temp[v]) {
