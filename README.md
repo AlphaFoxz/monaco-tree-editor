@@ -156,7 +156,7 @@ const handleReload = (resolve: () => void, reject: (msg?: string) => void) => {
 
 // ================ 回调函数 callback =================
 /*
-不论服务端的文件名是什么，组件内会统一取最长公共前缀，而在回调方法中的路径则会拼接回原路径
+不论服务端的文件名是什么，组件内会统一去掉最长公共前缀，而在回调方法中的路径则会拼接回原路径
 Whaterver the server's file name is,
 the component will take the longest common prefix,
 and the path in the callback method will be concatenated with the original path
