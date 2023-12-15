@@ -47,8 +47,23 @@ let fileTree = ref<FileInfo>({
   children: {},
   path: '/',
 })
+async function monacoImported() {
+  return new Promise<void>((resolve) => {
+    if (monaco) {
+      resolve()
+      return
+    }
+    const interval = setInterval(() => {
+      if (monaco) {
+        resolve()
+        clearInterval(interval)
+      }
+    }, 50)
+  })
+}
 //初始化
 async function init(dom: HTMLElement, options?: monaco_define.editor.IStandaloneEditorConstructionOptions) {
+  await monacoImported()
   editor = monaco.editor.create(dom, { ...options, model: null })
   const editorService = (editor as any)._codeEditorService
   const openEditorBase = editorService.openCodeEditor.bind(editorService)
@@ -64,8 +79,13 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
     return result
   }
   await configTheme('oneDarkPro', oneDarkProUrl)
-  await loadWASM(wasmUrl)
-  isReady.value = true
+  loadWASM(wasmUrl)
+    .then(() => {
+      isReady.value = true
+    })
+    .catch((e) => {
+      console.error(e)
+    })
 }
 async function configTheme(name: string, themeUrl: string) {
   let theme = JSON.parse(await (await fetch(themeUrl)).text())
@@ -123,6 +143,7 @@ async function loadFileTree(files: Files) {
     })
   })
   fileTree.value = tree
+  await monacoImported()
   Object.keys(files).forEach((key) => {
     const value = files[key].content
     if (typeof value === 'string') {

@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import './index.less'
 import { THEMES } from './constants'
-import { onMounted, ref, watch, defineEmits, nextTick, onUnmounted } from 'vue'
+import { onMounted, ref, watch, defineEmits, nextTick, onBeforeUnmount } from 'vue'
 import { type Files } from './define'
 import { longestCommonPrefix } from './common'
 import { useMonaco } from './monaco-store'
@@ -157,7 +157,7 @@ onMounted(() => {
   monacoStore.loadFileTree(fixFilesPath(props.files))
   monacoStore.init(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
 })
-onUnmounted(() => {
+onBeforeUnmount(() => {
   monacoStore.getEditor().dispose()
 })
 

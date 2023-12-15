@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '@/'
 import { onMounted, ref } from 'vue'
-import { nanoid } from 'nanoid'
-import * as commonUtil from '@/common'
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
@@ -26,7 +24,11 @@ window.MonacoEnvironment = {
   },
   globalAPI: true,
 }
-const monacoStore = useMonaco(monaco)
+let monacoStore
+// 模拟初始化延迟，测试健壮性 simulation delay
+server.delay().then(() => {
+  monacoStore = useMonaco(monaco)
+})
 
 // ================ 推送消息 push message ================
 const messageStore = useMessage()
@@ -75,10 +77,20 @@ namespace server {
       content: 'console.log("hello world")',
     },
   }
+  // 模拟延迟，测试健壮性 simulation delay
+  export const delay = async (maxMs = 3000) => {
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve()
+      }, Math.random() * maxMs)
+    })
+  }
   export const fetchFiles = async () => {
+    await delay(1000)
     return await JSON.parse(JSON.stringify(responseFiles))
   }
   export const createOrSaveFile = async (path: string, content: string) => {
+    await delay()
     if (responseFiles[path]) {
       if (!responseFiles[path].isFile) {
         throw new Error(`save file:[ ${path} ] is not a file!`)
@@ -92,6 +104,7 @@ namespace server {
     }
   }
   export const newFile = async (path: string) => {
+    await delay()
     if (responseFiles[path]) {
       throw new Error(`new file: [ ${path} ] already exists!`)
     }
@@ -101,6 +114,7 @@ namespace server {
     }
   }
   export const newFolder = async (path: string) => {
+    await delay()
     if (responseFiles[path]) {
       throw new Error(`new folder: [ ${path} ] already exists!`)
     }
@@ -109,6 +123,7 @@ namespace server {
     }
   }
   export const rename = async (path: string, newPath: string) => {
+    await delay()
     if (!responseFiles[path]) {
       throw new Error(`rename: source file/folder name [ ${path} ] not exists!`)
     } else if (responseFiles[newPath]) {
@@ -121,6 +136,7 @@ namespace server {
     return true
   }
   export const deleteFile = async (path: string) => {
+    await delay()
     if (!responseFiles[path]) {
       throw new Error(`delete: file name [ ${path} ] not exists!`)
     }
@@ -255,11 +271,9 @@ const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 
     return
   }
   const editor = monacoStore.getEditor()
-  const pos = editor.getPosition()
-  const v = editor.getValue().split('\n')
-  v[pos.lineNumber - 1] += 'import "' + relativePathFrom(srcPath, targetPath) + '"'
-  editor.setValue(v.join('\n'))
-  editor.trigger(nanoid(), 'paste')
+  const lineIndex = editor.getPosition()?.lineNumber!
+  let str = 'import "' + relativePathFrom(srcPath, targetPath) + '"'
+  editor.executeEdits('drop', [{ range: new monaco.Range(lineIndex, 0, lineIndex, 0), text: str }])
 }
 
 //计算相对路径 getRelativePath
