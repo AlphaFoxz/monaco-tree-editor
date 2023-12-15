@@ -8,9 +8,6 @@ dependencies:
   '@ant-design/icons-vue':
     specifier: ^7.0.1
     version: 7.0.1(vue@3.3.7)
-  monaco-editor:
-    specifier: ^0.44.0
-    version: 0.44.0
   nanoid:
     specifier: ^5.0.3
     version: 5.0.3
@@ -49,6 +46,9 @@ devDependencies:
   less:
     specifier: ^4.2.0
     version: 4.2.0
+  monaco-editor:
+    specifier: ^0.44.0
+    version: 0.44.0
   ncp:
     specifier: ^2.0.0
     version: 2.0.0
@@ -1768,7 +1768,7 @@ packages:
 
   /monaco-editor@0.44.0:
     resolution: {integrity: sha512-5SmjNStN6bSuSE5WPT2ZV+iYn1/yI9sd4Igtk23ChvqB7kDk9lZbB9F5frsuvpB+2njdIeGGFf2G4gbE6rCC9Q==}
-    dev: false
+    dev: true
 
   /ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}

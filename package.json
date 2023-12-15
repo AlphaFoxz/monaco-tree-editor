@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "monaco-editor": "^0.44.0",
     "nanoid": "^5.0.3",
     "onigasm": "^2.2.5",
     "vue": "^3.3.4"
@@ -50,6 +49,7 @@
     "@vue/tsconfig": "^0.4.0",
     "jsdom": "^22.1.0",
     "less": "^4.2.0",
+    "monaco-editor": "^0.44.0",
     "ncp": "^2.0.0",
     "npm-run-all2": "^6.1.1",
     "typescript": "~5.3.2",

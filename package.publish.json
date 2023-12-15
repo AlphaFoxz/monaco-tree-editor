@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "monaco-editor": "^0.44.0",
     "nanoid": "^5.0.3",
     "onigasm": "^2.2.5",
     "vue": "^3.3.4"
