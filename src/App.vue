@@ -3,6 +3,30 @@ import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type File
 import { onMounted, ref } from 'vue'
 import { nanoid } from 'nanoid'
 import * as commonUtil from '@/common'
+import * as monaco from 'monaco-editor'
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+
+// ================ 初始化 init monaco-tree-editor ================
+window.MonacoEnvironment = {
+  getWorker: function (_moduleId, label: string) {
+    if (label === 'json') {
+      return new jsonWorker()
+    } else if (label === 'ts' || label === 'typescript') {
+      return new tsWorker()
+    } else if (label === 'html' || label === 'handlebars' || label === 'razor') {
+      return new htmlWorker()
+    } else if (label === 'css' || label === 'scss' || label === 'less') {
+      return new cssWorker()
+    }
+    return new editorWorker()
+  },
+  globalAPI: true,
+}
+const monacoStore = useMonaco(monaco)
 
 // ================ 推送消息 push message ================
 const messageStore = useMessage()
@@ -20,13 +44,6 @@ onMounted(() => {
       textTip: 'testing successed!',
     })
   }, 5000)
-})
-
-// ================ 原生功能 original modules of monaco-editor ================
-const monacoStore = useMonaco()
-monacoStore.monaco.languages.register
-onMounted(() => {
-  monacoStore.getEditor().setValue
 })
 
 // ================ 快捷键 hotkey ==================

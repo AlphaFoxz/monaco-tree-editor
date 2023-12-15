@@ -35,9 +35,34 @@ npm i monaco-tree-editor
 
 ```vue
 <script setup lang="ts">
-import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from 'monaco-tree-editor'
-import 'monaco-tree-editor/index.css'
+import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '@/'
 import { onMounted, ref } from 'vue'
+import { nanoid } from 'nanoid'
+import * as commonUtil from '@/common'
+import * as monaco from 'monaco-editor'
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+
+// ================ 初始化 init monaco-tree-editor ================
+window.MonacoEnvironment = {
+  getWorker: function (_moduleId, label: string) {
+    if (label === 'json') {
+      return new jsonWorker()
+    } else if (label === 'ts' || label === 'typescript') {
+      return new tsWorker()
+    } else if (label === 'html' || label === 'handlebars' || label === 'razor') {
+      return new htmlWorker()
+    } else if (label === 'css' || label === 'scss' || label === 'less') {
+      return new cssWorker()
+    }
+    return new editorWorker()
+  },
+  globalAPI: true,
+}
+const monacoStore = useMonaco(monaco)
 
 // ================ 推送消息 push message ================
 const messageStore = useMessage()
@@ -57,13 +82,6 @@ onMounted(() => {
   }, 5000)
 })
 
-// ================ 原生功能 original modules of monaco-editor ================
-const monacoStore = useMonaco()
-monacoStore.monaco.languages.register
-onMounted(() => {
-  monacoStore.getEditor().setValue
-})
-
 // ================ 快捷键 hotkey ==================
 const hotkeyStore = useHotkey()
 hotkeyStore.listen('root', (event: KeyboardEvent) => {})
@@ -81,6 +99,14 @@ namespace server {
       isFolder: true,
     },
     'F:\\test_project\\index.ts': {
+      isFile: true,
+      content: 'console.log("hello world")',
+    },
+    'F:\\test_project\\api\\TestApi.ts': {
+      isFile: true,
+      content: 'console.log("hello world")',
+    },
+    'F:\\test_project\\dto\\TestDto.ts': {
       isFile: true,
       content: 'console.log("hello world")',
     },
@@ -119,16 +145,15 @@ namespace server {
     }
   }
   export const rename = async (path: string, newPath: string) => {
-    if (path === newPath) {
-      return true
-    }
     if (!responseFiles[path]) {
       throw new Error(`rename: source file/folder name [ ${path} ] not exists!`)
     } else if (responseFiles[newPath]) {
       throw new Error(`rename: target file/folder name [ ${newPath} ] already exists!`)
     }
     responseFiles[newPath] = responseFiles[path]
-    delete responseFiles[path]
+    if (path !== newPath) {
+      delete responseFiles[path]
+    }
     return true
   }
   export const deleteFile = async (path: string) => {
