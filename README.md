@@ -36,6 +36,7 @@ npm i monaco-tree-editor
 ```vue
 <script setup lang="ts">
 import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from 'monaco-tree-editor'
+import 'monaco-tree-editor/index.css'
 import { onMounted, ref } from 'vue'
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
