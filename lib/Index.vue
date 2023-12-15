@@ -34,11 +34,15 @@ const props = defineProps({
     default: 240,
   },
   fileMenu: {
-    type: Array,
+    type: Array<any>,
     default: () => [],
   },
   folderMenu: {
-    type: Array,
+    type: Array<any>,
+    default: () => [],
+  },
+  settingsMenu: {
+    type: Array<any>,
     default: () => [],
   },
   fontSize: {
@@ -552,17 +556,23 @@ defineExpose({
               <label for="prettierCheck">prettier on save</label>
             </div>
           </div>
-          <div class="music-monaco-editor-input-row">
+          <div class="music-monaco-editor-input-row" v-for="(item, i) in settingsMenu" :key="i">
+            <div class="music-monaco-editor-input-name"></div>
+            <div class="music-monaco-editor-input-value" style="cursor: pointer" @click="item.handler">
+              {{ item.label }}
+            </div>
+          </div>
+          <!-- <div class="music-monaco-editor-input-row">
             <div class="music-monaco-editor-input-name">theme</div>
             <div class="music-monaco-editor-input-value">
-              <!-- <Select v-for="item in THEMES" defaultValue="OneDarkPro" @change="(v) => configTheme(v.value)">
+              <Select v-for="item in THEMES" defaultValue="OneDarkPro" @change="(v) => configTheme(v.value)">
                 <SelectMenu :label="item" :value="item" :key="item" />
-              </Select> -->
+              </Select>
               <div v-for="item in THEMES" defaultValue="OneDarkPro">
                 <SelectMenu :label="item" :value="item" :key="item" />
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </Modal>

@@ -281,6 +281,14 @@ const fileMenu = ref([
   { label: '自定义文件选项 3', value: { id: 3, decription: 'value可以是任意非空值' } },
 ])
 const folderMenu = ref([{ label: 'backup', value: 'backupFolder' }])
+const settingsMenu = ref([
+  {
+    label: 'exit',
+    handler: () => {
+      alert('exit')
+    },
+  },
+])
 
 const handleContextMenuSelect = (path: string, item: { label: string; value: string }) => {
   alert('path: ' + path + '\nitem: ' + JSON.stringify(item))
@@ -346,6 +354,7 @@ const relativePathFrom = (returnPath: string, fromPath: string): string => {
     :file-menu="fileMenu"
     :folder-menu="folderMenu"
     @contextmenu-select="handleContextMenuSelect"
+    :settings-menu="settingsMenu"
     @drag-in-editor="handleDragInEditor"
     ref="editorRef"
   ></MonacoTreeEditor>
