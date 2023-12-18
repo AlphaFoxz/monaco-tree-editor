@@ -1,4 +1,4 @@
-import { type Files } from '@/'
+import { type Files } from '$lib'
 
 const fileSeparator = '\\'
 let responseFiles: Files = {

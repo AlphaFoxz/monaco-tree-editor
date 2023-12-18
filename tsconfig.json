@@ -10,8 +10,11 @@
     ],
     "skipLibCheck": true,
     "paths": {
-      "@/*": [
+      "$lib/*": [
         "/lib/*"
+      ],
+      "@/*": [
+        "/src/*"
       ]
     },
     "isolatedModules": true,

@@ -11,7 +11,8 @@ export default defineConfig({
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./lib', import.meta.url)),
+      $lib: fileURLToPath(new URL('./lib', import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   optimizeDeps: {

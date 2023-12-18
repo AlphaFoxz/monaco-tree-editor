@@ -9,7 +9,6 @@
 ## 前置要求 Prerequisites
 
 - vue3 (推荐版本 recommend v3.3.4+)
-
 - monaco-editor (推荐版本 recommend v0.44.0+)
 
 ## 如何安装 How to install
@@ -312,7 +311,7 @@ const hotkeyStore = useHotkey()
 hotkeyStore.listen('root', (event: KeyboardEvent) => {})
 // 焦点在编辑器内的时候触发 Trigger when the focus is in the editor
 hotkeyStore.listen('editor', (event: KeyboardEvent) => {
-  if (event.ctrlKey && !event.shiftKey && !event.altKey && event.key === 's') {
+  if (event.ctrlKey && !event.shiftKey && !event.altKey && (event.key === 's' || event.key === 'S')) {
     // do something...
   }
 })
@@ -408,10 +407,29 @@ const _relativePathFrom = (returnPath: string, fromPath: string): string => {
 
 ## TODO 已知问题 Known bugs
 
-- [ ] 打开多个标签页时，用鼠标中键关闭未激活的标签页，会导致关闭当前激活的标签，但实际上是当前页面未刷新（怀疑为 vue 缓存问题）
-      When multiple tabs are open, closing an inactive tab with the middle mouse button will cause the currently activated tab to be closed, but in fact the current page is not refreshed (suspected to be a Vue cache issue)
+- [ ] [T2]打开多个标签页时，用鼠标中键点击的方式关闭未激活的标签页（当前激活标签的前一个标签），会导致关闭当前激活的标签，但实际上是组件未刷新。怀疑是组件刷新逻辑与 vue 底层缓存优化机制冲突导致的
+      When multiple tabs are open, using the middle mouse button to close an inactive tab (the tab before the currently active tab) will cause the currently activated tab to be closed, but in fact the component is not refreshed (it is suspected that the component is refreshed) Caused by conflicts between logic and Vue’s underlying cache optimization mechanism)
+- [ ] [t1]打开多个标签页时，右键点击标签页->关闭其他，会剩下一个预料之外的标签（原因同上）
+      [t1]When multiple tabs are open, right-clicking on a tab -> closing others will leave an unexpected tab (the reason is the same as above)
+- [ ] [t2]对于文件树的记录，在右键打开 contextmenu 后，如果不点击左键，而是右键点击新其他文件，会重复弹窗
+      [t2]In the file tree record, when you right-click to open contextmenu, if you do not click the left button, but right-click the new other file, it will repeatedly pop up
+- [ ] [t3]在关闭最后一个标签页后，右侧的代码缩略图应该隐藏
+      [t3]When the last tab is closed, the right side of the code thumbnail should be hidden
 
 ## TODO 待优化 To be optimized
 
 - [ ] 未区分内部 api 与提供给用户的 api ，有些混乱
       There is no distinction between internal APIs and APIs provided to users, which is a bit confusing
+- [ ] i18n 国际化
+      Internationalization
+
+## 更新记录
+
+### `v0.0.1-beta.8.x`
+
+- [规范化]之前的命名存在 dir 与 folder 混用的情况，现在统一改为`folder`，与 monaco-editor 一致。1. files 传参中的`isDirectory`改为`isFolder` 2. `drag-in-editor`事件回调函数中的`type: 'file' | 'dir'`改为`type: 'file' | 'folder'`
+  [Standardize]The previous naming was mixed with dir and folder, but now it is uniformly changed to `folder`, which is consistent with monaco-editor. 1. Change `isDirectory` in files parameter to `isFolder` 2. Change `type: 'file' | 'dir'` in `drag-in-editor` event callback function to `type: 'file' | ' folder''
+- [重构]为了减少包体积不再内置`monaco-editor`组件，改为使用`useMonaco(monaco?)`传入的参数，使用时只在初始化的`useMonaco`中传入 monaco-editor 模块即可，使用者可在初始化之前完成注册语言等官方功能，使用时按需使用 webworker。
+  [Refactoring] In order to reduce the package size, the `monaco-editor` component is no longer built in. Instead, the parameters passed in `useMonaco(monaco?)` are used. When using, only the monaco-editor module is passed in the initialized `useMonaco`. Yes, users can complete official functions such as language registration before initialization, and use webworker as needed.
+- [特性]增加一个自定义设置参数`settings-menu`，点击左下角的设置图标后，弹窗会显示自定义按钮，点击后触法回调。
+  [Feature]Added a custom setting parameter `settings-menu`, when clicking the settings icon on the left bottom, the popup window will display the custom button, and the click will trigger the callback.

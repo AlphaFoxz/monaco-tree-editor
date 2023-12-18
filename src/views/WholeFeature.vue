@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '@/'
+import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '$lib'
 import { onMounted, ref } from 'vue'
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
@@ -7,7 +7,7 @@ import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
-import { server } from './mock/server-api'
+import * as server from './mock-server'
 
 // ================ 初始化 init monaco-tree-editor ================
 window.MonacoEnvironment = {
