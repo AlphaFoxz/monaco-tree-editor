@@ -407,19 +407,19 @@ const _relativePathFrom = (returnPath: string, fromPath: string): string => {
 
 ## TODO 已知问题 Known bugs
 
-- [ ] [T2]打开多个标签页时，用鼠标中键点击的方式关闭未激活的标签页（当前激活标签的前一个标签），会导致关闭当前激活的标签，但实际上是组件未刷新。怀疑是组件刷新逻辑与 vue 底层缓存优化机制冲突导致的
-      When multiple tabs are open, using the middle mouse button to close an inactive tab (the tab before the currently active tab) will cause the currently activated tab to be closed, but in fact the component is not refreshed (it is suspected that the component is refreshed) Caused by conflicts between logic and Vue’s underlying cache optimization mechanism)
-- [ ] [t1]打开多个标签页时，右键点击标签页->关闭其他，会剩下一个预料之外的标签（原因同上）
-      [t1]When multiple tabs are open, right-clicking on a tab -> closing others will leave an unexpected tab (the reason is the same as above)
-- [ ] [t2]对于文件树的记录，在右键打开 contextmenu 后，如果不点击左键，而是右键点击新其他文件，会重复弹窗
-      [t2]In the file tree record, when you right-click to open contextmenu, if you do not click the left button, but right-click the new other file, it will repeatedly pop up
-- [ ] [t3]在关闭最后一个标签页后，右侧的代码缩略图应该隐藏
-      [t3]When the last tab is closed, the right side of the code thumbnail should be hidden
+- [ ] [中]打开多个标签页时，用鼠标中键点击的方式关闭未激活的标签页（当前激活标签的前一个标签），会导致关闭当前激活的标签，但实际上是组件未刷新。初步猜测是组件刷新逻辑与 vue 底层缓存优化机制冲突导致的
+      [medium]When multiple tabs are open, closing the inactive tab (the tab before the currently active tab) by clicking with the middle mouse button will cause the currently active tab to be closed, but the component is not actually refreshed.The initial guess is that the component refresh logic conflicts with the underlying cache optimization mechanism of Vue.
+- [ ] [高]打开多个标签页时，右键点击未激活的标签页->关闭其他，会剩下一个预料之外的标签，但实际上是组件未刷新。怀疑是组件刷新逻辑与 vue 底层缓存优化机制冲突导致的
+      [high]When multiple tabs are open, right-click on the inactive tab -> Close Others, an unexpected tab will be left, but in fact the component is not refreshed.The initial guess is that the component refresh logic conflicts with the underlying cache optimization mechanism of Vue.
+- [ ] [中]对于文件树的记录，在右键打开 contextmenu 后，如果不点击左键，而是右键点击新其他文件，会重复弹窗
+      [medium]In the file tree record, when you right-click to open contextmenu, if you do not click the left button, but right-click the new other file, it will repeatedly pop up
+- [ ] [低]在关闭最后一个标签页后，右侧的代码缩略图应该隐藏
+      [low]When the last tab is closed, the right side of the code thumbnail should be hidden
 
 ## TODO 待优化 To be optimized
 
 - [ ] 未区分内部 api 与提供给用户的 api ，有些混乱
-      There is no distinction between internal APIs and APIs provided to users, which is a bit confusing
+      There is currently no distinction between internal APIs and APIs provided to users, which is a bit confusing.
 - [ ] i18n 国际化
       Internationalization
 
