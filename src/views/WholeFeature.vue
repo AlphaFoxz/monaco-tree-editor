@@ -175,7 +175,7 @@ const serverFiles = {
 }
 回调中则会拼接回来
 const handleSaveFile = (path: string, resolve: () => void, reject: (msg?: string) => void) => {
-  console.log(path) // will print 'F:\\test_project\\index.ts'
+  console.log(path) // 这里会打印 'F:\\test_project\\index.ts'
 }
 */
 /*
