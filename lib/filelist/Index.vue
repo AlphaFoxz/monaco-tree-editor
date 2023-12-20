@@ -2,7 +2,7 @@
 import './index.less'
 import IconAddfolder from '../icons/Addfolder'
 import IconAddfile from '../icons/Addfile'
-import { ReloadOutlined } from '@ant-design/icons-vue'
+import { ReloadOutlined, MinusSquareOutlined } from '@ant-design/icons-vue'
 import IconArrow from '../icons/Arrow'
 import FileTemp from './File.vue'
 import Confirm from '../modal/Confirm.vue'
@@ -62,6 +62,10 @@ const fileConfirmVisible = ref(false)
 const folderConfirmVisible = ref(false)
 const confirmPath = ref('')
 const handleCollapse = () => {
+  collpase.value = !collpase.value
+}
+const handleCollapseAll = () => {
+  //TODO
   collpase.value = !collpase.value
 }
 const handleConfirmNewFile = (path: string) => {
@@ -145,16 +149,25 @@ const handleRenameFolder = (path: string, name: string) => {
         <IconArrow :collpase="collpase" />
         <span :style="{ flex: 1 }">{{ projectName }}</span>
         <IconAddfile
-          title="New file"
+          title="New file.."
           @click.stop="() => handleConfirmNewFile('/')"
           class="music-monaco-editor-list-split-icon"
         />
         <IconAddfolder
-          title="New Folder"
+          title="New Folder.."
           @click.stop="() => handleConfirmNewFolder('/')"
           class="music-monaco-editor-list-split-icon"
         />
-        <ReloadOutlined title="Refresh" @click.stop="$emit('reload')" class="music-monaco-editor-list-split-icon" />
+        <ReloadOutlined
+          title="Refresh Explorer"
+          @click.stop="$emit('reload')"
+          class="music-monaco-editor-list-split-icon"
+        />
+        <MinusSquareOutlined
+          title="Collapse Folders in Explorer"
+          @click.stop="handleCollapseAll"
+          class="music-monaco-editor-list-split-icon"
+        />
       </div>
     </ContextMenu>
     <div v-show="!collpase" class="music-monaco-editor-list-files">

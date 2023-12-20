@@ -256,7 +256,7 @@ const handleBlur = (_e?: Event) => {
   }
 }
 const handlePathChange = (_e?: MouseEvent) => {
-  if (editing.value) {
+  if (editing.value || !monacoStore.isReady.value) {
     return
   }
   const key = props.file.path
@@ -302,8 +302,8 @@ watch([() => props.currentPath, () => props.file], (v) => {
         <span draggable="true" :data-path="file.path" @dragstart="handleDragStart" :style="{ flex: 1 }">{{
           file.name
         }}</span>
-        <IconEdit @click.stop="handleRenameStart" class="music-monaco-editor-list-split-icon" />
-        <IconDelete @click="handleDeleteFile" class="music-monaco-editor-list-split-icon" />
+        <IconEdit title="Rename" @click.stop="handleRenameStart" class="music-monaco-editor-list-split-icon" />
+        <IconDelete title="Delete" @click="handleDeleteFile" class="music-monaco-editor-list-split-icon" />
       </template>
       <div
         v-else
@@ -324,14 +324,28 @@ watch([() => props.currentPath, () => props.file], (v) => {
           <span draggable="true" :data-path="file.path" @dragstart="handleDragStart" :style="{ flex: 1 }">{{
             file.name
           }}</span>
-          <IconEdit v-if="!file.readonly" @click.stop="handleRenameStart" class="music-monaco-editor-list-split-icon" />
+          <IconEdit
+            title="Rename.."
+            v-if="!file.readonly"
+            @click.stop="handleRenameStart"
+            class="music-monaco-editor-list-split-icon"
+          />
           <IconDelete
+            title="Delete"
             v-if="!file.readonly"
             @click.stop="emit('deleteFolder', file.path)"
             class="music-monaco-editor-list-split-icon"
           />
-          <IconAddfile @click.stop="handleConfirmNewFile" class="music-monaco-editor-list-split-icon" />
-          <IconAddfolder @click.stop="handleConfirmNewFolder" class="music-monaco-editor-list-split-icon" />
+          <IconAddfile
+            title="New file.."
+            @click.stop="handleConfirmNewFile"
+            class="music-monaco-editor-list-split-icon"
+          />
+          <IconAddfolder
+            title="New Folder.."
+            @click.stop="handleConfirmNewFolder"
+            class="music-monaco-editor-list-split-icon"
+          />
         </template>
         <div
           v-else
