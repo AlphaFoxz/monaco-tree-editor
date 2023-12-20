@@ -7,15 +7,15 @@ let responseFiles: Files = {
   },
   'F:\\test_project\\index.ts': {
     isFile: true,
-    content: 'console.log("hello world")',
+    content: 'console.log("index")',
   },
   'F:\\test_project\\api\\TestApi.ts': {
     isFile: true,
-    content: 'console.log("hello world")',
+    content: 'console.log("TestApi")',
   },
   'F:\\test_project\\dto\\TestDto.ts': {
     isFile: true,
-    content: 'console.log("hello world")',
+    content: 'console.log("TestDto")',
   },
 }
 // 模拟延迟，测试健壮性 mock delay to test robustness
