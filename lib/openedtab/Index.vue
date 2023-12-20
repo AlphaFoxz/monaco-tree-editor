@@ -20,10 +20,7 @@ const openedFiles = ref(monacoStore.openedFiles.value)
 const currentPath = ref('')
 let instanceRef: ComponentInternalInstance | null
 watch(monacoStore.openedFiles, (n) => {
-  openedFiles.value = []
-  n.forEach((t) => {
-    openedFiles.value.push(t)
-  })
+  openedFiles.value = n
 })
 watch(monacoStore.currentPath, (n) => {
   currentPath.value = n
