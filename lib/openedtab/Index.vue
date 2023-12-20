@@ -20,7 +20,10 @@ const openedFiles = ref(monacoStore.openedFiles.value)
 const currentPath = ref('')
 let instanceRef: ComponentInternalInstance | null
 watch(monacoStore.openedFiles, (n) => {
-  openedFiles.value = n
+  openedFiles.value = []
+  n.forEach((t) => {
+    openedFiles.value.push(t)
+  })
 })
 watch(monacoStore.currentPath, (n) => {
   currentPath.value = n
@@ -101,7 +104,7 @@ const flush = () => {
         <TabItem
           :rootEl="rootEl"
           :file="file"
-          :key="index"
+          :key="file.path"
           :ref="file.path"
           :currentPath="currentPath"
           @saveFile="handleSaveFile"

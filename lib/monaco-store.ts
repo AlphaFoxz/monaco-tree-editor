@@ -58,7 +58,7 @@ async function monacoImported() {
         resolve()
         clearInterval(interval)
       }
-    }, 50)
+    }, 100)
   })
 }
 //初始化
@@ -292,26 +292,25 @@ const openOrFocusPath = (path: string) => {
 }
 function closeFile(path: string) {
   const pre = openedFiles.value
-  let targetPath = ''
+  let activePath = ''
   if (pre.length) {
     const res = pre.filter((v, index) => {
-      if (v.path === path) {
-        const m = monaco.editor.getModels().find((model) => model.uri.path === path)
-        m?.setValue(originalFileTree[path].content!)
-        if (index === 0) {
-          if (pre[index + 1]) {
-            targetPath = pre[index + 1].path
-          }
-        } else {
-          targetPath = pre[index - 1].path
-        }
+      if (v.path !== path) {
+        return true
       }
-      return v.path !== path
+      const m = monaco.editor.getModels().find((model) => model.uri.path === path)
+      m?.setValue(originalFileTree[path].content!)
+      if (pre[index + 1]) {
+        activePath = pre[index + 1].path
+      } else if (index > 0) {
+        activePath = pre[index - 1].path
+      }
+      return false
     })
     // 目标文件是当前文件，且存在下一激活文件时，执行model及path切换的逻辑
-    if (targetPath && currentPath.value === path) {
-      restoreModel(targetPath)
-      currentPath.value = targetPath
+    if (activePath) {
+      restoreModel(activePath)
+      currentPath.value = activePath
     }
     if (res.length === 0) {
       restoreModel('')
