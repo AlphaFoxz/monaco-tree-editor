@@ -2,14 +2,14 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
-    collpase: {
+    collapse: {
       type: Boolean,
       default: true,
     },
   },
   setup(props) {
     return () => {
-      return props.collpase ? (
+      return props.collapse ? (
         <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path d="M5.7 13.7L5 13l4.6-4.6L5 3.7l.7-.7 5 5v.7l-5 5z"></path>
         </svg>

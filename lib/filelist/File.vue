@@ -12,6 +12,9 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useMonaco } from '../monaco-store'
 import { type ContextMenuItem } from '../context-menu/define'
 const props = defineProps({
+  collapseTrigger: {
+    type: Number,
+  },
   file: {
     type: Object,
     required: true,
@@ -280,6 +283,12 @@ watch([editing, () => props.file], (v) => {
     })
   }
 })
+watch(
+  () => props.collapseTrigger,
+  () => {
+    showChild.value = false
+  }
+)
 watch([() => props.currentPath, () => props.file], (v) => {
   if (v[0] && v[0].startsWith(v[1].path + '/')) {
     showChild.value = true
@@ -319,7 +328,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
   <div v-else class="music-monaco-editor-list-file-item">
     <ContextMenu v-if="file.isFolder && !root" :menu="folderContextMenu" @select="handleSelectContextMenu">
       <div :title="file.name" @click="handleClick" class="music-monaco-editor-list-file-item-row">
-        <IconArrow :collpase="!showChild" />
+        <IconArrow :collapse="!showChild" />
         <template v-if="file.name && !editing">
           <span draggable="true" :data-path="file.path" @dragstart="handleDragStart" :style="{ flex: 1 }">{{
             file.name
@@ -379,6 +388,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
         :currentPath="currentPath"
         :root="false"
         :file="file.children[item]"
+        :collapse-trigger="collapseTrigger"
         :key="item"
       />
     </div>

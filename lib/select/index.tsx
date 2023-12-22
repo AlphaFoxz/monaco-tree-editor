@@ -92,7 +92,7 @@ export default defineComponent({
             >
               {data.value.label}
               <div class="music-monaco-editor-select-content-arrow">
-                <ArrowIcon collpase={!visible} />
+                <ArrowIcon collapse={!visible} />
               </div>
             </div>
           </div>

@@ -46,7 +46,7 @@ const emit = defineEmits({
 })
 
 //=================== 初始化 init ==================
-const collpase = ref(false)
+const collapse = ref(false)
 const monacoStore = useMonaco()
 const fileTree = ref(monacoStore.fileTree.value)
 const currentPath = ref(monacoStore.currentPath.value)
@@ -61,12 +61,12 @@ watch(monacoStore.fileTree, (n) => {
 const fileConfirmVisible = ref(false)
 const folderConfirmVisible = ref(false)
 const confirmPath = ref('')
+let collapseTrigger = ref(0)
 const handleCollapse = () => {
-  collpase.value = !collpase.value
+  collapse.value = !collapse.value
 }
 const handleCollapseAll = () => {
-  //TODO
-  collpase.value = !collpase.value
+  collapseTrigger.value = new Date().getTime()
 }
 const handleConfirmNewFile = (path: string) => {
   monacoStore.newFile(path)
@@ -146,7 +146,7 @@ const handleRenameFolder = (path: string, name: string) => {
     <ContextMenu :menu="[]">
       <div class="music-monaco-editor-list-title">{{ title }}</div>
       <div class="music-monaco-editor-list-split" @click="handleCollapse">
-        <IconArrow :collpase="collpase" />
+        <IconArrow :collapse="collapse" />
         <span :style="{ flex: 1 }">{{ projectName }}</span>
         <IconAddfile
           title="New file.."
@@ -170,7 +170,7 @@ const handleRenameFolder = (path: string, name: string) => {
         />
       </div>
     </ContextMenu>
-    <div v-show="!collpase" class="music-monaco-editor-list-files">
+    <div v-show="!collapse" class="music-monaco-editor-list-files">
       <FileTemp
         @confirm-new-file="handleConfirmNewFile"
         @confirm-new-folder="handleConfirmNewFolder"
@@ -186,6 +186,7 @@ const handleRenameFolder = (path: string, name: string) => {
         :currentPath="currentPath"
         root
         :file="fileTree"
+        :collapse-trigger="collapseTrigger"
       />
     </div>
   </div>

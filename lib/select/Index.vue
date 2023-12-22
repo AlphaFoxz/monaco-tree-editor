@@ -94,7 +94,7 @@ const handleSelect = (data: any) => {
     >
       {{ data.label }}
       <div class="music-monaco-editor-select-content-arrow">
-        <ArrowIcon :collpase="!visible" />
+        <ArrowIcon :collapse="!visible" />
       </div>
     </div>
   </div>
