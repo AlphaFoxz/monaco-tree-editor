@@ -206,7 +206,11 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
       type = 'javascript'
     }
     type = typeMap[type] || type
-    model = monaco.editor.createModel(value ?? '', type, new monaco_define.Uri().with({ path, scheme: 'music' }))
+    model = monaco.editor.createModel(
+      value ?? '',
+      type,
+      new monaco_define.Uri().with({ path, authority: 'server', scheme: 'file' })
+    )
     model.updateOptions({
       tabSize,
     })
@@ -299,7 +303,13 @@ function closeFile(path: string) {
         return true
       }
       const m = monaco.editor.getModels().find((model) => model.uri.path === path)
-      m?.setValue(originalFileTree[path].content!)
+      if (m?.uri.authority) {
+        // 来自用户的文件
+        m?.setValue(originalFileTree[path].content!)
+      } else {
+        // 可能是源码之类的，不存在当前项目中的文件，在关闭时直接销毁，不涉及保存
+        m?.dispose()
+      }
       if (pre[index + 1]) {
         activePath = pre[index + 1].path
       } else if (index > 0) {
@@ -377,6 +387,9 @@ function removeBlank(path: string) {
 }
 function hasChanged(path: string): boolean {
   const m = monaco.editor.getModels().find((model) => model.uri.path === path)
+  if (!m?.uri.authority) {
+    return false
+  }
   return originalFileTree[path].content !== m?.getValue()
 }
 function format() {
