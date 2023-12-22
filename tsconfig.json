@@ -9,14 +9,6 @@
       "DOM.Iterable"
     ],
     "skipLibCheck": true,
-    "paths": {
-      "$lib/*": [
-        "/lib/*"
-      ],
-      "@/*": [
-        "/src/*"
-      ]
-    },
     "isolatedModules": true,
     // "noEmit": true,
     "emitDeclarationOnly": true,

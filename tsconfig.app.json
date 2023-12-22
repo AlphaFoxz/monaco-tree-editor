@@ -4,7 +4,7 @@
     "lib/*",
     "lib/**/*",
     "lib/**/*.vue",
-    // "env.d.ts",
+    "env.d.ts",
   ],
   "exclude": [
     "src/**/__tests__/*"
@@ -13,7 +13,7 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "$lib/*": [
+      "~lib/*": [
         "/lib/*"
       ],
       "@/*": [

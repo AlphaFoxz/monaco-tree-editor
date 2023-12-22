@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
-      $lib: fileURLToPath(new URL('./lib', import.meta.url)),
+      '~lib': fileURLToPath(new URL('./lib', import.meta.url)),
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
@@ -28,7 +28,7 @@ export default defineConfig({
     target: 'esnext',
     cssCodeSplit: true,
     lib: {
-      entry: path.resolve(__dirname, './lib/index.ts'),
+      entry: fileURLToPath(new URL('./lib/index.ts', import.meta.url)), //path.resolve(__dirname, './lib/index.ts'),
       name: 'monaco-tree-editor',
       fileName: 'index',
       formats: ['es', 'umd'],

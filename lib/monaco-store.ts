@@ -269,13 +269,13 @@ function restoreModel(path: string): monaco_define.editor.ITextModel | undefined
         })
       })
     }
-    worker.then((res) =>
+    worker.then((res) => {
       res.postMessage({
-        code: model.getValue(),
-        version: model.getVersionId(),
+        code: model.isDisposed! ? undefined : model.getValue(),
+        version: model.isDisposed! ? undefined : model.getVersionId(),
         path,
       })
-    )
+    })
     prePath.value = path
     currentPath.value = path
     return model
