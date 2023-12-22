@@ -405,28 +405,16 @@ const _relativePathFrom = (returnPath: string, fromPath: string): string => {
 </template>
 ```
 
-## TODO 已知问题 Known bugs
+## TODO 已知问题与待优化 Known bugs and To be optimized
 
-- [ ] [中]打开多个标签页时，用鼠标中键点击的方式关闭未激活的标签页（当前激活标签的前一个标签），会导致关闭当前激活的标签，但实际上是组件未刷新。初步猜测是组件刷新逻辑与 vue 底层缓存优化机制冲突导致的
-      [medium]When multiple tabs are open, closing the inactive tab (the tab before the currently active tab) by clicking with the middle mouse button will cause the currently active tab to be closed, but the component is not actually refreshed.The initial guess is that the component refresh logic conflicts with the underlying cache optimization mechanism of Vue.
-- [ ] [高]打开多个标签页时，右键点击未激活的标签页->关闭其他，会剩下一个预料之外的标签，但实际上是组件未刷新。怀疑是组件刷新逻辑与 vue 底层缓存优化机制冲突导致的
-      [high]When multiple tabs are open, right-click on the inactive tab -> Close Others, an unexpected tab will be left, but in fact the component is not refreshed.The initial guess is that the component refresh logic conflicts with the underlying cache optimization mechanism of Vue.
-- [ ] [中]对于文件树的记录，在右键打开 contextmenu 后，如果不点击左键，而是右键点击新其他文件，会重复弹窗
-      [medium]In the file tree record, when you right-click to open contextmenu, if you do not click the left button, but right-click the new other file, it will repeatedly pop up
-- [ ] [低]在关闭最后一个标签页后，右侧的代码缩略图应该隐藏
-      [low]When the last tab is closed, the right side of the code thumbnail should be hidden
-
-## TODO 待优化 To be optimized
-
-- [ ] 未区分内部 api 与提供给用户的 api ，有些混乱
-      There is currently no distinction between internal APIs and APIs provided to users, which is a bit confusing.
-- [ ] i18n 国际化
-      Internationalization
+[monaco-tree-editor/issues](https://github.com/AlphaFoxz/monaco-tree-editor/issues)
 
 ## 更新记录
 
 ### `v0.0.1-beta.8.x`
 
+- [修复]修复了已知的若干个问题 [#2](https://github.com/AlphaFoxz/monaco-tree-editor/issues/2) [#3](https://github.com/AlphaFoxz/monaco-tree-editor/issues/3) [#7](https://github.com/AlphaFoxz/monaco-tree-editor/issues/7)
+  [fix]Fixed several known issues [#2](https://github.com/AlphaFoxz/monaco-tree-editor/issues/2) [#3](https://github.com/AlphaFoxz/monaco-tree-editor/issues/3) [#7](https://github.com/AlphaFoxz/monaco-tree-editor/issues/7)
 - [规范化]之前的命名存在 dir 与 folder 混用的情况，现在统一改为`folder`，与 monaco-editor 一致。1. files 传参中的`isDirectory`改为`isFolder` 2. `drag-in-editor`事件回调函数中的`type: 'file' | 'dir'`改为`type: 'file' | 'folder'`
   [Standardize]The previous naming was mixed with dir and folder, but now it is uniformly changed to `folder`, which is consistent with monaco-editor. 1. Change `isDirectory` in files parameter to `isFolder` 2. Change `type: 'file' | 'dir'` in `drag-in-editor` event callback function to `type: 'file' | ' folder''
 - [重构]为了减少包体积不再内置`monaco-editor`组件，改为使用`useMonaco(monaco?)`传入的参数，使用时只在初始化的`useMonaco`中传入 monaco-editor 模块即可，使用者可在初始化之前完成注册语言等官方功能，使用时按需使用 webworker。
