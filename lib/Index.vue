@@ -6,6 +6,7 @@ import { longestCommonPrefix } from './common'
 import { useMonaco } from './monaco-store'
 import { useHotkey } from './hotkey-store'
 import { useMessage } from './message-store'
+import { useGlobalVar } from './global-var-store'
 import * as monaco_define from 'monaco-editor'
 import Prettier from './prettier/Index.vue'
 import FileList from './filelist/Index.vue'
@@ -169,6 +170,7 @@ onBeforeUnmount(() => {
 
 // ================ 回调事件 callback events ================
 const messageStore = useMessage()
+const globalVarStore = useGlobalVar()
 const toOriginPath = (path: string): string => {
   let oriPath = projectPrefix + path
   if (fileSeparator === '\\') {
@@ -271,6 +273,11 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
     resolve()
     return
   }
+  if (globalVarStore.savingFiles.value.has(path)) {
+    reject()
+    return
+  }
+  globalVarStore.savingFiles.value.add(path)
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
     content: `[ ${path} ] Saving...`,
@@ -281,6 +288,7 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
     oriPath,
     value,
     () => {
+      globalVarStore.savingFiles.value.delete(path)
       messageStore.close(msgId)
       messageStore.success({
         content: 'Save successed!',
@@ -291,6 +299,7 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
       resolve()
     },
     (msg = '') => {
+      globalVarStore.savingFiles.value.delete(path)
       messageStore.close(msgId)
       messageStore.error({
         content: `Save failed! ${msg}`,
