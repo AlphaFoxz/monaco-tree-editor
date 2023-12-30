@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '~lib'
-import { onMounted, ref } from 'vue'
+import { ComputedRef, onMounted, ref } from 'vue'
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
@@ -183,8 +183,8 @@ const settingsMenu = ref([
   },
 ])
 
-const handleContextMenuSelect = (path: string, item: { label: string; value: string }) => {
-  alert('path: ' + path + '\nitem: ' + JSON.stringify(item))
+const handleContextMenuSelect = (path: string, item: { label: string | ComputedRef<string>; value: string }) => {
+  console.warn('path: ' + path + '\nitem: ' + item)
 }
 
 // ================ 拖拽事件 drag event =================

@@ -7,8 +7,9 @@ import IconArrow from '../icons/Arrow'
 import FileTemp from './File.vue'
 import Confirm from '../modal/Confirm.vue'
 import ContextMenu from '../context-menu/Index.vue'
-import { ref, watch } from 'vue'
+import { ref, watch, type ComputedRef } from 'vue'
 import { useMonaco } from '../monaco-store'
+import { useI18n } from '../locale'
 
 defineProps({
   title: {
@@ -42,8 +43,11 @@ const emit = defineEmits({
   deleteFolder: (_path: string) => true,
   renameFile: (_path: string, _name: string) => true,
   renameFolder: (_path: string, _name: string) => true,
-  contextmenuSelect: (_path: string, _item: { label: string; value: any }) => true,
+  contextmenuSelect: (_path: string, _item: { label: string | ComputedRef<string>; value: any }) => true,
 })
+
+//=================== 国际化 i18n ==================
+const { r } = useI18n()
 
 //=================== 初始化 init ==================
 const collapse = ref(false)
@@ -109,14 +113,12 @@ const handleRenameFolder = (path: string, name: string) => {
       @cancel="fileConfirmVisible = false"
       @close="fileConfirmVisible = false"
     >
-      <template #title?>Are you sure you want to delete this folder?</template>
-      <template #okText>DELETE</template>
+      <template #title>{{ r('confirm.deleteFileTitle').value }}</template>
+      <template #okText>{{ r('confirm.delete').value }}</template>
+      <template #cancelText>{{ r('confirm.cancel').value }}</template>
       <template #content>
         <div>
-          <div>Operation is unable to undo, please ensure there are backups/version control on your server</div>
-          <div>
-            Current path: <b>{{ confirmPath }}</b>
-          </div>
+          {{ r('confirm.deleteFileContent', { path: confirmPath }).value }}
         </div>
       </template>
     </Confirm>
@@ -132,14 +134,12 @@ const handleRenameFolder = (path: string, name: string) => {
       @cancel="folderConfirmVisible = false"
       @close="folderConfirmVisible = false"
     >
-      <template #title?>Are you sure you want to delete this folder?</template>
-      <template #okText>DELETE</template>
+      <template #title>{{ r('confirm.deleteFolderTitle').value }}</template>
+      <template #okText>{{ r('confirm.delete').value }}</template>
+      <template #cancelText>{{ r('confirm.cancel').value }}</template>
       <template #content>
         <div>
-          <div>Operation is unable to undo, please ensure there are backups/version control on your server</div>
-          <div>
-            Current path: <b>{{ confirmPath }}</b>
-          </div>
+          {{ r('confirm.deleteFolderContent', { path: confirmPath }).value }}
         </div>
       </template>
     </Confirm>
@@ -149,22 +149,22 @@ const handleRenameFolder = (path: string, name: string) => {
         <IconArrow :collapse="collapse" />
         <span :style="{ flex: 1 }">{{ projectName }}</span>
         <IconAddfile
-          title="New file.."
+          :title="r('button.newFile').value"
           @click.stop="() => handleConfirmNewFile('/')"
           class="music-monaco-editor-list-split-icon"
         />
         <IconAddfolder
-          title="New Folder.."
+          :title="r('button.newFolder').value"
           @click.stop="() => handleConfirmNewFolder('/')"
           class="music-monaco-editor-list-split-icon"
         />
         <ReloadOutlined
-          title="Refresh Explorer"
+          :title="r('button.refreshExplorer').value"
           @click.stop="$emit('reload')"
           class="music-monaco-editor-list-split-icon"
         />
         <MinusSquareOutlined
-          title="Collapse Folders in Explorer"
+          :title="r('button.collapseAll').value"
           @click.stop="handleCollapseAll"
           class="music-monaco-editor-list-split-icon"
         />

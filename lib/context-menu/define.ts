@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref, type Ref } from 'vue'
+import { onMounted, onUnmounted, ref, type ComputedRef, type Ref } from 'vue'
 
 let visibleHistory: Ref<boolean>[] = []
 function clear() {
@@ -38,6 +38,6 @@ export function useContextMenu(container: Ref<HTMLElement | undefined>) {
 }
 
 export type ContextMenuItem<T> = {
-  label?: string
+  label?: string | ComputedRef<string>
   value?: T
 }

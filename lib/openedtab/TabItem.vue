@@ -5,6 +5,8 @@ import Confirm from '../modal/Confirm.vue'
 import Icons from '../icons'
 import type { ContextMenuItem } from '../context-menu/define'
 import { useMonaco } from '../monaco-store'
+import { useI18n } from '../locale'
+
 const props = defineProps({
   file: {
     type: Object,
@@ -26,6 +28,10 @@ const emit = defineEmits({
   closeOtherFiles: (_path?: string) => true,
 })
 const monacoStore = useMonaco()
+
+//========================= 国际化 i18n ==========================
+const { r } = useI18n()
+
 //========================= 点击标签 click tab ==========================
 const itemRef = ref<HTMLDivElement>()
 const name = props.file!.path.split('/').slice(-1)[0]
@@ -65,9 +71,9 @@ watch(active, () => {
 //========================= 右键菜单 contextmenu ==========================
 type _MenuValue = 'close' | 'closeOthers' | 'closeAll'
 const contextMenu: ContextMenuItem<_MenuValue>[] = [
-  { label: 'Close', value: 'close' },
-  { label: 'Close Others', value: 'closeOthers' },
-  { label: 'Close All', value: 'closeAll' },
+  { label: r('ctxmenu.close'), value: 'close' },
+  { label: r('ctxmenu.closeOthers'), value: 'closeOthers' },
+  { label: r('ctxmenu.closeAll'), value: 'closeAll' },
 ]
 const handleSelectContextMenu = (item: ContextMenuItem<_MenuValue>) => {
   const v = item.value
@@ -155,13 +161,12 @@ defineExpose({
     @close="confirmVisible = false"
     v-if="confirmVisible"
   >
-    <template #title>是否要保存对本文件的修改</template>
-    <template #okText>保存</template>
-    <template #cancelText>不保存</template>
+    <template #title>{{ r('confirm.saveOnCloseTitle').value }}</template>
+    <template #okText>{{ r('confirm.save').value }}</template>
+    <template #cancelText>{{ r('confirm.dontSave').value }}</template>
     <template #content>
       <div>
-        <div>如果不保存，你的更改将丢失</div>
-        <div>当前文件路径: {{ file!.path }}</div>
+        {{ r('confirm.saveOnCloseContent', { path: file!.path }).value }}
       </div>
     </template>
   </Confirm>

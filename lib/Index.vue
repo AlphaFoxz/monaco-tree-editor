@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import './index.less'
-import { onMounted, ref, watch, defineEmits, nextTick, onBeforeUnmount } from 'vue'
+import { onMounted, ref, watch, defineEmits, nextTick, onBeforeUnmount, type ComputedRef } from 'vue'
 import { type Files } from './define'
 import { longestCommonPrefix } from './common'
 import { useMonaco } from './monaco-store'
@@ -15,6 +15,7 @@ import Modal from './modal/Index.vue'
 import IconClose from './icons/Close'
 import IconSetting from './icons/Setting'
 import Message from './message-bar/Index.vue'
+import { useI18n, type Language, changeLanguage } from './locale'
 
 const props = defineProps({
   files: {
@@ -48,6 +49,7 @@ const props = defineProps({
     type: Number,
     default: 14,
   },
+  language: String,
 })
 const emit = defineEmits({
   reload: (_resolve: () => void, _reject: (msg?: string) => void) => true,
@@ -58,9 +60,20 @@ const emit = defineEmits({
   newFolder: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
   renameFolder: (_path: string, _newPath: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
   deleteFolder: (_path: string, _resolve: () => void, _reject: (msg?: string) => void) => true,
-  contextmenuSelect: (_path: string, _item: { label: string; value: any }) => true,
+  contextmenuSelect: (_path: string, _item: { label: string | ComputedRef<string>; value: any }) => true,
   dragInEditor: (_srcPath: string, _targetPath: string, _type: 'file' | 'folder') => true,
 })
+
+// ================ 国际化 i18n ================
+const { t, r } = useI18n((props.language || 'en-US') as Language)
+watch(
+  () => props.language,
+  (n) => {
+    if (n) {
+      changeLanguage(n as Language)
+    }
+  }
+)
 
 // ================ 拖拽功能 dragging ================
 const filelistWidth = ref(props.siderMinWidth)
@@ -181,20 +194,20 @@ const toOriginPath = (path: string): string => {
 const handleReload = (
   resolve = () => {
     messageStore.success({
-      content: 'Reload successed!',
+      content: t('msg.reloadSuccessed'),
       closeable: true,
       timeoutMs: 3000,
     })
   },
   reject = (msg = '') => {
     messageStore.error({
-      content: `Reload failed! ${msg}`,
+      content: t('msg.reloadFailed', { msg }),
       closeable: true,
     })
   }
 ) => {
   const msgId = messageStore.info({
-    content: `Reloading...`,
+    content: t('msg.reloading'),
     loading: true,
   })
   emit(
@@ -212,7 +225,7 @@ const handleReload = (
 const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
-    content: `[ ${path} ] Creating...`,
+    content: t('msg.creating', { path }),
     loading: true,
   })
   emit(
@@ -221,7 +234,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
     () => {
       messageStore.close(msgId)
       messageStore.success({
-        content: 'Creating successed!',
+        content: t('msg.createSuccessed'),
         timeoutMs: 3000,
         closeable: true,
       })
@@ -231,7 +244,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
     (msg = '') => {
       messageStore.close(msgId)
       messageStore.error({
-        content: `Creating failed! ${msg}`,
+        content: t('msg.createFailed', { msg }),
         closeable: true,
       })
       reject()
@@ -241,7 +254,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
 const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) => {
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
-    content: `[ ${path} ] Creating...`,
+    content: t('msg.creating', { path }),
     loading: true,
   })
   emit(
@@ -250,7 +263,7 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
     () => {
       messageStore.close(msgId)
       messageStore.success({
-        content: 'Creating successed!',
+        content: t('msg.createSuccessed'),
         timeoutMs: 3000,
         closeable: true,
       })
@@ -260,7 +273,7 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
     (msg = '') => {
       messageStore.close(msgId)
       messageStore.error({
-        content: `Creating failed! ${msg}`,
+        content: t('msg.createFailed', { msg }),
         closeable: true,
       })
       reject()
@@ -280,7 +293,7 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
   globalVarStore.savingFiles.value.add(path)
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
-    content: `[ ${path} ] Saving...`,
+    content: t('msg.saving', { path }),
     loading: true,
   })
   emit(
@@ -291,7 +304,7 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
       globalVarStore.savingFiles.value.delete(path)
       messageStore.close(msgId)
       messageStore.success({
-        content: 'Save successed!',
+        content: t('msg.saveSuccessed'),
         timeoutMs: 3000,
         closeable: true,
       })
@@ -302,7 +315,7 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
       globalVarStore.savingFiles.value.delete(path)
       messageStore.close(msgId)
       messageStore.error({
-        content: `Save failed! ${msg}`,
+        content: t('msg.saveFailed', { msg }),
         closeable: true,
       })
       reject()
@@ -313,7 +326,7 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
 const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) => {
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
-    content: `[ ${path} ] Deleting File...`,
+    content: t('msg.deletingFile', { path }),
     loading: true,
   })
   emit(
@@ -322,7 +335,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
     () => {
       messageStore.close(msgId)
       messageStore.success({
-        content: 'Delete successed!',
+        content: t('msg.deleteSuccessed'),
         timeoutMs: 3000,
         closeable: true,
       })
@@ -332,7 +345,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
     (msg = '') => {
       messageStore.close(msgId)
       messageStore.error({
-        content: `Delete failed! ${msg}`,
+        content: t('msg.deleteFailed', { msg }),
         closeable: true,
       })
       reject()
@@ -343,7 +356,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
 const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {}) => {
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
-    content: `[ ${path}] Deleting Folder...`,
+    content: t('msg.deletingFolder', { path }),
     loading: true,
   })
   emit(
@@ -352,7 +365,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
     () => {
       messageStore.close(msgId)
       messageStore.success({
-        content: 'Delete successed!',
+        content: t('msg.deleteSuccessed'),
         timeoutMs: 3000,
         closeable: true,
       })
@@ -362,7 +375,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
     (msg = '') => {
       messageStore.close(msgId)
       messageStore.error({
-        content: `Delete failed! ${msg}`,
+        content: t('msg.deleteFailed', { msg }),
         closeable: true,
       })
       reject()
@@ -377,7 +390,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
   tmpArr.push(newName)
   const newPath = tmpArr.join(fileSeparator)
   const msgId = messageStore.info({
-    content: `[ ${path} ] Renaming File...`,
+    content: t('msg.renamingFile', { path }),
     loading: true,
   })
   emit(
@@ -387,7 +400,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
     () => {
       messageStore.close(msgId)
       messageStore.success({
-        content: 'Rename successed!',
+        content: t('msg.renameSuccessed'),
         timeoutMs: 3000,
         closeable: true,
       })
@@ -397,7 +410,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
     (msg = '') => {
       messageStore.close(msgId)
       messageStore.error({
-        content: `Rename failed! ${msg}`,
+        content: t('msg.renameFailed', { msg }),
         closeable: true,
       })
       reject()
@@ -412,7 +425,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
   tmpArr.push(newName)
   const newPath = tmpArr.join(fileSeparator)
   const msgId = messageStore.info({
-    content: `[ ${path} ] Renaming Folder...`,
+    content: t('msg.renamingFolder', { path }),
     loading: true,
   })
   emit(
@@ -422,7 +435,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
     () => {
       messageStore.close(msgId)
       messageStore.success({
-        content: 'Rename successed!',
+        content: t('msg.renameSuccessed'),
         timeoutMs: 3000,
         closeable: true,
       })
@@ -432,7 +445,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
     (msg = '') => {
       messageStore.close(msgId)
       messageStore.error({
-        content: `Rename failed! ${msg}`,
+        content: t('msg.renameFailed', { msg }),
         closeable: true,
       })
       reject()
@@ -440,7 +453,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
   )
 }
 
-const handleContextmenuSelect = (path: string, item: { label: string; value: any }) => {
+const handleContextmenuSelect = (path: string, item: { label: string | ComputedRef<string>; value: any }) => {
   emit('contextmenuSelect', toOriginPath(path), item)
 }
 
@@ -550,27 +563,42 @@ defineExpose({
     >
       <div class="music-monaco-editor-setting">
         <div class="music-monaco-editor-setting-header">
-          setting
+          {{ r('settings.title').value }}
           <div @click="settingVisible = false" class="music-monaco-editor-setting-header-close">
             <IconClose :style="{ width: '12px', height: '12px' }" />
           </div>
         </div>
         <div class="music-monaco-editor-setting-content">
-          <div class="music-monaco-editor-input-row">
-            <div class="music-monaco-editor-input-name">prettier</div>
-            <div class="music-monaco-editor-input-value">
-              <input
-                id="prettierCheck"
-                :defaultChecked="autoPrettierRef"
-                type="checkbox"
-                @change="handleSetAutoPrettier"
-              />
-              <label for="prettierCheck">prettier on save</label>
+          <div v-if="!language" class="music-monaco-editor-input-row">
+            <div class="music-monaco-editor-input-name">Language</div>
+            <div
+              class="music-monaco-editor-select-item"
+              style="cursor: pointer"
+              @click="
+                () => {
+                  changeLanguage('en-US')
+                  messageStore.success({ content: 'Switch to English', timeoutMs: 2000 })
+                }
+              "
+            >
+              English
+            </div>
+            <div
+              class="music-monaco-editor-select-item"
+              style="cursor: pointer"
+              @click="
+                () => {
+                  changeLanguage('zh-CN')
+                  messageStore.success({ content: '切换为简体中文', timeoutMs: 2000 })
+                }
+              "
+            >
+              简体中文
             </div>
           </div>
           <div class="music-monaco-editor-input-row" v-for="(item, i) in settingsMenu" :key="i">
             <div class="music-monaco-editor-input-name"></div>
-            <div class="music-monaco-editor-input-value" style="cursor: pointer" @click="item.handler">
+            <div class="music-monaco-editor-select-item" style="cursor: pointer" @click="item.handler">
               {{ item.label }}
             </div>
           </div>
@@ -590,3 +618,9 @@ defineExpose({
     </Modal>
   </div>
 </template>
+
+<style scoped lang="less">
+.music-monaco-editor-select-item {
+  margin: 0 15px;
+}
+</style>

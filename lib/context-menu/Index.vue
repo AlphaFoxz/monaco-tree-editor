@@ -62,7 +62,7 @@ const handleAfterEnter = (el: Element) => {
                 @mouseup="handleClick(item)"
                 @contextmenu.prevent.stop="handleClick(item)"
               >
-                {{ item.label }}
+                {{ typeof item.label === 'string' ? item.label : item.label.value }}
               </div>
               <div v-else class="line" @click.prevent.stop></div>
             </template>
