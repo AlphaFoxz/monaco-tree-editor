@@ -236,6 +236,7 @@ const _relativePathFrom = (returnPath: string, fromPath: string): string => {
   <MonacoTreeEditor
     :fontSize="14"
     :files="files"
+    language="en-US"
     @reload="handleReload"
     @new-file="handleNewFile"
     @new-folder="handleNewFolder"

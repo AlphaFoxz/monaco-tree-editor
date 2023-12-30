@@ -344,12 +344,38 @@ const settingsMenu = ref([
     },
   },
 ])
+const handleContextMenuSelect = (path: string, item: { label: string | ComputedRef<string>; value: string }) => {
+  console.warn('path: ' + path + '\nitem: ' + item)
+}
 ```
 
 ```vue
 <template>
-  <MonacoTreeEditor :file-menu="fileMenu" :folder-menu="folderMenu" :settings-menu="settingsMenu"></MonacoTreeEditor>
+  <MonacoTreeEditor
+    :file-menu="fileMenu"
+    :folder-menu="folderMenu"
+    :settings-menu="settingsMenu"
+    @contextmenu-select="handleContextMenuSelect"
+  ></MonacoTreeEditor>
 </template>
+```
+
+### 国际化 I18n
+
+language 目前有 2 个可选值，`en-US`和`zh-CN`。
+如果不指定 language，则默认为`en-US`，同时组件中的设置菜单将显示语言切换功能。
+如果指定 language，组件中的设置菜单将不显示语言切换功能，统一由外部控制是否切换。
+
+language currently has two options: `en-US` and `zh-CN`.
+If not specified language, the default language is `en-US`, and the settings menu will display the language switch function.
+If specified language, the settings menu will not display the language switch function, and it will be controlled by the outside.
+
+```vue
+<!--
+en-US: English (Default)
+zh-CN: 简体中文
+-->
+<MonacoTreeEditor language="en-US"></MonacoTreeEditor>
 ```
 
 ### 自定义拖拽事件 Custom drag and drop
@@ -421,3 +447,5 @@ const _relativePathFrom = (returnPath: string, fromPath: string): string => {
   [Refactoring] In order to reduce the package size, the `monaco-editor` component is no longer built in. Instead, the parameters passed in `useMonaco(monaco?)` are used. When using, only the monaco-editor module is passed in the initialized `useMonaco`. Yes, users can complete official functions such as language registration before initialization, and use webworker as needed.
 - [特性]增加一个自定义设置参数`settings-menu`，点击左下角的设置图标后，弹窗会显示自定义按钮，点击后触法回调。
   [Feature]Added a custom setting parameter `settings-menu`, when clicking the settings icon on the left bottom, the popup window will display the custom button, and the click will trigger the callback.
+- [特性]增加对国际化的支持
+  [Feature] Added support for internationalization
