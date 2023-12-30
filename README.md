@@ -25,7 +25,7 @@ npm i monaco-tree-editor
 
 {root}/node_modules/monaco-tree-editor/`monaco-tree-editor-statics` => {root}/public/`monaco-tree-editor-statics`
 
-## 示例代码 Demo Code (Beta)
+## 示例代码 Demo Code
 
 ### 模拟服务端 mock server
 
