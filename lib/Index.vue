@@ -1,6 +1,5 @@
 <script setup lang="tsx">
 import './index.less'
-import { THEMES } from './constants'
 import { onMounted, ref, watch, defineEmits, nextTick, onBeforeUnmount } from 'vue'
 import { type Files } from './define'
 import { longestCommonPrefix } from './common'
@@ -14,7 +13,6 @@ import OpenedTab from './openedtab/Index.vue'
 import Modal from './modal/Index.vue'
 import IconClose from './icons/Close'
 import IconSetting from './icons/Setting'
-import SelectMenu from './select/MenuTemp.vue'
 import Message from './message-bar/Index.vue'
 
 const props = defineProps({
@@ -108,6 +106,7 @@ const projectName = ref<any>('project')
 let fileSeparator = '/'
 let projectPrefix = ''
 const autoPrettierRef = ref(true)
+const openedCount = ref(0)
 const handleSetAutoPrettier = (e: any) => {
   autoPrettierRef.value = e.target!.checked
 }
@@ -156,6 +155,9 @@ watch(
     monacoStore.updateOptions({ fontSize: n })
   }
 )
+watch(monacoStore.openedFiles, (n) => {
+  openedCount.value = n.length
+})
 onMounted(() => {
   handleReload()
   monacoStore.loadFileTree(fixFilesPath(props.files))
@@ -504,6 +506,7 @@ defineExpose({
       <OpenedTab :fontSize="fontSize" @save-file="handleSaveFile" />
       <div
         id="editor"
+        v-show="openedCount > 0"
         ref="editorRef"
         @drop="dragInEditor"
         :style="{
