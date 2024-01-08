@@ -237,7 +237,7 @@ const _relativePathFrom = (returnPath: string, fromPath: string): string => {
     :font-size="14"
     :files="files"
     :sider-min-width="240"
-    filelistTitle="文件列表"
+    filelist-title="文件列表"
     language="en-US"
     @reload="handleReload"
     @new-file="handleNewFile"
