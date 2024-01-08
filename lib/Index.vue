@@ -25,13 +25,12 @@ const props = defineProps({
   prefix: {
     type: String,
   },
-  timeoutMs: {
-    type: Number,
-    default: 5000,
-  },
   siderMinWidth: {
     type: Number,
     default: 240,
+  },
+  filelistTitle: {
+    type: String,
   },
   fileMenu: {
     type: Array<any>,
@@ -514,6 +513,7 @@ defineExpose({
       @contextmenu-select="handleContextmenuSelect"
       :project-name="projectName"
       :rootEl="rootRef"
+      :title="filelistTitle"
       :fontSize="fontSize"
       :style="{ width: filelistWidth + 'px', minWidth: siderMinWidth + 'px' }"
     />

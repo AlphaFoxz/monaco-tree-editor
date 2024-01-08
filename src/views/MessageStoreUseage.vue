@@ -99,8 +99,10 @@ const handleRename = (path: string, newPath: string, resolve: () => void, reject
 
 <template>
   <MonacoTreeEditor
-    :fontSize="14"
+    :font-size="14"
     :files="files"
+    :sider-min-width="240"
+    filelistTitle="文件列表"
     @reload="handleReload"
     @new-file="handleNewFile"
     @new-folder="handleNewFolder"
