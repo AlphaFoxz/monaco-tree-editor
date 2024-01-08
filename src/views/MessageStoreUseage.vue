@@ -102,7 +102,7 @@ const handleRename = (path: string, newPath: string, resolve: () => void, reject
     :font-size="14"
     :files="files"
     :sider-min-width="240"
-    filelistTitle="文件列表"
+    filelist-title="文件列表"
     @reload="handleReload"
     @new-file="handleNewFile"
     @new-folder="handleNewFolder"
