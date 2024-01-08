@@ -193,7 +193,7 @@ const handleContextMenuSelect = (path: string, item: { label: string | ComputedR
  * When drag filelist data into monaco editor, insert custom statement at cursor position
  */
 const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 'folder') => {
-  if (!targetPath.endsWith('.ts') || !srcPath.endsWith('.ts')) {
+  if (!targetPath.endsWith('.ts') || !srcPath.endsWith('.js')) {
     return
   }
   const editor = monacoStore.getEditor()

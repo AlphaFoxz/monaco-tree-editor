@@ -388,7 +388,7 @@ zh-CN: 简体中文
  * For example, When the user drags a file to the editor, the file will be imported into the editor
  */
 const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 'folder') => {
-  if (!targetPath.endsWith('.ts') || !srcPath.endsWith('.ts')) {
+  if (!targetPath.endsWith('.ts') || !srcPath.endsWith('.js')) {
     return
   }
   const editor = monacoStore.getEditor()
