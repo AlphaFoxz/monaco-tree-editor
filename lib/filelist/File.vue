@@ -105,7 +105,7 @@ const initFileContextMenu = [
   { label: r('ctxmenu.renameFile'), value: '@renameFile' },
   { label: r('ctxmenu.deleteFile'), value: '@deleteFile' },
 ]
-const fileContextMenu = computed(() => {
+const fileContextMenu = (() => {
   const arr = initFileContextMenu
   if (props.fileMenu.length > 0) {
     for (let i = props.fileMenu.length - 1; i >= 0; i--) {
@@ -115,7 +115,7 @@ const fileContextMenu = computed(() => {
     arr.splice(1, 0, {})
   }
   return arr
-})
+})()
 const initFolderContextMenu = [
   { label: r('ctxmenu.newFile'), value: '@newFile' },
   { label: r('ctxmenu.newFolder'), value: '@newFolder' },
@@ -126,7 +126,7 @@ const initFolderContextMenu = [
   { label: r('ctxmenu.renameFolder'), value: '@renameFolder' },
   { label: r('ctxmenu.deleteFolder'), value: '@deleteFolder' },
 ]
-const folderContextMenu = computed(() => {
+const folderContextMenu = (() => {
   const arr = initFolderContextMenu
   if (props.folderMenu.length > 0) {
     for (let i = props.folderMenu.length - 1; i >= 0; i--) {
@@ -136,7 +136,7 @@ const folderContextMenu = computed(() => {
     arr.splice(2, 0, {})
   }
   return arr
-})
+})()
 const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderOperation>) => {
   switch (item.value) {
     case '@openFile':

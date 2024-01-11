@@ -118,11 +118,7 @@ const settingVisible = ref(false)
 const projectName = ref<any>('project')
 let fileSeparator = '/'
 let projectPrefix = ''
-const autoPrettierRef = ref(true)
 const openedCount = ref(0)
-const handleSetAutoPrettier = (e: any) => {
-  autoPrettierRef.value = e.target!.checked
-}
 const monacoStore = useMonaco()
 monacoStore.loadFileTree(props.files)
 const editorRef = ref<HTMLElement>()
