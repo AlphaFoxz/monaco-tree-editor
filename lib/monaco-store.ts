@@ -3,7 +3,6 @@ import { loadWASM } from 'onigasm'
 import * as monaco_define from 'monaco-editor'
 import wasmUrl from '/monaco-tree-editor-statics/bin/onigasm.wasm?url'
 import oneDarkProUrl from '/monaco-tree-editor-statics/themes/OneDarkPro.json?url'
-import eslintStr from '/monaco-tree-editor-statics/eslint.worker.js.txt?raw'
 import { ref, nextTick } from 'vue'
 import { type FileInfo, type Files } from './define'
 
@@ -19,15 +18,6 @@ const typeMap: {
   sv: 'systemverilog',
   restful: 'restful',
 }
-const worker = new Promise<Worker>(async (resolve) => {
-  const codeString = eslintStr //await fetch(eslintUrl).then((res) => res.text())
-  const localWorkerUrl = window.URL.createObjectURL(
-    new Blob([codeString], {
-      type: 'application/javascript',
-    })
-  )
-  resolve(new Worker(localWorkerUrl))
-})
 type OpenedFileInfo = { status?: string; path: string }
 
 let originalFileTree: Files
@@ -154,12 +144,18 @@ async function loadFileTree(files: Files) {
     status?: string | undefined
     path: string
   }[] = []
+  const notExsist: string[] = []
   openedFiles.value.map((item) => {
     const tmpPath = item.path
     if (files[tmpPath]) {
       tmpOpenedFiles.push(item)
+    } else {
+      notExsist.push(tmpPath)
     }
   })
+  for (const key of notExsist) {
+    closeFile(key)
+  }
   openedFiles.value = tmpOpenedFiles
 }
 function createOrUpdateModel(path: string, value: string, force?: boolean) {
@@ -257,25 +253,8 @@ function restoreModel(path: string): monaco_define.editor.ITextModel | undefined
         // emit('fileChange', path, v)
         currentValue.value = v
         // emit('valueChange', v)
-
-        nextTick(() => {
-          worker.then((res) =>
-            res.postMessage({
-              code: model.getValue(),
-              version: model.getVersionId(),
-              path,
-            })
-          )
-        })
       })
     }
-    worker.then((res) => {
-      res.postMessage({
-        code: model.isDisposed! ? undefined : model.getValue(),
-        version: model.isDisposed! ? undefined : model.getVersionId(),
-        path,
-      })
-    })
     prePath.value = path
     currentPath.value = path
     return model
@@ -303,7 +282,7 @@ function closeFile(path: string) {
         return true
       }
       const m = monaco.editor.getModels().find((model) => model.uri.path === path)
-      if (m?.uri.authority) {
+      if (m?.uri.authority && originalFileTree[path]) {
         // 来自用户的文件
         m?.setValue(originalFileTree[path].content!)
       } else {
