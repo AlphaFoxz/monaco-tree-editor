@@ -4,6 +4,7 @@ const zhCN: Messages = {
   'msg.reloading': '加载中...',
   'msg.reloadSuccessed': '加载成功',
   'msg.reloadFailed': '加载失败',
+  'msg.timeout': '等待超时！',
   'msg.creating': '[ {path} ] 创建中...',
   'msg.createSuccessed': '创建成功',
   'msg.createFailed': '创建失败 {msg}',

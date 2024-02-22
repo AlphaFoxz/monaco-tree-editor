@@ -186,6 +186,16 @@ const toOriginPath = (path: string): string => {
   }
   return oriPath
 }
+const lockFile = (filePath: string, loadingMsgId: string) => {
+  globalVarStore.lockFile(filePath, () => {
+    messageStore.close(loadingMsgId)
+    messageStore.error({
+      content: t('msg.timeout'),
+      closeable: true,
+    })
+    globalVarStore.unlockFile(filePath)
+  })
+}
 const handleReload = (
   resolve = () => {
     messageStore.success({
@@ -218,15 +228,21 @@ const handleReload = (
   )
 }
 const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
+  if (globalVarStore.isFileLocked(path)) {
+    reject()
+    return
+  }
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
     content: t('msg.creating', { path }),
     loading: true,
   })
+  lockFile(path, msgId)
   emit(
     'newFile',
     oriPath,
     () => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.success({
         content: t('msg.createSuccessed'),
@@ -237,6 +253,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
       resolve()
     },
     (msg = '') => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.error({
         content: t('msg.createFailed', { msg }),
@@ -247,15 +264,21 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
   )
 }
 const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) => {
+  if (globalVarStore.isFileLocked(path)) {
+    reject()
+    return
+  }
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
     content: t('msg.creating', { path }),
     loading: true,
   })
+  lockFile(path, msgId)
   emit(
     'newFolder',
     oriPath,
     () => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.success({
         content: t('msg.createSuccessed'),
@@ -266,6 +289,7 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
       resolve()
     },
     (msg = '') => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.error({
         content: t('msg.createFailed', { msg }),
@@ -277,26 +301,26 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
 }
 const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolve = () => {}, reject = () => {}) => {
   if (value === undefined || !path || !monacoStore.hasChanged(path)) {
-    console.debug('there is nothing to save.')
+    console.debug('there is no changed.')
     resolve()
     return
   }
-  if (globalVarStore.savingFiles.value.has(path)) {
+  if (globalVarStore.isFileLocked(path)) {
     reject()
     return
   }
-  globalVarStore.savingFiles.value.add(path)
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
     content: t('msg.saving', { path }),
     loading: true,
   })
+  lockFile(path, msgId)
   emit(
     'saveFile',
     oriPath,
     value,
     () => {
-      globalVarStore.savingFiles.value.delete(path)
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.success({
         content: t('msg.saveSuccessed'),
@@ -307,7 +331,7 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
       resolve()
     },
     (msg = '') => {
-      globalVarStore.savingFiles.value.delete(path)
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.error({
         content: t('msg.saveFailed', { msg }),
@@ -319,15 +343,21 @@ const handleSaveFile = (path: string, value = monacoStore.getValue(path), resolv
 }
 
 const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) => {
+  if (globalVarStore.isFileLocked(path)) {
+    reject()
+    return
+  }
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
     content: t('msg.deletingFile', { path }),
     loading: true,
   })
+  lockFile(path, msgId)
   emit(
     'deleteFile',
     oriPath,
     () => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.success({
         content: t('msg.deleteSuccessed'),
@@ -338,6 +368,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
       resolve()
     },
     (msg = '') => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.error({
         content: t('msg.deleteFailed', { msg }),
@@ -349,15 +380,21 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
 }
 
 const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {}) => {
+  if (globalVarStore.isFileLocked(path)) {
+    reject()
+    return
+  }
   const oriPath = toOriginPath(path)
   const msgId = messageStore.info({
     content: t('msg.deletingFolder', { path }),
     loading: true,
   })
+  lockFile(path, msgId)
   emit(
     'deleteFolder',
     oriPath,
     () => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.success({
         content: t('msg.deleteSuccessed'),
@@ -368,6 +405,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
       resolve()
     },
     (msg = '') => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.error({
         content: t('msg.deleteFailed', { msg }),
@@ -379,6 +417,10 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
 }
 
 const handleRenameFile = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
+  if (globalVarStore.isFileLocked(path)) {
+    reject()
+    return
+  }
   const oriPath = toOriginPath(path)
   let tmpArr = oriPath.split(fileSeparator)
   tmpArr.pop()
@@ -388,11 +430,13 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
     content: t('msg.renamingFile', { path }),
     loading: true,
   })
+  lockFile(path, msgId)
   emit(
     'renameFile',
     oriPath,
     newPath,
     () => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.success({
         content: t('msg.renameSuccessed'),
@@ -403,6 +447,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
       resolve()
     },
     (msg = '') => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.error({
         content: t('msg.renameFailed', { msg }),
@@ -414,6 +459,10 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
 }
 
 const handleRenameFolder = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
+  if (globalVarStore.isFileLocked(path)) {
+    reject()
+    return
+  }
   const oriPath = toOriginPath(path)
   let tmpArr = oriPath.split(fileSeparator)
   tmpArr.pop()
@@ -423,11 +472,13 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
     content: t('msg.renamingFolder', { path }),
     loading: true,
   })
+  lockFile(path, msgId)
   emit(
     'renameFolder',
     oriPath,
     newPath,
     () => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.success({
         content: t('msg.renameSuccessed'),
@@ -438,6 +489,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
       resolve()
     },
     (msg = '') => {
+      globalVarStore.unlockFile(path)
       messageStore.close(msgId)
       messageStore.error({
         content: t('msg.renameFailed', { msg }),

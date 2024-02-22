@@ -5,6 +5,7 @@ const enUS: Messages = {
   'msg.reloading': 'Reloading...',
   'msg.reloadSuccessed': 'Reload Successed',
   'msg.reloadFailed': 'Reload Failed',
+  'msg.timeout': 'Timeout!',
   'msg.creating': '[ {path} ] Creating...',
   'msg.createSuccessed': 'Create Successed',
   'msg.createFailed': 'Create Failed {msg}',

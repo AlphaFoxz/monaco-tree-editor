@@ -1,8 +1,9 @@
 type keys =
   | 'settings.title'
+  | 'msg.reloading'
   | 'msg.reloadSuccessed'
   | 'msg.reloadFailed'
-  | 'msg.reloading'
+  | 'msg.timeout'
   | 'msg.creating'
   | 'msg.createSuccessed'
   | 'msg.createFailed'
