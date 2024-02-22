@@ -50,6 +50,10 @@ const handleCloseOtherFiles = (path?: string) => {
     if (path === key) {
       return
     }
+    if (!instanceRef?.refs[key] || (instanceRef?.refs[key] as Array<any>).length === 0) {
+      delete instanceRef?.refs[key]
+      return
+    }
     const target = instanceRef?.refs[key] as any
     if (target) {
       target[0].tryClose()
