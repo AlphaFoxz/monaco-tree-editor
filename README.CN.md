@@ -1,21 +1,21 @@
 # monaco-tree-editor
 
-English | [简体中文](./README.CN.md)
+[English](./README.md) | 简体中文
 
-## What this repo did?
+## 这个库做了什么
 
-- [x] Provide FileTree with VSCode style.
-- [x] async callback functions
-- [x] A hook for global float message box.
+- [x] 提供 VSCode 风格的文件树
+- [x] 回调函数采用异步处理
+- [x] 提供一个浮动的全局消息 hook。
 
-## Prerequisites
+## 前置要求
 
-- vue3 (recommend v3.3.4+)
-- monaco-editor (recommend v0.44.0+)
+- vue3 (推荐版本 v3.3.4+)
+- monaco-editor (推荐版本 v0.44.0+)
 
-## How to install
+## 如何安装
 
-### 1.Execute command to install
+### 1.执行命令
 
 ```shell
 pnpm add monaco-tree-editor
@@ -23,13 +23,13 @@ pnpm add monaco-tree-editor
 npm i monaco-tree-editor
 ```
 
-### 2.Copy the necessary static files
+### 2.复制必要的静态文件
 
 {root}/node_modules/monaco-tree-editor/`monaco-tree-editor-statics` => {root}/public/`monaco-tree-editor-statics`
 
-## Demo Code
+## 示例代码
 
-### mock server
+### 模拟服务端
 
 `mock-server.ts`
 
@@ -54,7 +54,7 @@ let responseFiles: Files = {
     content: 'console.log("hello world")',
   },
 }
-// mock delay to test robustness
+// 模拟延迟，测试健壮性
 export const delay = async (maxMs = 3000) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
@@ -122,7 +122,7 @@ export const deleteFile = async (path: string) => {
 }
 ```
 
-### Basic Usage
+### 基础用法
 
 ```typescript
 import { Editor as MonacoTreeEditor, useMonaco, type Files } from 'monaco-tree-editor'
@@ -136,7 +136,7 @@ import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import * as server from './mock-server'
 
-// ================ init monaco-tree-editor ================
+// ================ 初始化 ================
 window.MonacoEnvironment = {
   getWorker: function (_moduleId, label: string) {
     if (label === 'json') {
@@ -153,30 +153,27 @@ window.MonacoEnvironment = {
   globalAPI: true,
 }
 let monacoStore
-// mock delay to test robustness
+// 模拟延迟，测试健壮性
 server.delay().then(() => {
   monacoStore = useMonaco(monaco)
 })
 
-// ================ callback =================
+// ================ 回调函数 =================
 /*
-Whaterver the server's file name is,
-the component will take the longest common prefix,
-and the path in the callback method will be concatenated with the original path
-
-For example:
+不论服务端的文件名是什么，组件内会统一去掉最长公共前缀，而在回调方法中的路径则会拼接回原路径
+例如
 const serverFiles = {
   'F:\\test_project\\index.ts': {...},
   'F:\\test_project\\components\\template.ts': {...}
 }
-In component, it will be converted to:
+在组件内会转换为
 const serverFiles = {
   '/index.ts': {...},
   '/components/template.ts': {...},
 }
-And in your callback functions:
+回调中则会拼接回来
 const handleSaveFile = (path: string, resolve: () => void, reject: (msg?: string) => void) => {
-  console.log(path) // will print 'F:\\test_project\\index.ts'
+  console.log(path) // 这里会打印 'F:\\test_project\\index.ts'
 }
 */
 const files = ref<Files>()
@@ -212,7 +209,7 @@ const handleDeleteFile = (path: string, resolve: () => void, reject: (msg?: stri
     })
 }
 const handleDeleteFolder = (path: string, resolve: () => void, reject: (msg?: string) => void) => {
-  reject('Operation of delete folder is not supported!')
+  reject('不允许进行删除文件夹的操作！')
 }
 const handleNewFile = (path: string, resolve: Function, reject: Function) => {
   server
@@ -252,7 +249,7 @@ const handleRename = (path: string, newPath: string, resolve: () => void, reject
     :font-size="14"
     :files="files"
     :sider-min-width="240"
-    filelist-title="FileList"
+    filelist-title="文件列表"
     @reload="handleReload"
     @new-file="handleNewFile"
     @new-folder="handleNewFolder"
@@ -265,7 +262,7 @@ const handleRename = (path: string, newPath: string, resolve: () => void, reject
 </template>
 ```
 
-### Print messages
+### 消息推送
 
 ```typescript
 import { useMessage } from 'monaco-tree-editor'
@@ -273,7 +270,7 @@ import { onMounted } from 'vue'
 
 onMounted(() => {
   const id = messageStore.info({
-    content: 'testing..',
+    content: '加载中..',
     loading: true,
   })
   setTimeout(() => {
@@ -282,21 +279,21 @@ onMounted(() => {
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
-      textTip: 'testing successed!',
+      textTip: '加载中成功!',
     })
   }, 5000)
 })
 ```
 
-### Hotkeys
+### 快捷键
 
 ```typescript
 import { useHotkey } from 'monaco-tree-editor'
 
 const hotkeyStore = useHotkey()
-// Trigger when the focus is on the root component
+// 焦点在根组件的时候触发
 hotkeyStore.listen('root', (event: KeyboardEvent) => {})
-// Trigger when the focus is in the editor
+// 焦点在编辑器内的时候触发
 hotkeyStore.listen('editor', (event: KeyboardEvent) => {
   if (event.ctrlKey && !event.shiftKey && !event.altKey && (event.key === 's' || event.key === 'S')) {
     // do something...
@@ -304,22 +301,22 @@ hotkeyStore.listen('editor', (event: KeyboardEvent) => {
 })
 ```
 
-### Custom menus
+### 自定义菜单
 
 ```typescript
 import { ref } from 'vue'
-// ================ custom menu =================
+// ================ 自定义菜单 =================
 /**
- * Custom fileMenu and folderMenu Will insert into the context menu of sider file list
+ * 自定义fileMenu和folderMenu将插入到树形结构的右键菜单中
  */
 const fileMenu = ref([
   { label: 'Custom Selection 1', value: 'any type that not null' },
   { label: 'Custom Selection 2', value: 2 },
-  { label: 'Custom Selection 3', value: { id: 3, decription: 'value could be any type without null or undefined' } },
+  { label: '自定义文件选项 3', value: { id: 3, decription: 'value可以是任意非空值' } },
 ])
 const folderMenu = ref([{ label: 'backup', value: 'backupFolder' }])
 /*
- * Click the settings icon in the lower left corner to display custom menus
+ * 点击左下角的设置图标后，将展示自定义菜单
  */
 const settingsMenu = ref([
   {
@@ -345,11 +342,11 @@ const handleContextMenuSelect = (path: string, item: { label: string | ComputedR
 </template>
 ```
 
-### I18n
+### 国际化 I18n
 
-language currently has two options: `en-US` and `zh-CN`.
-If not specified language, the default language is `en-US`, and the settings menu will display the language switch function.
-If specified language, the settings menu will not display the language switch function, and it will be controlled by the outside.
+language 目前有 2 个可选值，`en-US`和`zh-CN`。
+如果不指定 language，则默认为`en-US`，同时组件中的设置菜单将显示语言切换功能。
+如果指定 language，组件中的设置菜单将不显示语言切换功能，统一由外部控制是否切换。
 
 ```vue
 <!--
@@ -359,11 +356,11 @@ zh-CN: 简体中文
 <MonacoTreeEditor language="en-US"></MonacoTreeEditor>
 ```
 
-### Custom drag and drop
+### 自定义拖拽事件
 
 ```typescript
 /*
- * For example, When the user drags a file to the editor, the file will be imported into the editor
+ * 比如，当用户拖拽文件到编辑器中时，将文件导入到编辑器中
  */
 const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 'folder') => {
   if (!targetPath.endsWith('.ts') && !srcPath.endsWith('.js')) {
@@ -387,7 +384,7 @@ function _longestCommonPrefix(strs: string[]): string {
   return result
 }
 
-// getRelativePath
+//计算相对路径
 const _relativePathFrom = (returnPath: string, fromPath: string): string => {
   const prefix = _longestCommonPrefix([returnPath, fromPath])
   returnPath = returnPath.replace(prefix, '').replace(/\\/g, '/')
@@ -411,6 +408,6 @@ const _relativePathFrom = (returnPath: string, fromPath: string): string => {
 </template>
 ```
 
-## TODO Known bugs and To be optimized
+## TODO 已知问题与待优化
 
 [monaco-tree-editor/issues](https://github.com/AlphaFoxz/monaco-tree-editor/issues)
