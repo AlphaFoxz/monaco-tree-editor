@@ -1,6 +1,6 @@
 # monaco-tree-editor
 
-English | [简体中文](./README.CN.md)
+English | [简体中文](https://github.com/AlphaFoxz/monaco-tree-editor/blob/main/README.CN.md)
 
 ## What this repo did?
 
@@ -10,8 +10,12 @@ English | [简体中文](./README.CN.md)
 
 ## Prerequisites
 
-- vue3 (recommend v3.3.4+)
-- monaco-editor (recommend v0.44.0+)
+- [vue3 v3.3.4+](https://vuejs.org/) or [nuxt3 v3.0+](https://nuxt.com/)
+- [monaco-editor v0.44.0+](https://microsoft.github.io/monaco-editor/)
+
+## Preview online
+
+[Run with Stackblitz](https://stackblitz.com/~/github.com/AlphaFoxz/monaco-tree-editor)
 
 ## How to install
 

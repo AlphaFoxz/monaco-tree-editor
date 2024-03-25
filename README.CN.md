@@ -1,6 +1,6 @@
 # monaco-tree-editor
 
-[English](./README.md) | 简体中文
+[English](https://github.com/AlphaFoxz/monaco-tree-editor/blob/main/README.md) | 简体中文
 
 ## 这个库做了什么
 
@@ -10,8 +10,12 @@
 
 ## 前置要求
 
-- vue3 (推荐版本 v3.3.4+)
-- monaco-editor (推荐版本 v0.44.0+)
+- [vue3 v3.3.4+](https://cn.vuejs.org/) 或者 [nuxt3 v3.0+](https://nuxt.com.cn/)
+- [monaco-editor v0.44.0+](https://microsoft.github.io/monaco-editor/)
+
+## 在线预览地址
+
+[在 Stackblitz 中运行](https://stackblitz.com/~/github.com/AlphaFoxz/monaco-tree-editor)
 
 ## 如何安装
 
