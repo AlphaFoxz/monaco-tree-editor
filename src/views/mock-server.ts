@@ -2,6 +2,10 @@ import { type Files } from '~lib'
 
 const fileSeparator = '\\'
 let responseFiles: Files = {
+  'F:\\test_project\\test.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
   'F:\\test_project\\components': {
     isFolder: true,
   },

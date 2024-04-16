@@ -2,8 +2,8 @@ import { loadWASM } from 'onigasm'
 // import * as monaco_define from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco_define from 'monaco-editor'
 import wasmUrl from '/monaco-tree-editor-statics/bin/onigasm.wasm?url'
-import oneDarkProUrl from '/monaco-tree-editor-statics/themes/OneDarkPro.json?url'
-import { ref, nextTick } from 'vue'
+import OneDarkProTheme from './themes/OneDarkPro'
+import { ref } from 'vue'
 import { type FileInfo, type Files } from './define'
 
 const typeMap: {
@@ -68,7 +68,7 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
     }
     return result
   }
-  await configTheme('oneDarkPro', oneDarkProUrl)
+  await configTheme('oneDarkPro', OneDarkProTheme)
   loadWASM(wasmUrl)
     .then(() => {
       isReady.value = true
@@ -77,8 +77,7 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
       console.error(e)
     })
 }
-async function configTheme(name: string, themeUrl: string) {
-  let theme = JSON.parse(await (await fetch(themeUrl)).text())
+async function configTheme(name: string, theme: monaco_define.editor.IStandaloneThemeData) {
   // 定义主题
   monaco.editor.defineTheme(name, theme)
   console.debug('加载monaco主题', name)
