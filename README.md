@@ -5,13 +5,14 @@ English | [简体中文](https://github.com/AlphaFoxz/monaco-tree-editor/blob/ma
 ## What this repo did?
 
 - [x] Provide FileTree with VSCode style.
-- [x] async callback functions
+- [x] Use async api for vue events
 - [x] A hook for global float message box.
 
 ## Prerequisites
 
 - [vue3 v3.3.4+](https://vuejs.org/) or [nuxt3 v3.0+](https://nuxt.com/)
 - [monaco-editor v0.44.0+](https://microsoft.github.io/monaco-editor/)
+- \[Recommended][pnpm package manager](https://pnpm.io/)
 
 ## Preview online
 
