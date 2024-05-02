@@ -4,6 +4,5 @@
     "codeium.codeium",
     "esbenp.prettier-vscode",
     "vue.volar",
-    "vue.vscode-typescript-vue-plugin",
   ]
 }
