@@ -277,9 +277,10 @@ const handleRename = (path: string, newPath: string, resolve: () => void, reject
 import { useMessage } from 'monaco-tree-editor'
 import { onMounted } from 'vue'
 
+const messageStore = useMessage()
 onMounted(() => {
   const id = messageStore.info({
-    content: '加载中..',
+    content: '测试中..',
     loading: true,
   })
   setTimeout(() => {
@@ -288,7 +289,7 @@ onMounted(() => {
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
-      textTip: '加载中成功!',
+      textTip: '测试成功!',
     })
   }, 5000)
 })

@@ -280,6 +280,7 @@ const handleRename = (path: string, newPath: string, resolve: () => void, reject
 import { useMessage } from 'monaco-tree-editor'
 import { onMounted } from 'vue'
 
+const messageStore = useMessage()
 onMounted(() => {
   const id = messageStore.info({
     content: 'testing..',
