@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { render, isVNode, onMounted, ref } from 'vue'
-import './index.less'
+import './index.scss'
 const props = defineProps({
   content: null,
   target: null,

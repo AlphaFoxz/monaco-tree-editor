@@ -2,6 +2,7 @@ import { type Messages } from './define'
 
 const enUS: Messages = {
   'settings.title': 'Settings',
+  'settings.language': 'Language',
   'msg.reloading': 'Reloading...',
   'msg.reloadSuccessed': 'Reload Successed',
   'msg.reloadFailed': 'Reload Failed',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import './index.less'
+import './index.scss'
 import CloseIcon from '../icons/Close'
 import Button from '../button'
 import { isVNode, onMounted, ref, render } from 'vue'

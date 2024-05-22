@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import './index.less'
+import './index.scss'
 import IconAddfolder from '../icons/Addfolder'
 import IconAddfile from '../icons/Addfile'
 import { ReloadOutlined, MinusSquareOutlined } from '@ant-design/icons-vue'

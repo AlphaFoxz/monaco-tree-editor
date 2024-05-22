@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import './index.less'
+import './index.scss'
 import IconLoading from '../icons/Loading.vue'
 import IconClose from '../icons/Close'
 import { computed } from 'vue'

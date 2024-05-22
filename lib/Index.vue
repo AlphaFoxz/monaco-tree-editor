@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import './index.less'
+import './index.scss'
 import { onMounted, ref, watch, defineEmits, nextTick, onBeforeUnmount, type ComputedRef } from 'vue'
 import { type Files } from './define'
 import { longestCommonPrefix } from './common'
@@ -618,7 +618,9 @@ defineExpose({
         </div>
         <div class="music-monaco-editor-setting-content">
           <div v-if="!language" class="music-monaco-editor-input-row">
-            <div class="music-monaco-editor-input-name">Language</div>
+            <div class="music-monaco-editor-input-name">
+              {{ r('settings.language').value + '' }}
+            </div>
             <div
               class="music-monaco-editor-select-item"
               style="cursor: pointer"

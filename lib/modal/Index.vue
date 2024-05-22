@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import './index.less'
+import './index.scss'
 const props = defineProps({
   destroyOnClose: {
     type: Boolean,

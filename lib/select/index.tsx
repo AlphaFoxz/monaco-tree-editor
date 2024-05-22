@@ -1,7 +1,7 @@
 import { Fragment, defineComponent, h, isVNode, mergeProps, nextTick, onUnmounted, ref, render, watch } from 'vue'
 import ArrowIcon from '../icons/Arrow'
 import Position from './PositionTemp.vue'
-import './index.less'
+import './index.scss'
 const instance = ref(document.createElement('div'))
 instance.value.className = 'music-monaco-editor-select-items'
 

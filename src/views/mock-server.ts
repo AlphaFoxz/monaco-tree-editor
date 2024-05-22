@@ -21,6 +21,21 @@ let responseFiles: Files = {
     isFile: true,
     content: 'console.log("TestDto")',
   },
+  'F:\\test_project\\package.json': {
+    isFile: true,
+    content: `{
+  "name": "test_project",
+  "version": "1.0.0",
+  "description": "test project",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview",
+    "type-check": "vue-tsc --noEmit"
+  }
+}
+`,
+  },
 }
 // 模拟延迟，测试健壮性 mock delay to test robustness
 export const delay = async (maxMs = 3000) => {

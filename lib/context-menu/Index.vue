@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useContextMenu, type ContextMenuItem } from './define'
-import './index.less'
+import './index.scss'
 
 defineProps({
   menu: {

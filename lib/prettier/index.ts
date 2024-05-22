@@ -1,7 +1,7 @@
 import { h } from 'vue'
 import PrettierIcon from '../icons/Prettier'
 import { useMonaco } from '../monaco-store'
-import './index.less'
+import './index.scss'
 
 const monacoStore = useMonaco()
 const Prettier = (props: any) => {

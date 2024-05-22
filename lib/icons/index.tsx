@@ -1,5 +1,5 @@
 import { ref, watch, defineComponent } from 'vue'
-import './index.less'
+import './index.scss'
 import defaultFileUrl from '/monaco-tree-editor-statics/icons/default_file.svg?url'
 import javaUrl from '/monaco-tree-editor-statics/icons/file_type_java.svg?url'
 import kotlinUrl from '/monaco-tree-editor-statics/icons/file_type_kotlin.svg?url'

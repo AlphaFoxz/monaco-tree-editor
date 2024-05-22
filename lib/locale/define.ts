@@ -1,5 +1,6 @@
 type keys =
   | 'settings.title'
+  | 'settings.language'
   | 'msg.reloading'
   | 'msg.reloadSuccessed'
   | 'msg.reloadFailed'
