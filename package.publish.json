@@ -12,10 +12,7 @@
     "name": "AlphaFoxz",
     "url": "https://github.com/AlphaFoxz"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/AlphaFoxz/monaco-tree-editor"
-  },
+  "repository": "https://github.com/AlphaFoxz/monaco-tree-editor",
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
     "nanoid": "^5.0.3",
