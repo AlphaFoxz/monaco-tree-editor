@@ -1,4 +1,4 @@
-.music-monaco-editor-modal {
+.monaco-tree-editor-modal {
   position: absolute;
   top: 0;
   left: 0;
@@ -24,14 +24,14 @@
     &-confirm {
       width: 400px;
       border-radius: 10px;
-      background: var(--monaco-editor-background);
+      background: var(--monaco-bg-3);
       border-radius: 10px;
       color: var(--monaco-list-activeSelectionForeground);
       padding-bottom: 10px;
     }
 
     &-title {
-      background: var(--monaco-editorCursor-foreground);
+      background: var(--monaco-cursor);
       height: 30px;
       border-radius: 10px 10px 0 0;
       padding-left: 10px;

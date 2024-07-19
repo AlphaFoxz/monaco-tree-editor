@@ -1,4 +1,4 @@
-.music-monaco-editor-button {
+.monaco-tree-editor-button {
   padding: 5px 15px;
   border-radius: 20px;
   font-size: 14px;
@@ -10,6 +10,6 @@
   }
 
   &-primary {
-    background: var(--monaco-editorCursor-foreground);
+    background: var(--monaco-cursor);
   }
 }

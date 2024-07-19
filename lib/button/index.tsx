@@ -16,7 +16,7 @@ export default defineComponent({
       return (
         <div
           onClick={(e) => emit('click', e)}
-          class={`music-monaco-editor-button music-monaco-editor-button-${props.type}`}
+          class={`monaco-tree-editor-button monaco-tree-editor-button-${props.type}`}
         >
           {slots.default?.()}
         </div>

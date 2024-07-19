@@ -11,6 +11,7 @@ export function useContextMenu(container: Ref<HTMLElement | undefined>) {
   const x = ref(0)
   const y = ref(0)
   const visible = ref(false)
+  console.debug(container.value?.clientWidth)
   function openMenu(e: MouseEvent) {
     clear()
     e.preventDefault()

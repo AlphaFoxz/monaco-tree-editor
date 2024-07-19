@@ -9,6 +9,7 @@ import { useMessage } from './message-store'
 import { useGlobalVar } from './global-var-store'
 import * as monaco_define from 'monaco-editor'
 import Prettier from './prettier/Index.vue'
+import LeftSiderBar from './left-sider-bar/Index.vue'
 import FileList from './filelist/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
 import Modal from './modal/Index.vue'
@@ -546,8 +547,9 @@ defineExpose({
 })
 </script>
 <template>
-  <div ref="rootRef" id="music-monaco-editor-root" tabIndex="1" class="music-monaco-editor">
+  <div ref="rootRef" id="monaco-tree-editor-root" tabIndex="1" class="monaco-tree-editor">
     <Message></Message>
+    <!-- <LeftSiderBar></LeftSiderBar> -->
     <FileList
       @reload="handleReload"
       @new-file="handleNewFile"
@@ -570,9 +572,9 @@ defineExpose({
       @dragstart="handleDragStart"
       @drag="handleDrag"
       @dragend="handleDragEnd"
-      class="music-monaco-editor-drag"
+      class="monaco-tree-editor-drag"
     ></div>
-    <div class="music-monaco-editor-area">
+    <div class="monaco-tree-editor-area">
       <OpenedTab :fontSize="fontSize" @save-file="handleSaveFile" />
       <div
         id="editor"
@@ -582,18 +584,16 @@ defineExpose({
         :style="{
           flex: 1,
           width: '100%',
-          height: '100%',
-          maxHeight: 'calc(100% - 35px)',
         }"
       ></div>
       <div
         v-show="!monacoStore.isReady || monacoStore.openedFiles.value.length === 0"
-        class="music-monaco-editor-area-empty"
+        class="monaco-tree-editor-area-empty"
       >
         <label>web editor</label>
       </div>
     </div>
-    <div class="music-monaco-editor-setting-button" @click="settingVisible = true">
+    <div class="monaco-tree-editor-setting-button" @click="settingVisible = true">
       <IconSetting
         :style="{
           width: '20px',
@@ -601,7 +601,7 @@ defineExpose({
         }"
       />
     </div>
-    <Prettier @click="handleFormat" class="music-monaco-editor-prettier" />
+    <Prettier @click="handleFormat" class="monaco-tree-editor-prettier" />
     <Modal
       v-show="settingVisible"
       destroyOnClose
@@ -609,20 +609,20 @@ defineExpose({
       :visible="settingVisible"
       :target="rootRef"
     >
-      <div class="music-monaco-editor-setting">
-        <div class="music-monaco-editor-setting-header">
+      <div class="monaco-tree-editor-setting">
+        <div class="monaco-tree-editor-setting-header">
           {{ r('settings.title').value }}
-          <div @click="settingVisible = false" class="music-monaco-editor-setting-header-close">
+          <div @click="settingVisible = false" class="monaco-tree-editor-setting-header-close">
             <IconClose :style="{ width: '12px', height: '12px' }" />
           </div>
         </div>
-        <div class="music-monaco-editor-setting-content">
-          <div v-if="!language" class="music-monaco-editor-input-row">
-            <div class="music-monaco-editor-input-name">
+        <div class="monaco-tree-editor-setting-content">
+          <div v-if="!language" class="monaco-tree-editor-input-row">
+            <div class="monaco-tree-editor-input-name">
               {{ r('settings.language').value + '' }}
             </div>
             <div
-              class="music-monaco-editor-select-item"
+              class="monaco-tree-editor-select-item"
               style="cursor: pointer"
               @click="
                 () => {
@@ -634,7 +634,7 @@ defineExpose({
               English
             </div>
             <div
-              class="music-monaco-editor-select-item"
+              class="monaco-tree-editor-select-item"
               style="cursor: pointer"
               @click="
                 () => {
@@ -646,23 +646,12 @@ defineExpose({
               简体中文
             </div>
           </div>
-          <div class="music-monaco-editor-input-row" v-for="(item, i) in settingsMenu" :key="i">
-            <div class="music-monaco-editor-input-name"></div>
-            <div class="music-monaco-editor-select-item" style="cursor: pointer" @click="item.handler">
+          <div class="monaco-tree-editor-input-row" v-for="(item, i) in settingsMenu" :key="i">
+            <div class="monaco-tree-editor-input-name"></div>
+            <div class="monaco-tree-editor-select-item" style="cursor: pointer" @click="item.handler">
               {{ item.label }}
             </div>
           </div>
-          <!-- <div class="music-monaco-editor-input-row">
-            <div class="music-monaco-editor-input-name">theme</div>
-            <div class="music-monaco-editor-input-value">
-              <Select v-for="item in THEMES" defaultValue="OneDarkPro" @change="(v) => configTheme(v.value)">
-                <SelectMenu :label="item" :value="item" :key="item" />
-              </Select>
-              <div v-for="item in THEMES" defaultValue="OneDarkPro">
-                <SelectMenu :label="item" :value="item" :key="item" />
-              </div>
-            </div>
-          </div> -->
         </div>
       </div>
     </Modal>
@@ -670,7 +659,7 @@ defineExpose({
 </template>
 
 <style scoped lang="less">
-.music-monaco-editor-select-item {
+.monaco-tree-editor-select-item {
   margin: 0 15px;
 }
 </style>

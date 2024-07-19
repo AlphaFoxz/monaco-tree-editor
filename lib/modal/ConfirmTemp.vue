@@ -62,14 +62,14 @@ defineExpose({ close })
 
 <template>
   <Teleport v-if="!closed" :to="target">
-    <div ref="componentRef" class="music-monaco-editor-modal">
-      <div class="music-monaco-editor-modal-mask" @click="close"></div>
-      <div class="music-monaco-editor-modal-content music-monaco-editor-modal-content-confirm">
-        <div v-if="title" class="music-monaco-editor-modal-content-title">
+    <div ref="componentRef" class="monaco-tree-editor-modal">
+      <div class="monaco-tree-editor-modal-mask" @click="close"></div>
+      <div class="monaco-tree-editor-modal-content monaco-tree-editor-modal-content-confirm">
+        <div v-if="title" class="monaco-tree-editor-modal-content-title">
           {{ title }}
         </div>
-        <div ref="contentRef" class="music-monaco-editor-modal-content-content"></div>
-        <div class="music-monaco-editor-modal-content-footer">
+        <div ref="contentRef" class="monaco-tree-editor-modal-content-content"></div>
+        <div class="monaco-tree-editor-modal-content-footer">
           <Button @click="() => onCancel(close)">
             {{ cancelText }}
           </Button>
@@ -77,7 +77,7 @@ defineExpose({ close })
             {{ okText }}
           </Button>
         </div>
-        <div class="music-monaco-editor-modal-content-close" @click="close">
+        <div class="monaco-tree-editor-modal-content-close" @click="close">
           <CloseIcon
             :style="{
               width: '12px',

@@ -10,17 +10,40 @@
   --monaco-list-inactiveSelectionForeground: #d7dae0;
   --monaco-list-warningForeground: #d19a66;
 
-  --monaco-editor-filelist-background: rgb(37, 37, 37);
-  --monaco-editor-background: rgb(30, 30, 30);
-  --monaco-editor-foreground: #abb2bf;
-
   --monaco-scrollbar-shadow: #23252c;
   --monaco-scrollbarSlider-activeBackground: #747d9180;
   --monaco-scrollbarSlider-background: #4e566660;
   --monaco-scrollbarSlider-hoverBackground: #5a637580;
-  --monaco-editorCursor-foreground: #528bff;
+
+  --monaco-c-black-1: rgb(51, 51, 51);
+  --monaco-c-black-2: rgb(37, 37, 37);
+  --monaco-c-black-3: rgb(30, 30, 30);
+  --monaco-c-black-4: rgb(45, 45, 45);
+  --monaco-c-gray-1: rgb(69, 69, 69);
+  --monaco-c-white-1: rgb(255, 255, 255);
+  --monaco-c-white-2: rgb(204, 204, 204);
+  --monaco-c-white-3: rgb(243, 243, 243);
+  --monaco-c-blue-1: rgb(0, 127, 212);
+
+  --monaco-bg-1: var(--monaco-c-black-1);
+  --monaco-bg-2: var(--monaco-c-black-2);
+  --monaco-bg-3: var(--monaco-c-black-3);
+  --monaco-bg-4: var(--monaco-c-black-4);
+  --monaco-text-1: var(--monaco-c-white-2);
+  --monaco-text-2: var(--monaco-c-white-1);
+  --monaco-border-1: var(--monaco-c-gray-1);
+  --monaco-drag-hover: var(--monaco-c-blue-1);
+  --monaco-cursor: var(--monaco-c-blue-1);
 }
-.music-monaco-editor {
+
+.monaco-tree-editor-light-mode {
+  // --monaco-bg-1: var(--monaco-c-white-1);
+  --monaco-bg-2: var(--monaco-c-white-2);
+  --monaco-bg-3: var(--monaco-c-white-3);
+  --monaco-text-1: var(--monaco-c-black-3);
+}
+
+.monaco-tree-editor {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -28,23 +51,24 @@
   width: 100%;
   height: 100%;
   position: relative;
-  color: var(--monaco-editor-foreground);
+  color: var(--monaco-text-1);
 
   &-drag {
-    width: 7px;
-    background: var(--monaco-editor-background);
+    width: 8px;
+    margin: 0 -5px;
+    background: var(--monaco-bg-3);
     height: 100%;
     cursor: col-resize;
     flex-shrink: 0;
 
     &:hover {
-      background: var(--monaco-editorCursor-foreground);
+      background: var(--monaco-drag-hover);
     }
   }
 
   &-area {
-    color: var(--monaco-editor-foreground);
-    background-color: var(--monaco-editor-background);
+    color: var(--monaco-text-1);
+    background-color: var(--monaco-bg-3);
     flex: 1;
     min-width: 0;
     height: 100%;
@@ -60,7 +84,7 @@
       right: 0;
       top: 0;
       bottom: 0;
-      background: var(--monaco-editor-background);
+      background: var(--monaco-bg-3);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -86,7 +110,7 @@
   &-setting {
     width: 400px;
     height: 200px;
-    background: var(--monaco-editor-background);
+    background: var(--monaco-bg-3);
     border-radius: 10px;
     color: var(--monaco-list-activeSelectionForeground);
     display: flex;
@@ -103,7 +127,7 @@
       position: relative;
       height: 25px;
       width: 100%;
-      background: var(--monaco-editorCursor-foreground);
+      background: var(--monaco-cursor);
       color: var(--monaco-settings-headerForeground);
       border-radius: 10px 10px 0 0;
       box-sizing: border-box;
@@ -156,13 +180,13 @@
   }
 }
 
-.music-monaco-editor-loading {
+.monaco-tree-editor-loading {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
   width: 100%;
-  background: var(--monaco-editor-background);
+  background: var(--monaco-bg-3);
 
   &-icon {
     width: 60px;

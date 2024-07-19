@@ -305,8 +305,8 @@ watch([() => props.currentPath, () => props.file], (v) => {
       :data-src="file.path"
       @click="handlePathChange"
       :key="file.path"
-      :class="`music-monaco-editor-list-file-item-row ${
-        currentPath === file.path ? 'music-monaco-editor-list-file-item-row-focused' : ''
+      :class="`monaco-tree-editor-list-file-item-row ${
+        currentPath === file.path ? 'monaco-tree-editor-list-file-item-row-focused' : ''
       }`"
     >
       <Icons :type="fileType" />
@@ -317,12 +317,12 @@ watch([() => props.currentPath, () => props.file], (v) => {
         <IconEdit
           :title="r('button.rename').value"
           @click.stop="handleRenameStart"
-          class="music-monaco-editor-list-split-icon"
+          class="monaco-tree-editor-list-split-icon"
         />
         <IconDelete
           :title="r('button.delete').value"
           @click="handleDeleteFile"
-          class="music-monaco-editor-list-split-icon"
+          class="monaco-tree-editor-list-split-icon"
         />
       </template>
       <div
@@ -331,14 +331,14 @@ watch([() => props.currentPath, () => props.file], (v) => {
         @keydown="handleKeyDown"
         @blur="handleBlur"
         ref="nameRef"
-        class="music-monaco-editor-list-file-item-new"
+        class="monaco-tree-editor-list-file-item-new"
         contenteditable
       ></div>
     </div>
   </ContextMenu>
-  <div v-else class="music-monaco-editor-list-file-item">
+  <div v-else class="monaco-tree-editor-list-file-item">
     <ContextMenu v-if="file.isFolder && !root" :menu="folderContextMenu" @select="handleSelectContextMenu">
-      <div :title="file.name" @click="handleClick" class="music-monaco-editor-list-file-item-row">
+      <div :title="file.name" @click="handleClick" class="monaco-tree-editor-list-file-item-row">
         <IconArrow :collapse="!showChild" />
         <template v-if="file.name && !editing">
           <span draggable="true" :data-path="file.path" @dragstart="handleDragStart" :style="{ flex: 1 }">{{
@@ -348,23 +348,23 @@ watch([() => props.currentPath, () => props.file], (v) => {
             :title="r('button.rename').value"
             v-if="!file.readonly"
             @click.stop="handleRenameStart"
-            class="music-monaco-editor-list-split-icon"
+            class="monaco-tree-editor-list-split-icon"
           />
           <IconDelete
             :title="r('button.delete').value"
             v-if="!file.readonly"
             @click.stop="emit('deleteFolder', file.path)"
-            class="music-monaco-editor-list-split-icon"
+            class="monaco-tree-editor-list-split-icon"
           />
           <IconAddfile
             :title="r('button.newFile').value"
             @click.stop="handleConfirmNewFile"
-            class="music-monaco-editor-list-split-icon"
+            class="monaco-tree-editor-list-split-icon"
           />
           <IconAddfolder
             :title="r('button.newFolder').value"
             @click.stop="handleConfirmNewFolder"
-            class="music-monaco-editor-list-split-icon"
+            class="monaco-tree-editor-list-split-icon"
           />
         </template>
         <div
@@ -374,7 +374,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
           @keydown="handleKeyDown"
           @blur="handleBlur"
           ref="nameRef"
-          class="music-monaco-editor-list-file-item-new"
+          class="monaco-tree-editor-list-file-item-new"
           contenteditable
         ></div>
       </div>

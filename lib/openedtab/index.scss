@@ -1,16 +1,17 @@
-.music-monaco-editor-opened-tab {
-  height: 35px;
+.monaco-tree-editor-opened-tab {
+  height: auto;
   box-sizing: border-box;
   font-size: 14px;
   overflow-x: scroll;
   overflow-y: hidden;
   width: 100%;
   white-space: nowrap;
-  background-color: var(--monaco-editor-background);
+  background-color: var(--monaco-bg-2);
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  flex-wrap: wrap;
 
   /* 滚动槽 */
   &::-webkit-scrollbar {
@@ -18,7 +19,7 @@
     height: 6px;
   }
   &::-webkit-scrollbar-track {
-    background: var(--monaco-editor-background);
+    background: var(--monaco-bg-3);
     box-shadow: inset 0 0 5px var(--monaco-scrollbar-shadow);
     -webkit-box-shadow: inset 0 0 5px var(--monaco-scrollbar-shadow);
   }
@@ -33,6 +34,7 @@
   }
 
   &-wrapper {
+    flex: 0 0 auto;
     box-sizing: border-box;
     width: 100%;
     padding-right: 30px;
@@ -49,12 +51,12 @@
     flex-direction: row;
     align-items: center;
     margin-right: 1px;
-    background-color: var(--monaco-editor-background);
+    background-color: var(--monaco-bg-4);
     position: relative;
 
     &-focused {
-      background-color: var(--monaco-list-focusBackground);
-      color: var(--monaco-list-focusForeground);
+      background-color: var(--monaco-bg-3);
+      color: var(--monaco-text-2);
     }
 
     &:hover {
@@ -83,13 +85,13 @@
   }
 }
 
-.music-monaco-editor-modal-rightclick {
-  & .music-monaco-editor-modal-mask {
+.monaco-tree-editor-modal-rightclick {
+  & .monaco-tree-editor-modal-mask {
     opacity: 0;
   }
 }
 
-.music-monaco-editor-rightclick {
+.monaco-tree-editor-rightclick {
   &-panel {
     position: fixed;
     background: var(--monaco-editorWidget-background);
@@ -97,7 +99,7 @@
     font-size: 12px;
     line-height: 30px;
     min-width: 150px;
-    color: var(--monaco-editor-foreground);
+    color: var(--monaco-text-1);
 
     &-item {
       padding: 0 10px;

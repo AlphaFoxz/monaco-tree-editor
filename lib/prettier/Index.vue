@@ -10,6 +10,6 @@ const handleClick = () => {
 
 <template>
   <div>
-    <PrettierIcon class="music-monaco-editor-prettier-icon" @click="handleClick" />
+    <PrettierIcon class="monaco-tree-editor-prettier-icon" @click="handleClick" />
   </div>
 </template>

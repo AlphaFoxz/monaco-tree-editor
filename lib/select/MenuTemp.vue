@@ -31,7 +31,7 @@ watch([() => props.value, () => props.defaultValue], (v) => {
         handleSelect({ value, label })
       }
     "
-    :class="`music-monaco-editor-select-item ${selected ? 'music-monaco-editor-select-item-selected' : ''}`"
+    :class="`monaco-tree-editor-select-item ${selected ? 'monaco-tree-editor-select-item-selected' : ''}`"
   >
     {{ label }}
   </div>

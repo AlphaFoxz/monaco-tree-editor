@@ -100,7 +100,7 @@ const handleRenameFolder = (path: string, name: string) => {
 }
 </script>
 <template>
-  <div class="music-monaco-editor-list-wrapper" :style="{ fontSize: `${fontSize}px` }">
+  <div class="monaco-tree-editor-list-wrapper" :style="{ fontSize: `${fontSize}px` }">
     <Confirm
       v-if="fileConfirmVisible"
       type="warn"
@@ -144,33 +144,33 @@ const handleRenameFolder = (path: string, name: string) => {
       </template>
     </Confirm>
     <ContextMenu :menu="[]">
-      <div class="music-monaco-editor-list-title">{{ title }}</div>
-      <div class="music-monaco-editor-list-split" @click="handleCollapse">
+      <div class="monaco-tree-editor-list-title">{{ title }}</div>
+      <div class="monaco-tree-editor-list-split" @click="handleCollapse">
         <IconArrow :collapse="collapse" />
         <span :style="{ flex: 1 }">{{ projectName }}</span>
         <IconAddfile
           :title="r('button.newFile').value"
           @click.stop="() => handleConfirmNewFile('/')"
-          class="music-monaco-editor-list-split-icon"
+          class="monaco-tree-editor-list-split-icon"
         />
         <IconAddfolder
           :title="r('button.newFolder').value"
           @click.stop="() => handleConfirmNewFolder('/')"
-          class="music-monaco-editor-list-split-icon"
+          class="monaco-tree-editor-list-split-icon"
         />
         <ReloadOutlined
           :title="r('button.refreshExplorer').value"
           @click.stop="$emit('reload')"
-          class="music-monaco-editor-list-split-icon"
+          class="monaco-tree-editor-list-split-icon"
         />
         <MinusSquareOutlined
           :title="r('button.collapseAll').value"
           @click.stop="handleCollapseAll"
-          class="music-monaco-editor-list-split-icon"
+          class="monaco-tree-editor-list-split-icon"
         />
       </div>
     </ContextMenu>
-    <div v-show="!collapse" class="music-monaco-editor-list-files">
+    <div v-show="!collapse" class="monaco-tree-editor-list-files">
       <FileTemp
         @confirm-new-file="handleConfirmNewFile"
         @confirm-new-folder="handleConfirmNewFolder"

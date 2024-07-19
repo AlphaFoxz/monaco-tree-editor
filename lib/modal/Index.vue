@@ -28,9 +28,9 @@ watch(
 </script>
 
 <template>
-  <div class="music-monaco-editor-modal">
-    <div class="music-monaco-editor-modal-mask" @click="emit('close')" />
-    <div class="music-monaco-editor-modal-content" v-show="destroyOnClose && visible">
+  <div class="monaco-tree-editor-modal">
+    <div class="monaco-tree-editor-modal-mask" @click="emit('close')" />
+    <div class="monaco-tree-editor-modal-content" v-show="destroyOnClose && visible">
       <slot></slot>
     </div>
   </div>

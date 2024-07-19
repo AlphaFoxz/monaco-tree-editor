@@ -72,3 +72,9 @@ const handleAfterEnter = (el: Element) => {
     </Teleport>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.context-menu {
+  z-index: 10;
+}
+</style>

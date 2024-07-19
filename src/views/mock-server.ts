@@ -2,7 +2,43 @@ import { type Files } from '~lib'
 
 const fileSeparator = '\\'
 let responseFiles: Files = {
-  'F:\\test_project\\test.html': {
+  'F:\\test_project\\test1.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
+  'F:\\test_project\\test2.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
+  'F:\\test_project\\test3.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
+  'F:\\test_project\\test4.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
+  'F:\\test_project\\test5.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
+  'F:\\test_project\\test6.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
+  'F:\\test_project\\test7.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
+  'F:\\test_project\\test8.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
+  'F:\\test_project\\test9.html': {
+    isFile: true,
+    content: '<html><body><h1>Hello World!</h1></body></html>',
+  },
+  'F:\\test_project\\test10.html': {
     isFile: true,
     content: '<html><body><h1>Hello World!</h1></body></html>',
   },

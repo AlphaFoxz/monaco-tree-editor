@@ -14,7 +14,7 @@ const props = defineProps({
 const emit = defineEmits({ change: (_value: any) => true })
 
 const instance = ref(document.createElement('div'))
-instance.value.className = 'music-monaco-editor-select-items'
+instance.value.className = 'monaco-tree-editor-select-items'
 
 const visible = ref(false)
 const data = ref({
@@ -82,9 +82,9 @@ const handleSelect = (data: any) => {
 </script>
 
 <template>
-  <div ref="targetRef" class="music-monaco-editor-select">
+  <div ref="targetRef" class="monaco-tree-editor-select">
     <div
-      class="music-monaco-editor-select-content"
+      class="monaco-tree-editor-select-content"
       @click="
         (e) => {
           e.stopPropagation()
@@ -93,7 +93,7 @@ const handleSelect = (data: any) => {
       "
     >
       {{ data.label }}
-      <div class="music-monaco-editor-select-content-arrow">
+      <div class="monaco-tree-editor-select-content-arrow">
         <ArrowIcon :collapse="!visible" />
       </div>
     </div>

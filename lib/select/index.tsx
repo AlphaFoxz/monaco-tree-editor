@@ -3,7 +3,7 @@ import ArrowIcon from '../icons/Arrow'
 import Position from './PositionTemp.vue'
 import './index.scss'
 const instance = ref(document.createElement('div'))
-instance.value.className = 'music-monaco-editor-select-items'
+instance.value.className = 'monaco-tree-editor-select-items'
 
 export default defineComponent({
   props: {
@@ -82,16 +82,16 @@ export default defineComponent({
     return () => {
       return (
         <Fragment>
-          <div ref={targetRef} class="music-monaco-editor-select">
+          <div ref={targetRef} class="monaco-tree-editor-select">
             <div
-              class="music-monaco-editor-select-content"
+              class="monaco-tree-editor-select-content"
               onClick={(e) => {
                 e.stopPropagation()
                 visible.value = !visible.value
               }}
             >
               {data.value.label}
-              <div class="music-monaco-editor-select-content-arrow">
+              <div class="monaco-tree-editor-select-content-arrow">
                 <ArrowIcon collapse={!visible} />
               </div>
             </div>

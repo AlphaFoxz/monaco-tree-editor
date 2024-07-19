@@ -3,8 +3,11 @@ import { loadWASM } from 'onigasm'
 import * as monaco_define from 'monaco-editor'
 import wasmUrl from '/monaco-tree-editor-statics/bin/onigasm.wasm?url'
 import OneDarkProTheme from './themes/OneDarkPro'
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { type FileInfo, type Files } from './define'
+import { useGlobalVar } from './global-var-store'
+
+const globalVarStore = useGlobalVar()
 
 const typeMap: {
   [key: string]: string
@@ -25,6 +28,7 @@ let monaco: typeof monaco_define
 const isReady = ref(false)
 const valueListener = ref<monaco_define.IDisposable>()
 let editor: monaco_define.editor.IStandaloneCodeEditor
+let editorDom: HTMLElement
 const prePath = ref<string | null>()
 const editorStates = ref<Map<any, any>>(new Map())
 const currentValue = ref('')
@@ -55,6 +59,7 @@ async function monacoImported() {
 async function init(dom: HTMLElement, options?: monaco_define.editor.IStandaloneEditorConstructionOptions) {
   await monacoImported()
   editor = monaco.editor.create(dom, { ...options, model: null })
+  editorDom = dom
   const editorService = (editor as any)._codeEditorService
   const openEditorBase = editorService.openCodeEditor.bind(editorService)
   editorService.openCodeEditor = async (input: any, source: any, _sideBySide: any) => {
@@ -260,7 +265,7 @@ function restoreModel(path: string): monaco_define.editor.ITextModel | undefined
   }
   return undefined
 }
-const openOrFocusPath = (path: string) => {
+function openOrFocusPath(path: string) {
   let exist = false
   openedFiles.value.forEach((v) => {
     if (v.path === path) {
@@ -271,6 +276,9 @@ const openOrFocusPath = (path: string) => {
     openedFiles.value = [...openedFiles.value, { path }]
   }
   currentPath.value = path
+  nextTick(() => {
+    resize()
+  })
 }
 function closeFile(path: string) {
   const pre = openedFiles.value
@@ -307,6 +315,9 @@ function closeFile(path: string) {
     }
     openedFiles.value = res
   }
+  nextTick(() => {
+    resize()
+  })
 }
 function newFile(path: string) {
   const paths = path.startsWith('/') ? path.slice(1).split('/') : path.split('/')
@@ -374,6 +385,7 @@ function format() {
   editor?.getAction('editor.action.formatDocument')?.run()
 }
 function resize() {
+  editorDom.style.height = `calc(100% - ${globalVarStore.getOpenedTabsHeight() + 6}px)`
   editor?.layout()
 }
 

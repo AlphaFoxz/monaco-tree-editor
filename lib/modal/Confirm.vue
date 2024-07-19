@@ -37,16 +37,16 @@ const primaryColor = computed(() => {
 
 <template>
   <Teleport :to="target">
-    <div ref="componentRef" class="music-monaco-editor-modal">
-      <div class="music-monaco-editor-modal-mask" @click="$emit('close')"></div>
-      <div class="music-monaco-editor-modal-content music-monaco-editor-modal-content-confirm">
-        <div v-if="title" class="music-monaco-editor-modal-content-title">
+    <div ref="componentRef" class="monaco-tree-editor-modal">
+      <div class="monaco-tree-editor-modal-mask" @click="$emit('close')"></div>
+      <div class="monaco-tree-editor-modal-content monaco-tree-editor-modal-content-confirm">
+        <div v-if="title" class="monaco-tree-editor-modal-content-title">
           <slot name="title">{{ title }}</slot>
         </div>
-        <div ref="contentRef" class="music-monaco-editor-modal-content-content">
+        <div ref="contentRef" class="monaco-tree-editor-modal-content-content">
           <slot name="content"></slot>
         </div>
-        <div class="music-monaco-editor-modal-content-footer">
+        <div class="monaco-tree-editor-modal-content-footer">
           <Button @click="$emit('cancel')">
             <slot name="cancelText">cancel</slot>
           </Button>
@@ -54,7 +54,7 @@ const primaryColor = computed(() => {
             <slot name="okText">ok</slot>
           </Button>
         </div>
-        <div class="music-monaco-editor-modal-content-close" @click="$emit('close')">
+        <div class="monaco-tree-editor-modal-content-close" @click="$emit('close')">
           <CloseIcon
             :style="{
               width: '12px',

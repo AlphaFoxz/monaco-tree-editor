@@ -1,11 +1,11 @@
-.music-monaco-editor-list {
+.monaco-tree-editor .monaco-tree-editor-list {
   &-wrapper {
     width: 180px;
     padding: 0 5px;
     line-height: 25px;
     height: 100%;
-    background: var(--monaco-editor-filelist-background);
-    color: var(--monaco-editor-foreground);
+    background: var(--monaco-bg-2);
+    color: var(--monaco-text-1);
     overflow: auto;
     flex-shrink: 0;
   }
@@ -26,7 +26,7 @@
     &-icon {
       visibility: hidden;
       font-size: 16px;
-      color: var(--monaco-editor-foreground);
+      color: var(--monaco-text-1);
       margin-right: 4px;
 
       &:hover {
@@ -57,7 +57,7 @@
       align-items: center;
 
       span,
-      .music-monaco-editor-list-file-item-new {
+      .monaco-tree-editor-list-file-item-new {
         display: inline-block;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -69,7 +69,7 @@
         color: var(--monaco-list-hoverForeground);
       }
 
-      &:hover .music-monaco-editor-list-split-icon {
+      &:hover .monaco-tree-editor-list-split-icon {
         visibility: visible;
       }
 

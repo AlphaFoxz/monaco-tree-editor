@@ -94,8 +94,8 @@ const flush = () => {
 </script>
 
 <template>
-  <div class="music-monaco-editor-opened-tab-wrapper">
-    <div class="music-monaco-editor-opened-tab" v-if="visible" :style="{ fontSize: `${fontSize}px` }">
+  <div class="monaco-tree-editor-opened-tab-wrapper">
+    <div class="monaco-tree-editor-opened-tab" v-if="visible" :style="{ fontSize: `${fontSize}px` }">
       <span
         draggable="true"
         @dragstart="(e) => handleDragStart(e, index)"

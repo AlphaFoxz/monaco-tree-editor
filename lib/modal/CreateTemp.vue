@@ -29,9 +29,9 @@ defineExpose({ close })
 
 <template>
   <Teleport v-if="!closed" :to="target">
-    <div ref="componentRef" class="music-monaco-editor-modal">
-      <div class="music-monaco-editor-modal-mask" @click="close"></div>
-      <div ref="contentRef" class="music-monaco-editor-modal-content">
+    <div ref="componentRef" class="monaco-tree-editor-modal">
+      <div class="monaco-tree-editor-modal-mask" @click="close"></div>
+      <div ref="contentRef" class="monaco-tree-editor-modal-content">
         <slot></slot>
       </div>
     </div>

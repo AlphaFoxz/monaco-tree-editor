@@ -1,7 +1,7 @@
-.music-monaco-editor-prettier-icon {
-    color: var(--monaco-editor-foreground);
+.monaco-tree-editor-prettier-icon {
+  color: var(--monaco-text-1);
 
-    &:hover {
-        color: var(--monaco-list-hoverForeground);
-    }
+  &:hover {
+    color: var(--monaco-list-hoverForeground);
+  }
 }

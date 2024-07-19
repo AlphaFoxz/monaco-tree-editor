@@ -179,13 +179,13 @@ defineExpose({
       @mousedown="handleClick"
       :data-src="file!.path"
       :style="active ? 'background-color: rgb(30, 30, 30);' : ''"
-      :class="`music-monaco-editor-opened-tab-item ${active ? 'music-monaco-editor-opened-tab-item-focused' : ''}`"
+      :class="`monaco-tree-editor-opened-tab-item ${active ? 'monaco-tree-editor-opened-tab-item-focused' : ''}`"
     >
       <Icons :type="fileType" :style="{ marginRight: '2px' }" />
       <span :style="{ flex: 1, paddingRight: '5px', fontStyle: !file.status ? 'italic' : 'normal' }">{{ name }}</span>
       <span
         data-name="editing"
-        class="music-monaco-editor-opened-tab-item-editing"
+        class="monaco-tree-editor-opened-tab-item-editing"
         :style="{
           visibility: file.status === 'editing' && !hoverRight ? 'visible' : 'hidden',
         }"
@@ -196,7 +196,7 @@ defineExpose({
         :style="{
           visibility: closeVisible ? 'visible' : 'hidden',
         }"
-        class="music-monaco-editor-opened-tab-item-close"
+        class="monaco-tree-editor-opened-tab-item-close"
       >
         x
       </span>

@@ -28,10 +28,14 @@ export function useGlobalVar() {
       clearInterval(intervalId)
     }
   }
+  function getOpenedTabsHeight(): number {
+    return document.getElementsByClassName('monaco-tree-editor-opened-tab')[0].clientHeight
+  }
   return {
     contextMenuVisble,
     lockFile,
     isFileLocked,
     unlockFile,
+    getOpenedTabsHeight,
   }
 }
