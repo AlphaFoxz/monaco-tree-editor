@@ -33,7 +33,6 @@
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
     "nanoid": "^5.0.4",
-    "onigasm": "^2.2.5",
     "vue": "^3.3.13"
   },
   "devDependencies": {

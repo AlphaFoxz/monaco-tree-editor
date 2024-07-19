@@ -24,15 +24,16 @@ function handleClick(item: LeftSiderBarItem) {
   <div class="left-sider-bar">
     <ItemTemp
       @click="handleClick('Explorer')"
-      :currentActive="globalVarStore.getCurrentLeftSiderBar().value"
+      :current-active="globalVarStore.getCurrentLeftSiderBar().value || ''"
       name="Explorer"
     >
       <FileOutlined
     /></ItemTemp>
     <ItemTemp
       @click="$emit('triggerActive', 'Setting')"
-      :currentActive="globalVarStore.getCurrentLeftSiderBar().value"
+      :current-active="globalVarStore.getCurrentLeftSiderBar().value || ''"
       style="position: absolute; bottom: 0"
+      name="Setting"
     >
       <IconsSetting />
     </ItemTemp>

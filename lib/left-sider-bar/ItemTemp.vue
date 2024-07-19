@@ -2,6 +2,7 @@
 defineProps({
   currentActive: {
     type: String,
+    default: '',
   },
   name: {
     type: String,

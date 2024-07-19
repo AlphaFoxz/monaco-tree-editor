@@ -14,7 +14,7 @@ import FileList from './filelist/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
 import Modal from './modal/Index.vue'
 import IconClose from './icons/Close'
-import IconSetting from './icons/Setting'
+import GithubFilled from '@ant-design/icons-vue/GithubFilled'
 import Message from './message-bar/Index.vue'
 import { useI18n, type Language, changeLanguage } from './locale'
 import type { LeftSiderBarItem } from './left-sider-bar/define'
@@ -95,7 +95,7 @@ const handleDrag = (e: MouseEvent) => {
   e.stopPropagation()
   if (dragInfo.start && e.pageX != 0) {
     const w = dragInfo.width + (e.pageX - dragInfo.pageX)
-    console.debug('Dragging', w)
+    console.debug('Dragging')
     if (w < props.siderMinWidth / 2) {
       globalVarStore.setCurrentLeftSiderBar(null)
     } else if (w >= props.siderMinWidth) {
@@ -607,7 +607,10 @@ defineExpose({
         v-show="!monacoStore.isReady || monacoStore.openedFiles.value.length === 0"
         class="monaco-tree-editor-area-empty"
       >
-        <label>web editor</label>
+        <label>
+          <div><GithubFilled /></div>
+          web editor</label
+        >
       </div>
     </div>
     <Prettier @click="handleFormat" class="monaco-tree-editor-prettier" />
@@ -667,7 +670,7 @@ defineExpose({
   </div>
 </template>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 .monaco-tree-editor-select-item {
   margin: 0 15px;
 }

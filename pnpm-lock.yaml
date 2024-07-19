@@ -14,9 +14,6 @@ importers:
       nanoid:
         specifier: ^5.0.4
         version: 5.0.4
-      onigasm:
-        specifier: ^2.2.5
-        version: 2.2.5
       vue:
         specifier: ^3.3.13
         version: 3.3.13(typescript@5.3.3)
@@ -45,9 +42,6 @@ importers:
       jsdom:
         specifier: ^22.1.0
         version: 22.1.0
-      less:
-        specifier: ^4.2.0
-        version: 4.2.0
       monaco-editor:
         specifier: ^0.44.0
         version: 0.44.0
@@ -1124,9 +1118,6 @@ packages:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
 
-  onigasm@2.2.5:
-    resolution: {integrity: sha512-F+th54mPc0l1lp1ZcFMyL/jTs2Tlq4SqIHKIXGZOR/VkHkF9A7Fr5rRr5+ZG/lWeRsyrClLYRq7s/yFQ/XhWCA==}
-
   p-limit@5.0.0:
     resolution: {integrity: sha512-/Eaoq+QyLSiXQ4lyYV23f14mZRQcXnxfHrN0vCai+ak9G0pp9iEQukIIZq5NccEvwRB8PUnZT0KsOoDCINS1qQ==}
     engines: {node: '>=18'}
@@ -2196,6 +2187,7 @@ snapshots:
   copy-anything@2.0.6:
     dependencies:
       is-what: 3.14.1
+    optional: true
 
   cross-spawn@7.0.3:
     dependencies:
@@ -2418,7 +2410,8 @@ snapshots:
 
   is-stream@3.0.0: {}
 
-  is-what@3.14.1: {}
+  is-what@3.14.1:
+    optional: true
 
   isexe@2.0.0: {}
 
@@ -2488,6 +2481,7 @@ snapshots:
       mime: 1.6.0
       needle: 3.3.1
       source-map: 0.6.1
+    optional: true
 
   lines-and-columns@2.0.4: {}
 
@@ -2605,10 +2599,6 @@ snapshots:
     dependencies:
       mimic-fn: 4.0.0
 
-  onigasm@2.2.5:
-    dependencies:
-      lru-cache: 5.1.1
-
   p-limit@5.0.0:
     dependencies:
       yocto-queue: 1.0.0
@@ -2621,7 +2611,8 @@ snapshots:
       lines-and-columns: 2.0.4
       type-fest: 3.13.1
 
-  parse-node-version@1.0.1: {}
+  parse-node-version@1.0.1:
+    optional: true
 
   parse5@7.1.2:
     dependencies:
@@ -2830,7 +2821,8 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  tslib@2.6.2: {}
+  tslib@2.6.2:
+    optional: true
 
   type-detect@4.0.8: {}
 
