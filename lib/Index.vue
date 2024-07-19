@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import './index.scss'
-import { onMounted, ref, watch, defineEmits, nextTick, onBeforeUnmount, type ComputedRef } from 'vue'
+import { onMounted, ref, watch, nextTick, onBeforeUnmount, type ComputedRef } from 'vue'
 import { type Files } from './define'
 import { longestCommonPrefix } from './common'
 import { useMonaco } from './monaco-store'

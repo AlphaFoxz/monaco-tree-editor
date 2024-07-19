@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, defineExpose } from 'vue'
+import { computed, ref, watch } from 'vue'
 import ContextMenu from '../context-menu/Index.vue'
 import Confirm from '../modal/Confirm.vue'
 import Icons from '../icons'
