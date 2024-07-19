@@ -9,7 +9,7 @@ import { useMessage } from './message-store'
 import { useGlobalVar } from './global-var-store'
 import * as monaco_define from 'monaco-editor'
 import Prettier from './prettier/Index.vue'
-// import LeftSiderBar from './left-sider-bar/Index.vue'
+import LeftSiderBar from './left-sider-bar/Index.vue'
 import FileList from './filelist/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
 import Modal from './modal/Index.vue'
@@ -17,6 +17,7 @@ import IconClose from './icons/Close'
 import IconSetting from './icons/Setting'
 import Message from './message-bar/Index.vue'
 import { useI18n, type Language, changeLanguage } from './locale'
+import type { LeftSiderBarItem } from './left-sider-bar/define'
 
 const props = defineProps({
   files: {
@@ -94,7 +95,12 @@ const handleDrag = (e: MouseEvent) => {
   e.stopPropagation()
   if (dragInfo.start && e.pageX != 0) {
     const w = dragInfo.width + (e.pageX - dragInfo.pageX)
-    console.debug('Dragging')
+    console.debug('Dragging', w)
+    if (w < props.siderMinWidth / 2) {
+      globalVarStore.setCurrentLeftSiderBar(null)
+    } else if (w >= props.siderMinWidth) {
+      globalVarStore.setCurrentLeftSiderBar('Explorer', false)
+    }
     filelistWidth.value = w < props.siderMinWidth ? props.siderMinWidth : w
     nextTick(() => {
       monacoStore.resize()
@@ -112,8 +118,19 @@ watch(
   }
 )
 
-// =============== 设置部分 setting ================
+// =============== 左边栏 left-sider-bar ================
 const settingVisible = ref(false)
+const globalVarStore = useGlobalVar()
+
+const currentLeftSiderBar = globalVarStore.getCurrentLeftSiderBar()
+watch(globalVarStore.getCurrentLeftSiderBar(), (n) => {
+  currentLeftSiderBar.value = n
+})
+const handleTriggerLeftSider = (item: LeftSiderBarItem) => {
+  if (item === 'Setting') {
+    settingVisible.value = true
+  }
+}
 
 // ================ 编辑器部分 editor ================
 const projectName = ref<any>('project')
@@ -179,7 +196,6 @@ onBeforeUnmount(() => {
 
 // ================ 回调事件 callback events ================
 const messageStore = useMessage()
-const globalVarStore = useGlobalVar()
 const toOriginPath = (path: string): string => {
   let oriPath = projectPrefix + path
   if (fileSeparator === '\\') {
@@ -549,8 +565,9 @@ defineExpose({
 <template>
   <div ref="rootRef" id="monaco-tree-editor-root" tabIndex="1" class="monaco-tree-editor">
     <Message></Message>
-    <!-- <LeftSiderBar></LeftSiderBar> -->
+    <LeftSiderBar @trigger-active="handleTriggerLeftSider"></LeftSiderBar>
     <FileList
+      v-show="currentLeftSiderBar === 'Explorer'"
       @reload="handleReload"
       @new-file="handleNewFile"
       @new-folder="handleNewFolder"
@@ -592,14 +609,6 @@ defineExpose({
       >
         <label>web editor</label>
       </div>
-    </div>
-    <div class="monaco-tree-editor-setting-button" @click="settingVisible = true">
-      <IconSetting
-        :style="{
-          width: '20px',
-          height: '20px',
-        }"
-      />
     </div>
     <Prettier @click="handleFormat" class="monaco-tree-editor-prettier" />
     <Modal

@@ -1,0 +1,30 @@
+.monaco-tree-editor .left-sider-bar {
+  position: relative;
+  background-color: var(--monaco-bg-1);
+  width: 50px;
+  height: 100%;
+
+  .left-sider-bar-item {
+    cursor: pointer;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg,
+    span {
+      height: auto;
+      width: 24px;
+    }
+
+    &:hover {
+      color: var(--monaco-text-2);
+    }
+  }
+
+  .left-sider-bar-item.active {
+    color: var(--monaco-text-2);
+    border-left: 3px groove var(--monaco-border-2);
+  }
+}

@@ -1,8 +1,10 @@
 import { ref } from 'vue'
+import type { LeftSiderBarItem } from './left-sider-bar/define'
 
 const contextMenuVisble = ref(false)
 const savingFiles = ref(new Set<string>())
 const savingTasks = ref<{ [k: string]: NodeJS.Timeout }>({})
+const currentLeftSiderBar = ref<LeftSiderBarItem | null>('Explorer')
 
 export function useGlobalVar() {
   function lockFile(path: string, timeout: () => void, timeoutMs = 8 * 1000) {
@@ -31,11 +33,23 @@ export function useGlobalVar() {
   function getOpenedTabsHeight(): number {
     return document.getElementsByClassName('monaco-tree-editor-opened-tab')[0].clientHeight
   }
+  function setCurrentLeftSiderBar(item: LeftSiderBarItem | null, autoClose = true) {
+    if (autoClose && currentLeftSiderBar.value === item) {
+      currentLeftSiderBar.value = null
+    } else {
+      currentLeftSiderBar.value = item
+    }
+  }
+  function getCurrentLeftSiderBar() {
+    return currentLeftSiderBar
+  }
   return {
     contextMenuVisble,
     lockFile,
     isFileLocked,
     unlockFile,
     getOpenedTabsHeight,
+    setCurrentLeftSiderBar,
+    getCurrentLeftSiderBar,
   }
 }
