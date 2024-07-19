@@ -1,6 +1,6 @@
 {
   "name": "monaco-tree-editor",
-  "version": "1.0.5",
+  "version": "1.1.0-alpha.0",
   "type": "module",
   "main": "index.umd.cjs",
   "module": "index.js",
@@ -15,7 +15,7 @@
   "repository": "https://github.com/AlphaFoxz/monaco-tree-editor",
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "nanoid": "^5.0.3",
-    "vue": "^3.3.4"
+    "nanoid": "^5.0.7",
+    "vue": "~3.3.13"
   }
 }
