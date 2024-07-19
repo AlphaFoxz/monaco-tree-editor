@@ -4,11 +4,6 @@
   --monaco-list-focusBackground: #323842;
   --monaco-list-focusForeground: #f0f0f0;
   --monaco-list-highlightForeground: #c5c5c5;
-  --monaco-list-hoverBackground: #2c313a;
-  --monaco-list-hoverForeground: #ffffff;
-  --monaco-list-inactiveSelectionBackground: #323842;
-  --monaco-list-inactiveSelectionForeground: #d7dae0;
-  --monaco-list-warningForeground: #d19a66;
 
   --monaco-scrollbar-shadow: #23252c;
   --monaco-scrollbarSlider-activeBackground: #747d9180;
@@ -19,6 +14,7 @@
   --monaco-c-black-2: rgb(37, 37, 37);
   --monaco-c-black-3: rgb(30, 30, 30);
   --monaco-c-black-4: rgb(45, 45, 45);
+  --monaco-c-black-5: rgb(42, 45, 46);
   --monaco-c-gray-1: rgb(69, 69, 69);
   --monaco-c-gray-2: rgb(119, 119, 119);
   --monaco-c-white-1: rgb(255, 255, 255);
@@ -26,16 +22,20 @@
   --monaco-c-white-3: rgb(243, 243, 243);
   --monaco-c-blue-1: rgb(0, 127, 212);
   --monaco-c-blue-2: rgb(4, 57, 94);
+  --monaco-c-blue-3: rgb(0, 127, 212);
 
   --monaco-bg-1: var(--monaco-c-black-1);
   --monaco-bg-2: var(--monaco-c-black-2);
   --monaco-bg-3: var(--monaco-c-black-3);
   --monaco-bg-4: var(--monaco-c-black-4);
+  --monaco-bg-5: var(--monaco-c-black-5);
   --monaco-text-1: var(--monaco-c-white-2);
   --monaco-text-2: var(--monaco-c-white-1);
+  --monaco-text-3: var(--monaco-c-white-3);
   --monaco-border-1: var(--monaco-c-gray-1);
   --monaco-border-2: var(--monaco-c-white-1);
   --monaco-border-3: var(--monaco-c-gray-2);
+  --monaco-border-4: var(--monaco-c-blue-3);
   --monaco-drag-hover: var(--monaco-c-blue-1);
   --monaco-cursor-1: var(--monaco-c-blue-1);
   --monaco-cursor-2: var(--monaco-c-blue-2);

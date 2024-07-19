@@ -18,7 +18,7 @@ const v: monaco.editor.IStandaloneThemeData = {
     'diffEditor.insertedTextBackground': '#00809b33',
     'dropdown.background': '#21252b',
     'dropdown.border': '#21252b',
-    'editor.background': '#282c34',
+    'editor.background': '#1e1e1e',
     'editor.findMatchBackground': '#42557b',
     'editor.findMatchBorder': '#457dff',
     'editor.findMatchHighlightBackground': '#6199ff2f',

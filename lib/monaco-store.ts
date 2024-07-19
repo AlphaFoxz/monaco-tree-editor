@@ -1,6 +1,7 @@
 // import * as monaco_define from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco_define from 'monaco-editor'
-import OneDarkProTheme from './themes/OneDarkPro'
+import DarkTheme from './themes/dark'
+import LightTheme from './themes/light'
 import { nextTick, ref } from 'vue'
 import { type FileInfo, type Files } from './define'
 import { useGlobalVar } from './global-var-store'
@@ -71,7 +72,11 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
     }
     return result
   }
-  await configTheme('oneDarkPro', OneDarkProTheme)
+  if (globalVarStore.getThemeMode().value === 'dark') {
+    await configTheme('Dark', DarkTheme)
+  } else {
+    await configTheme('Light', LightTheme)
+  }
   isReady.value = true
 }
 async function configTheme(name: string, theme: monaco_define.editor.IStandaloneThemeData) {

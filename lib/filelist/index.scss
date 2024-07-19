@@ -8,6 +8,12 @@
     color: var(--monaco-text-1);
     overflow: auto;
     flex-shrink: 0;
+
+    &:hover {
+      .monaco-tree-editor-list-split .monaco-tree-editor-list-split-icon {
+        visibility: visible;
+      }
+    }
   }
 
   &-split {
@@ -19,18 +25,14 @@
     cursor: pointer;
     line-height: 25px;
 
-    & &-icon {
-      visibility: visible;
-    }
-
     &-icon {
       visibility: hidden;
       font-size: 16px;
-      color: var(--monaco-text-1);
+      color: var(--monaco-border-3);
       margin-right: 4px;
 
       &:hover {
-        color: var(--monaco-list-hoverForeground);
+        color: var(--monaco-border-2);
       }
     }
   }
@@ -49,6 +51,10 @@
       }
     }
 
+    .monaco-tree-editor-list-split-icon {
+      visibility: hidden;
+    }
+
     &-row {
       cursor: pointer;
       user-select: none;
@@ -65,8 +71,7 @@
       }
 
       &:hover {
-        background-color: var(--monaco-list-hoverBackground);
-        color: var(--monaco-list-hoverForeground);
+        background-color: var(--monaco-bg-5);
       }
 
       &:hover .monaco-tree-editor-list-split-icon {
@@ -74,9 +79,15 @@
       }
 
       &-focused {
-        background-color: var(--monaco-list-focusBackground);
-        color: var(--monaco-list-focusForeground);
+        color: var(--monaco-text-2);
       }
     }
+  }
+
+  &-file-item > div:has(.monaco-tree-editor-list-file-item-row-focused) {
+    background-color: var(--monaco-cursor-2);
+    border-width: 1px;
+    border-color: var(--monaco-border-4);
+    border-style: groove;
   }
 }

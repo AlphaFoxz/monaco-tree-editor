@@ -39,8 +39,7 @@
     }
 
     &:hover {
-      background-color: var(--monaco-list-hoverBackground);
-      color: var(--monaco-list-hoverForeground);
+      color: var(--monaco-text-2);
     }
 
     &-close {
@@ -58,7 +57,7 @@
       top: 15px;
       width: 7px;
       height: 7px;
-      background-color: var(--monaco-list-hoverForeground);
+      background-color: var(--monaco-text-2);
       border-radius: 50%;
     }
   }
@@ -85,7 +84,7 @@
       cursor: pointer;
 
       &:hover {
-        color: var(--monaco-list-hoverForeground);
+        color: var(--monaco-text-2);
         background: var(--monaco-list-focusBackground);
       }
     }

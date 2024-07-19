@@ -1,10 +1,12 @@
 import { ref } from 'vue'
 import type { LeftSiderBarItem } from './left-sider-bar/define'
+import type { ThemeMode } from './themes/define'
 
 const contextMenuVisble = ref(false)
 const savingFiles = ref(new Set<string>())
 const savingTasks = ref<{ [k: string]: NodeJS.Timeout }>({})
 const currentLeftSiderBar = ref<LeftSiderBarItem | null>('Explorer')
+const currentThemeMode = ref<ThemeMode>('dark')
 
 export function useGlobalVar() {
   function lockFile(path: string, timeout: () => void, timeoutMs = 8 * 1000) {
@@ -43,6 +45,9 @@ export function useGlobalVar() {
   function getCurrentLeftSiderBar() {
     return currentLeftSiderBar
   }
+  function getThemeMode() {
+    return currentThemeMode
+  }
   return {
     contextMenuVisble,
     lockFile,
@@ -51,5 +56,6 @@ export function useGlobalVar() {
     getOpenedTabsHeight,
     setCurrentLeftSiderBar,
     getCurrentLeftSiderBar,
+    getThemeMode,
   }
 }
