@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import './index.scss'
 import BoxTemp from './Box.vue'
-import { type MessageOptions } from '../define'
+import { type MessageOptions } from './define'
 import { useMessage } from '../message-store'
 import { watch, ref } from 'vue'
 

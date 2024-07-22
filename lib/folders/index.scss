@@ -84,10 +84,14 @@
     }
   }
 
+  &-file-item > div {
+    border-width: 1px;
+    border-style: groove;
+    border-color: rgba(0, 0, 0, 0);
+  }
+
   &-file-item > div:has(.monaco-tree-editor-list-file-item-row-focused) {
     background-color: var(--monaco-cursor-2);
-    border-width: 1px;
     border-color: var(--monaco-border-4);
-    border-style: groove;
   }
 }

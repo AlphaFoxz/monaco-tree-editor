@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import ContextMenu from '../context-menu/Index.vue'
-import IconEdit from '../icons/Edit'
-import IconDelete from '../icons/Delete'
-import IconArrow from '../icons/Arrow'
-import IconAddfile from '../icons/Addfile'
-import IconAddfolder from '../icons/Addfolder'
-import Icons from '../icons/index'
+import ContextMenu from '../components/context-menu/Index.vue'
+import IconEdit from '../icons/Edit.vue'
+import IconDelete from '../icons/Delete.vue'
+import IconArrow from '../icons/Arrow.vue'
+import IconAddfile from '../icons/Addfile.vue'
+import IconAddfolder from '../icons/Addfolder.vue'
+import Icons from '../icons/Index.vue'
 import FileTemp from './File.vue'
 import { type Files } from '../define'
 import { computed, nextTick, onMounted, ref, watch, type ComputedRef } from 'vue'
 import { useMonaco } from '../monaco-store'
-import { type ContextMenuItem } from '../context-menu/define'
+import { type ContextMenuItem } from '../components/context-menu/define'
 import { useI18n } from '../locale'
 
 const props = defineProps({
@@ -86,7 +86,7 @@ watch([() => props.file, () => props.root], (v) => {
 })
 
 // ================ 右键菜单 contextmenu ================
-const { r } = useI18n()
+const { $t } = useI18n()
 type _FileOperation = '@openFile' | '@copyPath' | '@copyRelativePath' | '@renameFile' | '@deleteFile' | string
 type _FolderOperation =
   | '@newFile'
@@ -97,13 +97,13 @@ type _FolderOperation =
   | '@deleteFolder'
   | string
 const initFileContextMenu = [
-  { label: r('ctxmenu.openFile'), value: '@openFile' },
+  { label: $t('ctxmenu.openFile'), value: '@openFile' },
   {},
-  { label: r('ctxmenu.copyPath'), value: '@copyPath' },
-  { label: r('ctxmenu.copyRelativePath'), value: '@copyRelativePath' },
+  { label: $t('ctxmenu.copyPath'), value: '@copyPath' },
+  { label: $t('ctxmenu.copyRelativePath'), value: '@copyRelativePath' },
   {},
-  { label: r('ctxmenu.renameFile'), value: '@renameFile' },
-  { label: r('ctxmenu.deleteFile'), value: '@deleteFile' },
+  { label: $t('ctxmenu.renameFile'), value: '@renameFile' },
+  { label: $t('ctxmenu.deleteFile'), value: '@deleteFile' },
 ]
 const fileContextMenu = (() => {
   const arr = initFileContextMenu
@@ -117,14 +117,14 @@ const fileContextMenu = (() => {
   return arr
 })()
 const initFolderContextMenu = [
-  { label: r('ctxmenu.newFile'), value: '@newFile' },
-  { label: r('ctxmenu.newFolder'), value: '@newFolder' },
+  { label: $t('ctxmenu.newFile'), value: '@newFile' },
+  { label: $t('ctxmenu.newFolder'), value: '@newFolder' },
   {},
-  { label: r('ctxmenu.copyPath'), value: '@copyPath' },
-  { label: r('ctxmenu.copyRelativePath'), value: '@copyRelativePath' },
+  { label: $t('ctxmenu.copyPath'), value: '@copyPath' },
+  { label: $t('ctxmenu.copyRelativePath'), value: '@copyRelativePath' },
   {},
-  { label: r('ctxmenu.renameFolder'), value: '@renameFolder' },
-  { label: r('ctxmenu.deleteFolder'), value: '@deleteFolder' },
+  { label: $t('ctxmenu.renameFolder'), value: '@renameFolder' },
+  { label: $t('ctxmenu.deleteFolder'), value: '@deleteFolder' },
 ]
 const folderContextMenu = (() => {
   const arr = initFolderContextMenu
@@ -315,12 +315,12 @@ watch([() => props.currentPath, () => props.file], (v) => {
           file.name
         }}</span>
         <IconEdit
-          :title="r('button.rename').value"
+          :title="$t('button.rename').value"
           @click.stop="handleRenameStart"
           class="monaco-tree-editor-list-split-icon"
         />
         <IconDelete
-          :title="r('button.delete').value"
+          :title="$t('button.delete').value"
           @click="handleDeleteFile"
           class="monaco-tree-editor-list-split-icon"
         />
@@ -345,24 +345,24 @@ watch([() => props.currentPath, () => props.file], (v) => {
             file.name
           }}</span>
           <IconEdit
-            :title="r('button.rename').value"
+            :title="$t('button.rename').value"
             v-if="!file.readonly"
             @click.stop="handleRenameStart"
             class="monaco-tree-editor-list-split-icon"
           />
           <IconDelete
-            :title="r('button.delete').value"
+            :title="$t('button.delete').value"
             v-if="!file.readonly"
             @click.stop="emit('deleteFolder', file.path)"
             class="monaco-tree-editor-list-split-icon"
           />
           <IconAddfile
-            :title="r('button.newFile').value"
+            :title="$t('button.newFile').value"
             @click.stop="handleConfirmNewFile"
             class="monaco-tree-editor-list-split-icon"
           />
           <IconAddfolder
-            :title="r('button.newFolder').value"
+            :title="$t('button.newFolder').value"
             @click.stop="handleConfirmNewFolder"
             class="monaco-tree-editor-list-split-icon"
           />

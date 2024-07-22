@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PrettierIcon from '../icons/Prettier'
+import PrettierIcon from '../icons/Prettier.vue'
 import { useMonaco } from '../monaco-store'
 
 const monacoStore = useMonaco()

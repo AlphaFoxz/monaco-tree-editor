@@ -48,6 +48,8 @@ const zhCN: Messages = {
   'button.collapseAll': '折叠文件夹',
   'button.rename': '重命名...',
   'button.delete': '删除',
+  'button.manage': '管理',
+  'button.folders': '文件夹',
 }
 
 export default zhCN

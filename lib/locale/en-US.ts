@@ -51,6 +51,8 @@ const enUS: Messages = {
   'button.collapseAll': 'Collapse Folders in Explorer',
   'button.rename': 'Rename..',
   'button.delete': 'Delete',
+  'button.manage': 'Manage',
+  'button.folders': 'Folders',
 }
 
 export default enUS

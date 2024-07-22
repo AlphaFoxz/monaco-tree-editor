@@ -12,14 +12,7 @@ export type FileInfo = {
   readonly?: boolean
   children?: { [path: string]: FileInfo } | null
 }
-
-export type MessageType = 'info' | 'success' | 'warn' | 'error'
-export type MessageOptions = {
-  content: string
-  closeable?: boolean
-  loading?: boolean
-  textTip?: string
-  timeoutMs?: number
-  id?: string
-  type?: MessageType
+export enum BuiltInPage {
+  SETTINGS = '<Settings>',
+  KEYBOARD_SHORTCUTS = '<KeyboardShortcuts>',
 }

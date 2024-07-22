@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import './index.scss'
-import CloseIcon from '../icons/Close'
-import Button from '../button'
+import CloseIcon from '../../icons/Close.vue'
+import Button from '../../button'
 import { computed } from 'vue'
 const props = defineProps({
   title: {

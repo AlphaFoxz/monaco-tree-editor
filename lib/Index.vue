@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import './index.scss'
 import { onMounted, ref, watch, nextTick, onBeforeUnmount, type ComputedRef } from 'vue'
-import { type Files } from './define'
+import { type Files, BuiltInPage } from './define'
 import { longestCommonPrefix } from './common'
 import { useMonaco } from './monaco-store'
 import { useHotkey } from './hotkey-store'
@@ -10,14 +10,15 @@ import { useGlobalVar } from './global-var-store'
 import * as monaco_define from 'monaco-editor'
 import Prettier from './prettier/Index.vue'
 import LeftSiderBar from './left-sider-bar/Index.vue'
-import FileList from './filelist/Index.vue'
+import FileList from './folders/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
-import Modal from './modal/Index.vue'
-import IconClose from './icons/Close'
+import Modal from './components/modal/Index.vue'
+import IconClose from './icons/Close.vue'
 import GithubFilled from '@ant-design/icons-vue/GithubFilled'
 import Message from './message-bar/Index.vue'
 import { useI18n, type Language, changeLanguage } from './locale'
-import type { LeftSiderBarItem } from './left-sider-bar/define'
+import { type LeftSiderBarItem } from './left-sider-bar/define'
+import Settings from './settings/Index.vue'
 
 const props = defineProps({
   files: {
@@ -66,7 +67,7 @@ const emit = defineEmits({
 })
 
 // ================ 国际化 i18n ================
-const { t, r } = useI18n((props.language || 'en-US') as Language)
+const { t, $t } = useI18n((props.language || 'en-US') as Language)
 watch(
   () => props.language,
   (n) => {
@@ -563,7 +564,7 @@ defineExpose({
 })
 </script>
 <template>
-  <div ref="rootRef" id="monaco-tree-editor-root" tabIndex="1" class="monaco-tree-editor">
+  <div ref="rootRef" id="monaco-tree-editor-root" @contextmenu.prevent.stop tabIndex="1" class="monaco-tree-editor">
     <Message></Message>
     <LeftSiderBar @trigger-active="handleTriggerLeftSider"></LeftSiderBar>
     <FileList
@@ -603,15 +604,13 @@ defineExpose({
           width: '100%',
         }"
       ></div>
-      <div
-        v-show="!monacoStore.isReady || monacoStore.openedFiles.value.length === 0"
-        class="monaco-tree-editor-area-empty"
-      >
+      <div v-show="!monacoStore.isReady || !monacoStore.currentPath.value" class="monaco-tree-editor-area-empty">
         <label>
           <div><GithubFilled /></div>
-          web editor</label
-        >
+          web editor
+        </label>
       </div>
+      <Settings v-if="monacoStore.currentPath.value === BuiltInPage.SETTINGS"></Settings>
     </div>
     <Prettier @click="handleFormat" class="monaco-tree-editor-prettier" />
     <Modal
@@ -623,7 +622,7 @@ defineExpose({
     >
       <div class="monaco-tree-editor-setting">
         <div class="monaco-tree-editor-setting-header">
-          {{ r('settings.title').value }}
+          {{ $t('settings.title').value }}
           <div @click="settingVisible = false" class="monaco-tree-editor-setting-header-close">
             <IconClose :style="{ width: '12px', height: '12px' }" />
           </div>
@@ -631,7 +630,7 @@ defineExpose({
         <div class="monaco-tree-editor-setting-content">
           <div v-if="!language" class="monaco-tree-editor-input-row">
             <div class="monaco-tree-editor-input-name">
-              {{ r('settings.language').value + '' }}
+              {{ $t('settings.language').value + '' }}
             </div>
             <div
               class="monaco-tree-editor-select-item"

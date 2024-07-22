@@ -12,6 +12,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border-left: 3px groove rgba(0, 0, 0, 0);
+    border-right: 3px groove rgba(0, 0, 0, 0);
 
     svg,
     span {
@@ -26,6 +28,6 @@
 
   .left-sider-bar-item.active {
     color: var(--monaco-text-2);
-    border-left: 3px groove var(--monaco-border-2);
+    border-left-color: var(--monaco-border-2);
   }
 }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import './index.scss'
 import IconLoading from '../icons/Loading.vue'
-import IconClose from '../icons/Close'
+import IconClose from '../icons/Close.vue'
 import { computed } from 'vue'
-import { type MessageType } from '../define'
+import { type MessageType } from './define'
 
 const props = defineProps({
   id: {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import ContextMenu from '../context-menu/Index.vue'
-import Confirm from '../modal/Confirm.vue'
-import Icons from '../icons'
-import type { ContextMenuItem } from '../context-menu/define'
+import ContextMenu from '../components/context-menu/Index.vue'
+import Confirm from '../components/modal/Confirm.vue'
+import Icons from '../icons/Index.vue'
+import { type ContextMenuItem } from '../components/context-menu/define'
 import { useMonaco } from '../monaco-store'
 import { useI18n } from '../locale'
 
@@ -30,7 +30,7 @@ const emit = defineEmits({
 const monacoStore = useMonaco()
 
 //========================= 国际化 i18n ==========================
-const { r } = useI18n()
+const { $t } = useI18n()
 
 //========================= 点击标签 click tab ==========================
 const itemRef = ref<HTMLDivElement>()
@@ -71,9 +71,9 @@ watch(active, () => {
 //========================= 右键菜单 contextmenu ==========================
 type _MenuValue = 'close' | 'closeOthers' | 'closeAll'
 const contextMenu: ContextMenuItem<_MenuValue>[] = [
-  { label: r('ctxmenu.close'), value: 'close' },
-  { label: r('ctxmenu.closeOthers'), value: 'closeOthers' },
-  { label: r('ctxmenu.closeAll'), value: 'closeAll' },
+  { label: $t('ctxmenu.close'), value: 'close' },
+  { label: $t('ctxmenu.closeOthers'), value: 'closeOthers' },
+  { label: $t('ctxmenu.closeAll'), value: 'closeAll' },
 ]
 const handleSelectContextMenu = (item: ContextMenuItem<_MenuValue>) => {
   const v = item.value
@@ -161,12 +161,12 @@ defineExpose({
     @close="confirmVisible = false"
     v-if="confirmVisible"
   >
-    <template #title>{{ r('confirm.saveOnCloseTitle').value }}</template>
-    <template #okText>{{ r('confirm.save').value }}</template>
-    <template #cancelText>{{ r('confirm.dontSave').value }}</template>
+    <template #title>{{ $t('confirm.saveOnCloseTitle').value }}</template>
+    <template #okText>{{ $t('confirm.save').value }}</template>
+    <template #cancelText>{{ $t('confirm.dontSave').value }}</template>
     <template #content>
       <div>
-        {{ r('confirm.saveOnCloseContent', { path: file!.path }).value }}
+        {{ $t('confirm.saveOnCloseContent', { path: file!.path }).value }}
       </div>
     </template>
   </Confirm>

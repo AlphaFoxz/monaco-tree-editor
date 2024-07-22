@@ -47,6 +47,8 @@ type keys =
   | 'button.collapseAll'
   | 'button.rename'
   | 'button.delete'
+  | 'button.manage'
+  | 'button.folders'
 
 export type Messages = {
   [key in keys]: string

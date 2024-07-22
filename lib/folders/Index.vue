@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import './index.scss'
-import IconAddfolder from '../icons/Addfolder'
-import IconAddfile from '../icons/Addfile'
+import IconAddfolder from '../icons/Addfolder.vue'
+import IconAddfile from '../icons/Addfile.vue'
 import { ReloadOutlined, MinusSquareOutlined } from '@ant-design/icons-vue'
-import IconArrow from '../icons/Arrow'
+import IconArrow from '../icons/Arrow.vue'
 import FileTemp from './File.vue'
-import Confirm from '../modal/Confirm.vue'
-import ContextMenu from '../context-menu/Index.vue'
+import Confirm from '../components/modal/Confirm.vue'
+import ContextMenu from '../components/context-menu/Index.vue'
 import { ref, watch, type ComputedRef } from 'vue'
 import { useMonaco } from '../monaco-store'
 import { useI18n } from '../locale'
@@ -47,7 +47,7 @@ const emit = defineEmits({
 })
 
 //=================== 国际化 i18n ==================
-const { r } = useI18n()
+const { $t } = useI18n()
 
 //=================== 初始化 init ==================
 const collapse = ref(false)
@@ -113,12 +113,12 @@ const handleRenameFolder = (path: string, name: string) => {
       @cancel="fileConfirmVisible = false"
       @close="fileConfirmVisible = false"
     >
-      <template #title>{{ r('confirm.deleteFileTitle').value }}</template>
-      <template #okText>{{ r('confirm.delete').value }}</template>
-      <template #cancelText>{{ r('confirm.cancel').value }}</template>
+      <template #title>{{ $t('confirm.deleteFileTitle').value }}</template>
+      <template #okText>{{ $t('confirm.delete').value }}</template>
+      <template #cancelText>{{ $t('confirm.cancel').value }}</template>
       <template #content>
         <div>
-          {{ r('confirm.deleteFileContent', { path: confirmPath }).value }}
+          {{ $t('confirm.deleteFileContent', { path: confirmPath }).value }}
         </div>
       </template>
     </Confirm>
@@ -134,12 +134,12 @@ const handleRenameFolder = (path: string, name: string) => {
       @cancel="folderConfirmVisible = false"
       @close="folderConfirmVisible = false"
     >
-      <template #title>{{ r('confirm.deleteFolderTitle').value }}</template>
-      <template #okText>{{ r('confirm.delete').value }}</template>
-      <template #cancelText>{{ r('confirm.cancel').value }}</template>
+      <template #title>{{ $t('confirm.deleteFolderTitle').value }}</template>
+      <template #okText>{{ $t('confirm.delete').value }}</template>
+      <template #cancelText>{{ $t('confirm.cancel').value }}</template>
       <template #content>
         <div>
-          {{ r('confirm.deleteFolderContent', { path: confirmPath }).value }}
+          {{ $t('confirm.deleteFolderContent', { path: confirmPath }).value }}
         </div>
       </template>
     </Confirm>
@@ -149,22 +149,22 @@ const handleRenameFolder = (path: string, name: string) => {
         <IconArrow :collapse="collapse" />
         <span :style="{ flex: 1 }">{{ projectName }}</span>
         <IconAddfile
-          :title="r('button.newFile').value"
+          :title="$t('button.newFile').value"
           @click.stop="() => handleConfirmNewFile('/')"
           class="monaco-tree-editor-list-split-icon"
         />
         <IconAddfolder
-          :title="r('button.newFolder').value"
+          :title="$t('button.newFolder').value"
           @click.stop="() => handleConfirmNewFolder('/')"
           class="monaco-tree-editor-list-split-icon"
         />
         <ReloadOutlined
-          :title="r('button.refreshExplorer').value"
+          :title="$t('button.refreshExplorer').value"
           @click.stop="$emit('reload')"
           class="monaco-tree-editor-list-split-icon"
         />
         <MinusSquareOutlined
-          :title="r('button.collapseAll').value"
+          :title="$t('button.collapseAll').value"
           @click.stop="handleCollapseAll"
           class="monaco-tree-editor-list-split-icon"
         />

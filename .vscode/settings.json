@@ -24,4 +24,15 @@
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "i18n-ally.enabledFrameworks": [
+    "vue",
+    "vue-sfc"
+  ],
+  "i18n-ally.localesPaths": [
+    "lib/locale"
+  ],
+  "i18n-ally.enabledParsers": [
+    "ts"
+  ],
+  "i18n-ally.displayLanguage": "en-US",
 }

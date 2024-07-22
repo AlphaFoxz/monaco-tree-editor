@@ -5,6 +5,7 @@ import LightTheme from './themes/light'
 import { nextTick, ref } from 'vue'
 import { type FileInfo, type Files } from './define'
 import { useGlobalVar } from './global-var-store'
+import type { ThemeMode } from './themes/define'
 
 const globalVarStore = useGlobalVar()
 
@@ -58,6 +59,7 @@ async function monacoImported() {
 async function init(dom: HTMLElement, options?: monaco_define.editor.IStandaloneEditorConstructionOptions) {
   await monacoImported()
   editor = monaco.editor.create(dom, { ...options, model: null })
+
   editorDom = dom
   const editorService = (editor as any)._codeEditorService
   const openEditorBase = editorService.openCodeEditor.bind(editorService)
@@ -72,21 +74,17 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
     }
     return result
   }
-  if (globalVarStore.getThemeMode().value === 'dark') {
-    await configTheme('Dark', DarkTheme)
-  } else {
-    await configTheme('Light', LightTheme)
-  }
+  defineTheme('dark', DarkTheme)
+  defineTheme('light', LightTheme)
+  setTheme(globalVarStore.getThemeMode().value)
   isReady.value = true
 }
-async function configTheme(name: string, theme: monaco_define.editor.IStandaloneThemeData) {
-  // 定义主题
+function defineTheme(name: ThemeMode, theme: monaco_define.editor.IStandaloneThemeData) {
   monaco.editor.defineTheme(name, theme)
-  console.debug('加载monaco主题', name)
-  const prefix = '--monaco-'
-  Object.keys(theme.colors).forEach((v) => {
-    document.documentElement.style.setProperty(`${prefix}${v.replace('.', '-')}`, theme.colors[v] || 'rgba(0, 0, 0, 0)')
-  })
+}
+function setTheme(name: ThemeMode) {
+  // 定义主题
+  console.debug('切换monaco主题', name)
   // 设置主题
   monaco.editor.setTheme(name)
 }

@@ -1,7 +1,7 @@
 import enUS from './en-US'
 import zhCN from './zh-CN'
-import type { Messages, Language } from './define'
-import { ref, type ComputedRef, computed } from 'vue'
+import { type Messages, type Language } from './define'
+import { ref, type ComputedRef, computed, type Ref } from 'vue'
 
 const locale = ref<Messages>(enUS)
 
@@ -27,9 +27,13 @@ function t(key: keyof Messages, attr1?: string | Record<string, string | number>
   return v
 }
 
-function r(key: keyof Messages, defaultValue?: string): ComputedRef<string>
-function r(key: keyof Messages, attr: Record<string, string | number>, defaultValue?: string): ComputedRef<string>
-function r(key: keyof Messages, attr1?: string | Record<string, string | number>, attr2?: string): ComputedRef<string> {
+function $t(key: keyof Messages, defaultValue?: string): ComputedRef<string>
+function $t(key: keyof Messages, attr: Record<string, string | number>, defaultValue?: string): ComputedRef<string>
+function $t(
+  key: keyof Messages,
+  attr1?: string | Record<string, string | number>,
+  attr2?: string
+): ComputedRef<string> {
   if (typeof attr1 === 'object') {
     return computed(() => t(key, attr1, attr2))
   }
@@ -49,16 +53,24 @@ export function changeLanguage(lang: Language) {
   }
 }
 
+export function getCurrentLanguage(): Ref<Messages> {
+  return locale
+}
+
+/**
+ * function t will return a string value
+ * function $t will return ComputedRef<string>
+ */
 export function useI18n(s?: Language) {
   if (s) {
     changeLanguage(s)
   }
   return {
     t,
-    r,
+    $t,
   }
 }
 
 export type T = typeof t
-export type R = typeof r
+export type $T = typeof $t
 export type { Language }
