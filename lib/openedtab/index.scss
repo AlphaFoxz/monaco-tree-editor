@@ -44,10 +44,11 @@
 
     &-close {
       position: relative;
+      border-radius: 5px;
       padding: 5px 5px;
       line-height: 10px;
       &:hover {
-        background-color: var(--monaco-list-focusBackground);
+        background-color: var(--monaco-border-1);
       }
     }
 
@@ -85,7 +86,7 @@
 
       &:hover {
         color: var(--monaco-text-2);
-        background: var(--monaco-list-focusBackground);
+        background: var(--monaco-border-1);
       }
     }
   }

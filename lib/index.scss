@@ -1,9 +1,5 @@
 :root {
   --monaco-list-activeSelectionBackground: #2c313a;
-  --monaco-list-activeSelectionForeground: #d7dae0;
-  --monaco-list-focusBackground: #323842;
-  --monaco-list-focusForeground: #f0f0f0;
-  --monaco-list-highlightForeground: #c5c5c5;
 
   --monaco-scrollbar-shadow: #23252c;
   --monaco-scrollbarSlider-activeBackground: #747d9180;
@@ -107,7 +103,6 @@
         user-select: none;
         width: 100px;
         height: 100px;
-        margin-top: 100px;
         font-size: 18px;
         text-align: center;
       }
@@ -119,7 +114,7 @@
     height: 200px;
     background: var(--monaco-bg-3);
     border-radius: 10px;
-    color: var(--monaco-list-activeSelectionForeground);
+    color: var(--monaco-text-2);
     display: flex;
     flex-direction: column;
 
