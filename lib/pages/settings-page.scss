@@ -5,9 +5,10 @@
   color: var(--monaco-text-base-2);
 
   &-title {
-    padding: 0 15px;
+    padding: 5px 15px;
     font-weight: 400;
     font-size: 28px;
+    line-height: 100%;
     cursor: default;
     &:hover {
       background-color: var(--monaco-bg-pages-item-hover);
