@@ -47,9 +47,9 @@
     "ncp": "^2.0.0",
     "npm-run-all2": "^6.2.2",
     "sass": "^1.77.8",
-    "typescript": "^5.5.3",
+    "typescript": "^5.5.4",
     "vite": "^5.3.4",
-    "vitest": "^1.6.0",
-    "vue-tsc": "^1.8.27"
+    "vitest": "^2.0.4",
+    "vue-tsc": "^2.0.28"
   }
 }

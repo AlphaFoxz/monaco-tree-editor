@@ -1,5 +1,5 @@
 import { test } from 'vitest'
-import { Editor, useMessage, useHotkey, useMonaco } from '../../dist'
+import { Editor, useMessage, useHotkey, useMonaco } from '~'
 import { expect } from 'vitest'
 
 test('exports check', () => {

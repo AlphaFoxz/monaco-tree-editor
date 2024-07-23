@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import './index.scss'
 import CloseIcon from '../../icons/Close.vue'
-import Button from '../../button/index.vue'
+import Button from '../button/Index.vue'
 import { isVNode, onMounted, ref, render } from 'vue'
 const props = defineProps({
   title: {
