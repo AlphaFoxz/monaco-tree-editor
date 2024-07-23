@@ -1,6 +1,8 @@
 type keys =
-  | 'settings.title'
   | 'settings.language'
+  | 'settings.colorTheme'
+  | 'settings.colorTheme.dark'
+  | 'settings.colorTheme.light'
   | 'msg.reloading'
   | 'msg.reloadSuccessed'
   | 'msg.reloadFailed'

@@ -1,9 +1,10 @@
 .context-menu {
+  color: var(--monaco-text-base);
   position: fixed;
   .menu-list {
-    background-color: var(--monaco-bg-2);
+    background-color: var(--monaco-bg-contextmenu);
     border-style: ridge;
-    border-color: var(--monaco-border-1);
+    border-color: var(--monaco-border-contextmenu);
     border-width: 1px;
     border-radius: 0.3rem;
     .menu-item {
@@ -15,13 +16,13 @@
       margin: 5px;
       &:hover {
         color: white;
-        background-color: var(--monaco-cursor-2);
+        background-color: var(--monaco-bg-contextmenu-hover);
       }
     }
     .line {
       margin: 3px 0;
       border-style: solid;
-      border-color: var(--monaco-border-1);
+      border-color: inherit;
       border-width: 0 0 1px 0;
     }
   }

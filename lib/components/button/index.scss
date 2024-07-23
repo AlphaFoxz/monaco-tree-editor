@@ -1,0 +1,24 @@
+.monaco-tree-editor-button {
+  padding: 5px 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: var(--monaco-bg-button);
+  cursor: pointer;
+  border-width: 1px;
+  border-style: groove;
+
+  &:hover {
+    background-color: var(--monaco-bg-button-hover);
+    opacity: 0.8;
+  }
+
+  &-warn {
+    border-color: darkorange;
+    color: darkorange;
+  }
+  &-info {
+    border-color: darkorange;
+    color: darkorange;
+  }
+}

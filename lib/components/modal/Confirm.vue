@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import './index.scss'
 import CloseIcon from '../../icons/Close.vue'
-import Button from '../../button/index.vue'
-import { computed } from 'vue'
-const props = defineProps({
+import Button from '../button/Index.vue'
+defineProps({
   title: {
     type: String,
     default: 'Confirm',
@@ -26,13 +25,6 @@ defineEmits({
   cancel: () => true,
   ok: () => true,
 })
-
-const primaryColor = computed(() => {
-  if (props.type === 'warn') {
-    return 'darkred'
-  }
-  return '#528bff'
-})
 </script>
 
 <template>
@@ -50,7 +42,7 @@ const primaryColor = computed(() => {
           <Button @click="$emit('cancel')">
             <slot name="cancelText">cancel</slot>
           </Button>
-          <Button @click="$emit('ok')" type="primary" :style="{ marginLeft: '4px', backgroundColor: primaryColor }">
+          <Button @click="$emit('ok')" :type="type" :style="{ marginLeft: '4px' }">
             <slot name="okText">ok</slot>
           </Button>
         </div>

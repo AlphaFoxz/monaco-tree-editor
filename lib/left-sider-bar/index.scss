@@ -1,7 +1,7 @@
 .monaco-tree-editor .left-sider-bar {
   position: relative;
-  background-color: var(--monaco-bg-1);
-  color: var(--monaco-border-3);
+  background-color: var(--monaco-bg-sysbar);
+  color: var(--monaco-text-sysbar-button);
   width: 50px;
   height: 100%;
 
@@ -12,8 +12,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-left: 3px groove rgba(0, 0, 0, 0);
-    border-right: 3px groove rgba(0, 0, 0, 0);
+    border-left: 3px groove inherit;
+    border-right: 3px groove inherit;
 
     svg,
     span {
@@ -22,12 +22,12 @@
     }
 
     &:hover {
-      color: var(--monaco-text-2);
+      color: var(--monaco-text-sysbar-button-hover);
     }
   }
 
   .left-sider-bar-item.active {
-    color: var(--monaco-text-2);
+    color: var(--monaco-text-sysbar-button-hover);
     border-left-color: var(--monaco-border-2);
   }
 }

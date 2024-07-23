@@ -178,8 +178,7 @@ defineExpose({
       @mouseleave="handleLeave"
       @mousedown="handleClick"
       :data-src="file!.path"
-      :style="active ? 'background-color: rgb(30, 30, 30);' : ''"
-      :class="`monaco-tree-editor-opened-tab-item ${active ? 'monaco-tree-editor-opened-tab-item-focused' : ''}`"
+      :class="`monaco-tree-editor-opened-tab-item ${active ? 'monaco-tree-editor-opened-tab-item-active' : ''}`"
     >
       <Icons :type="fileType" :style="{ marginRight: '2px' }" />
       <span :style="{ flex: 1, paddingRight: '5px', fontStyle: !file.status ? 'italic' : 'normal' }">{{ name }}</span>

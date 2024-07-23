@@ -24,19 +24,18 @@
     &-confirm {
       width: 400px;
       border-radius: 10px;
-      background: var(--monaco-bg-3);
+      background: var(--monaco-bg-sysmodal);
       border-radius: 10px;
-      color: var(--monaco-text-2);
-      padding-bottom: 10px;
+      color: var(--monaco-text-sysmodal);
     }
 
     &-title {
-      background: var(--monaco-cursor-1);
+      background: var(--monaco-bg-sysmodal-title);
       height: 30px;
       border-radius: 10px 10px 0 0;
       padding-left: 10px;
       line-height: 30px;
-      color: var(--monaco-settings-headerForeground);
+      cursor: default;
     }
 
     &-content {
@@ -45,21 +44,25 @@
     }
 
     &-footer {
-      padding: 0 10px;
+      background-color: var(--monaco-bg-sysmodal-footer);
+      padding: 10px;
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
+      border-bottom-right-radius: 10px;
+      border-bottom-left-radius: 10px;
     }
 
     &-close {
+      display: flex;
       position: absolute;
       right: 10px;
       top: 5px;
       cursor: pointer;
-      color: var(--monaco-settings-headerForeground);
 
-      &:focus {
-        color: var(--monaco-text-2);
+      &:hover {
+        background-color: var(--monaco-bg-sysmodal-close-focus);
+        color: var(--monaco-text-sysmodal-close-focus);
       }
     }
   }

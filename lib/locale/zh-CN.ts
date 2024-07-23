@@ -1,7 +1,9 @@
 import { type Messages } from './define'
 const zhCN: Messages = {
-  'settings.title': '设置',
   'settings.language': '语言',
+  'settings.colorTheme': '颜色主题',
+  'settings.colorTheme.dark': '深色',
+  'settings.colorTheme.light': '浅色',
   'msg.reloading': '加载中...',
   'msg.reloadSuccessed': '加载成功',
   'msg.reloadFailed': '加载失败',

@@ -4,8 +4,7 @@
     padding: 0 5px;
     line-height: 25px;
     height: 100%;
-    background: var(--monaco-bg-2);
-    color: var(--monaco-text-1);
+    background: var(--monaco-bg-folders);
     overflow: auto;
     flex-shrink: 0;
 
@@ -28,11 +27,10 @@
     &-icon {
       visibility: hidden;
       font-size: 16px;
-      color: var(--monaco-border-3);
       margin-right: 4px;
 
       &:hover {
-        color: var(--monaco-border-2);
+        color: var(--monaco-text-base-2);
       }
     }
   }
@@ -44,7 +42,8 @@
     &-new {
       flex: 1;
       outline: none;
-      border: 1px solid var(--monaco-editor-wordHighlightBorder);
+      background-color: var(--monaco-bg-folders-item-new);
+      border: 1px solid var(--monaco-border-base-2);
 
       &:focus {
         cursor: text;
@@ -71,15 +70,21 @@
       }
 
       &:hover {
-        background-color: var(--monaco-bg-5);
+        background-color: var(--monaco-bg-folders-item-hover);
+        color: var(--monaco-text-base-1);
       }
 
       &:hover .monaco-tree-editor-list-split-icon {
         visibility: visible;
       }
-
-      &-focused {
-        color: var(--monaco-text-2);
+    }
+    &-row.monaco-tree-editor-list-file-item-row-focused {
+      &:hover {
+        background-color: var(--monaco-bg-folders-item-active);
+        color: var(--monaco-text-folders-item-active);
+      }
+      .monaco-tree-editor-list-split-icon:hover {
+        color: var(--monaco-text-folders-item-active);
       }
     }
   }
@@ -91,7 +96,8 @@
   }
 
   &-file-item > div:has(.monaco-tree-editor-list-file-item-row-focused) {
-    background-color: var(--monaco-cursor-2);
-    border-color: var(--monaco-border-4);
+    background-color: var(--monaco-bg-folders-item-active);
+    border-color: var(--monaco-border-base-2);
+    color: var(--monaco-text-folders-item-active);
   }
 }

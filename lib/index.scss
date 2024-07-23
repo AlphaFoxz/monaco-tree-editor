@@ -1,18 +1,14 @@
 :root {
-  --monaco-list-activeSelectionBackground: #2c313a;
-
-  --monaco-scrollbar-shadow: #23252c;
-  --monaco-scrollbarSlider-activeBackground: #747d9180;
-  --monaco-scrollbarSlider-background: #4e566660;
-  --monaco-scrollbarSlider-hoverBackground: #5a637580;
-
   --monaco-c-black-1: rgb(51, 51, 51);
   --monaco-c-black-2: rgb(37, 37, 37);
   --monaco-c-black-3: rgb(30, 30, 30);
   --monaco-c-black-4: rgb(45, 45, 45);
   --monaco-c-black-5: rgb(42, 45, 46);
+  --monaco-c-black-6: rgb(0, 0, 0);
   --monaco-c-gray-1: rgb(69, 69, 69);
-  --monaco-c-gray-2: rgb(119, 119, 119);
+  --monaco-c-gray-2: rgb(129, 129, 129);
+  --monaco-c-gray-3: rgb(236, 236, 236);
+  --monaco-c-gray-4: rgb(220, 220, 220);
   --monaco-c-white-1: rgb(255, 255, 255);
   --monaco-c-white-2: rgb(204, 204, 204);
   --monaco-c-white-3: rgb(243, 243, 243);
@@ -20,31 +16,81 @@
   --monaco-c-blue-2: rgb(4, 57, 94);
   --monaco-c-blue-3: rgb(14, 99, 156);
   --monaco-c-blue-4: rgb(17, 119, 187);
+  --monaco-c-blue-5: rgb(0, 96, 192);
+  --monaco-c-blue-6: rgb(0, 122, 204);
+  --monaco-c-blue-7: rgb(224, 238, 249);
+  --monaco-c-brown-1: rgb(187, 122, 84);
+  --monaco-c-pink-1: rgb(249, 241, 238);
+  --monaco-c-red-1: rgb(196, 43, 28);
 
-  --monaco-bg-1: var(--monaco-c-black-1);
-  --monaco-bg-2: var(--monaco-c-black-2);
-  --monaco-bg-3: var(--monaco-c-black-3);
-  --monaco-bg-4: var(--monaco-c-black-4);
-  --monaco-bg-5: var(--monaco-c-black-5);
-  --monaco-bg-6: var(--monaco-c-blue-3);
-  --monaco-bg-7: var(--monaco-c-blue-4);
-  --monaco-text-1: var(--monaco-c-white-2);
-  --monaco-text-2: var(--monaco-c-white-1);
-  --monaco-text-3: var(--monaco-c-white-3);
-  --monaco-border-1: var(--monaco-c-gray-1);
-  --monaco-border-2: var(--monaco-c-white-1);
-  --monaco-border-3: var(--monaco-c-gray-2);
-  --monaco-border-4: var(--monaco-c-blue-1);
-  --monaco-drag-hover: var(--monaco-c-blue-1);
-  --monaco-cursor-1: var(--monaco-c-blue-1);
-  --monaco-cursor-2: var(--monaco-c-blue-2);
+  --monaco-bg-base-1: var(--monaco-c-black-3);
+  --monaco-bg-base-2: var(--monaco-c-black-2);
+  --monaco-bg-button: var(--monaco-c-white-1);
+  --monaco-bg-button-hover: var(--monaco-c-blue-7);
+  --monaco-text-base-1: var(--monaco-c-white-2);
+  --monaco-text-base-2: var(--monaco-c-white-1);
+  --monaco-border-base-1: rgba(0, 0, 0, 0);
+  --monaco-border-base-2: var(--monaco-c-blue-1);
+
+  --monaco-bg-sysbar: var(--monaco-c-black-4);
+  --monaco-text-sysbar-button: var(--monaco-c-gray-2);
+  --monaco-text-sysbar-button-hover: var(--monaco-c-white-1);
+
+  --monaco-bg-sysmodal: var(--monaco-c-white-1);
+  --monaco-bg-sysmodal-title: var(--monaco-c-pink-1);
+  --monaco-bg-sysmodal-footer: var(--monaco-c-white-3);
+  --monaco-bg-sysmodal-close-focus: var(--monaco-c-red-1);
+  --monaco-text-sysmodal: var(--monaco-c-black-5);
+  --monaco-text-sysmodal-close-focus: var(--monaco-c-white-1);
+
+  --monaco-bg-folders: var(--monaco-c-black-2);
+  --monaco-bg-folders-item-active: var(--monaco-c-blue-2);
+  --monaco-bg-folders-item-hover: var(--monaco-c-black-5);
+  --monaco-bg-folders-item-new: var(--monaco-c-gray-1);
+  --monaco-text-folders-item-active: var(--monaco-text-base-1);
+
+  --monaco-bg-contextmenu: var(--monaco-c-black-2);
+  --monaco-bg-contextmenu-hover: var(--monaco-c-blue-2);
+  --monaco-border-contextmenu: var(--monaco-c-gray-1);
+
+  --monaco-bg-openedtab-item: var(--monaco-c-black-4);
+  --monaco-bg-openedtab-item-active: var(--monaco-c-black-3);
+  --monaco-bg-openedtab-item-close-hover: var(--monaco-c-black-1);
+
+  --monaco-bg-pages-button: var(--monaco-c-blue-3);
+  --monaco-bg-pages-button-hover: var(--monaco-c-blue-4);
+  --monaco-bg-pages-select: var(--monaco-c-gray-1);
+  --monaco-text-pages-button: var(--monaco-c-white-1);
 }
 
-.monaco-tree-editor-light-mode {
-  // --monaco-bg-1: var(--monaco-c-white-1);
-  --monaco-bg-2: var(--monaco-c-white-2);
-  --monaco-bg-3: var(--monaco-c-white-3);
-  --monaco-text-1: var(--monaco-c-black-3);
+.light {
+  --monaco-bg-base-1: var(--monaco-c-white-1);
+  --monaco-bg-base-2: var(--monaco-c-white-3);
+  --monaco-text-base-1: var(--monaco-c-black-4);
+  --monaco-text-base-2: var(--monaco-c-black-6);
+  --monaco-border-base-1: var(--monaco-c-white-2);
+  --monaco-border-base-2: var(--monaco-c-blue-1);
+
+  --monaco-bg-folders: var(--monaco-c-white-3);
+  --monaco-bg-folders-item-active: var(--monaco-c-blue-5);
+  --monaco-bg-folders-item-hover: var(--monaco-c-gray-3);
+  --monaco-bg-folders-item-new: var(--monaco-c-white-1);
+  --monaco-border-folders-item-active: var(--monaco-c-blue-1);
+  --monaco-text-folders-item-active: var(--monaco-c-white-1);
+
+  --monaco-bg-contextmenu: var(--monaco-c-white-1);
+  --monaco-bg-contextmenu-hover: var(--monaco-c-blue-5);
+  --monaco-border-contextmenu: var(--monaco-c-gray-4);
+
+  --monaco-bg-openedtab-item: var(--monaco-c-gray-3);
+  --monaco-bg-openedtab-item-active: var(--monaco-c-white-1);
+  --monaco-bg-openedtab-item-close-hover: var(--monaco-c-gray-4);
+
+  --monaco-bg-pages-item-hover: var(--monaco-c-white-3);
+  --monaco-bg-pages-button: var(--monaco-c-blue-6);
+  --monaco-bg-pages-button-hover: var(--monaco-c-blue-3);
+  --monaco-bg-pages-select: var(--monaco-c-white-1);
+  --monaco-text-pages-button: var(--monaco-c-white-1);
 }
 
 .monaco-tree-editor {
@@ -55,25 +101,24 @@
   width: 100%;
   height: 100%;
   position: relative;
-  color: var(--monaco-text-1);
+  color: var(--monaco-text-base-1);
+  background-color: var(--monaco-bg-base-1);
 
   &-drag {
     width: 8px;
     margin: 0 -5px;
-    background: var(--monaco-bg-3);
+    background: rgba(0, 0, 0, 0);
     height: 100%;
     cursor: col-resize;
     flex-shrink: 0;
 
     &:hover {
       width: 10px;
-      background: var(--monaco-drag-hover);
+      background: var(--monaco-border-base-2);
     }
   }
 
   &-area {
-    color: var(--monaco-text-1);
-    background-color: var(--monaco-bg-3);
     flex: 1;
     min-width: 0;
     height: 100%;
@@ -89,7 +134,6 @@
       right: 0;
       top: 0;
       bottom: 0;
-      background: var(--monaco-bg-3);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -112,75 +156,10 @@
     }
   }
 
-  &-setting {
-    width: 400px;
-    height: 200px;
-    background: var(--monaco-bg-3);
-    border-radius: 10px;
-    color: var(--monaco-text-2);
-    display: flex;
-    flex-direction: column;
-
-    &-button {
-      cursor: pointer;
-      position: absolute;
-      left: 8px;
-      bottom: 5px;
-    }
-
-    &-header {
-      position: relative;
-      height: 25px;
-      width: 100%;
-      background: var(--monaco-cursor-1);
-      color: var(--monaco-settings-headerForeground);
-      border-radius: 10px 10px 0 0;
-      box-sizing: border-box;
-      padding-left: 10px;
-
-      &-close {
-        cursor: pointer;
-        line-height: 12px;
-        height: 12px;
-        top: 4px;
-        padding: 4px;
-        position: absolute;
-        right: 10px;
-      }
-    }
-
-    &-content {
-      flex-grow: 1;
-      padding: 10px 10px 10px 30px;
-      overflow-y: scroll;
-    }
-  }
-
   &-prettier {
     position: absolute;
     right: 5px;
     top: 5px;
     cursor: pointer;
-  }
-
-  &-input {
-    &-row {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin-top: 10px;
-    }
-
-    &-name {
-      font-size: 12px;
-      line-height: 20px;
-      width: 100px;
-      text-align: left;
-    }
-
-    &-value {
-      font-size: 12px;
-      line-height: 20px;
-    }
   }
 }

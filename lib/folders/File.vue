@@ -224,12 +224,13 @@ const handleBlur = (_e?: Event) => {
   if (!nameRef.value) {
     return
   }
-  const name = nameRef.value?.textContent
+  let name = nameRef.value?.textContent
   if (!name || /^\s*$/.test(name)) {
     //remove component
     monacoStore.removeBlank(props.file.path)
     return
   }
+  name = name.trim()
   if (editing.value) {
     editing.value = false
     if (props.file.name !== name) {

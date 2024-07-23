@@ -1,8 +1,10 @@
 import { type Messages } from './define'
 
 const enUS: Messages = {
-  'settings.title': 'Settings',
   'settings.language': 'Language',
+  'settings.colorTheme': 'Color Theme',
+  'settings.colorTheme.dark': 'Dark',
+  'settings.colorTheme.light': 'Light',
   'msg.reloading': 'Reloading...',
   'msg.reloadSuccessed': 'Reload Successed',
   'msg.reloadFailed': 'Reload Failed',

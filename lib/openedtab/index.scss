@@ -5,7 +5,7 @@
   overflow: hidden;
   width: 100%;
   white-space: nowrap;
-  background-color: var(--monaco-bg-2);
+  background-color: var(--monaco-bg-base-2);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -17,6 +17,7 @@
     box-sizing: border-box;
     width: 100%;
     padding-right: 30px;
+    padding-left: 2px;
     overflow: hidden;
   }
 
@@ -30,16 +31,12 @@
     flex-direction: row;
     align-items: center;
     margin-right: 1px;
-    background-color: var(--monaco-bg-4);
+    background-color: var(--monaco-bg-openedtab-item);
     position: relative;
 
-    &-focused {
-      background-color: var(--monaco-bg-3);
-      color: var(--monaco-text-2);
-    }
-
-    &:hover {
-      color: var(--monaco-text-2);
+    &-active {
+      background-color: var(--monaco-bg-openedtab-item-active);
+      color: var(--monaco-text-base-2);
     }
 
     &-close {
@@ -48,7 +45,7 @@
       padding: 5px 5px;
       line-height: 10px;
       &:hover {
-        background-color: var(--monaco-border-1);
+        background-color: var(--monaco-bg-openedtab-item-close-hover);
       }
     }
 
@@ -58,36 +55,8 @@
       top: 15px;
       width: 7px;
       height: 7px;
-      background-color: var(--monaco-text-2);
+      background-color: var(--monaco-text-base-2);
       border-radius: 50%;
-    }
-  }
-}
-
-.monaco-tree-editor-modal-rightclick {
-  & .monaco-tree-editor-modal-mask {
-    opacity: 0;
-  }
-}
-
-.monaco-tree-editor-rightclick {
-  &-panel {
-    position: fixed;
-    background: var(--monaco-editorWidget-background);
-    padding: 5px 0;
-    font-size: 12px;
-    line-height: 30px;
-    min-width: 150px;
-    color: var(--monaco-text-1);
-
-    &-item {
-      padding: 0 10px;
-      cursor: pointer;
-
-      &:hover {
-        color: var(--monaco-text-2);
-        background: var(--monaco-border-1);
-      }
     }
   }
 }

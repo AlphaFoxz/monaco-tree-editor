@@ -56,7 +56,7 @@ const handleAfterEnter = (el: Element) => {
 <template>
   <div ref="containerRef" data-type="context-menu">
     <slot></slot>
-    <Teleport to="body">
+    <Teleport v-if="visible" to="#monaco-tree-editor-root">
       <Transition
         @before-enter="handleBeforeEnter"
         @enter="handleEnter"
@@ -64,7 +64,6 @@ const handleAfterEnter = (el: Element) => {
         @contextmenu.prevent.stop
       >
         <div
-          v-if="visible"
           class="context-menu"
           :style="{
             left: left === undefined ? undefined : left + 'px',

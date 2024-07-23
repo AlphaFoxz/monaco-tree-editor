@@ -2,6 +2,8 @@
 import './settings-page.scss'
 import { useI18n, getCurrentLanguage, changeLanguage, type Language } from '../locale'
 import { useMessage } from '../message-store'
+import { useGlobalVar } from '../global-var-store'
+import { type ThemeMode } from '../themes/define'
 
 const props = defineProps({
   customMenu: {
@@ -12,7 +14,9 @@ const props = defineProps({
 
 const { $t } = useI18n()
 const messageStore = useMessage()
+const globalVarStore = useGlobalVar()
 const language = getCurrentLanguage()
+const colorTheme = globalVarStore.getThemeMode()
 
 function handleSelectLanguage(e: Event) {
   const target = e.target as HTMLSelectElement
@@ -31,6 +35,10 @@ function handleSelectLanguage(e: Event) {
     timeoutMs: 2500,
   })
 }
+
+function handleSelectColorTheme(e: Event) {
+  globalVarStore.getThemeMode().value = (e.target as HTMLSelectElement).value as ThemeMode
+}
 </script>
 
 <template>
@@ -40,6 +48,14 @@ function handleSelectLanguage(e: Event) {
       <select class="monaco-tree-editor-settings-item-select" :value="language" @change="handleSelectLanguage">
         <option value="en-US">English</option>
         <option value="zh-CN">简体中文</option>
+      </select>
+    </div>
+
+    <div class="monaco-tree-editor-settings-title">{{ $t('settings.colorTheme').value }}</div>
+    <div class="monaco-tree-editor-settings-item">
+      <select class="monaco-tree-editor-settings-item-select" :value="colorTheme" @change="handleSelectColorTheme">
+        <option value="dark">{{ $t('settings.colorTheme.dark').value }}</option>
+        <option value="light">{{ $t('settings.colorTheme.light').value }}</option>
       </select>
     </div>
 

@@ -556,7 +556,13 @@ defineExpose({
 })
 </script>
 <template>
-  <div ref="rootRef" id="monaco-tree-editor-root" @contextmenu.prevent.stop tabIndex="1" class="monaco-tree-editor">
+  <div
+    ref="rootRef"
+    id="monaco-tree-editor-root"
+    @contextmenu.prevent.stop
+    tabIndex="1"
+    :class="`monaco-tree-editor ${globalVarStore.getThemeMode().value}`"
+  >
     <Message></Message>
     <LeftSiderBar></LeftSiderBar>
     <FileList
