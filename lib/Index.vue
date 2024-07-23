@@ -13,9 +13,8 @@ import LeftSiderBar from './left-sider-bar/Index.vue'
 import FileList from './folders/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
 import GithubFilled from '@ant-design/icons-vue/GithubFilled'
-import Message from './message-popup/Index.vue'
+import MessagePopup from './message-popup/Index.vue'
 import { useI18n, type Language, changeLanguage } from './locale'
-import { type LeftSiderBarItem } from './left-sider-bar/define'
 import SettingsPage from './pages/SettingsPage.vue'
 
 const props = defineProps({
@@ -28,7 +27,7 @@ const props = defineProps({
   },
   siderMinWidth: {
     type: Number,
-    default: 240,
+    default: 170,
   },
   filelistTitle: {
     type: String,
@@ -86,7 +85,7 @@ const handleDragStart = (e: MouseEvent) => {
   console.debug('dragStart')
   dragInfo = {
     pageX: e.pageX,
-    width: filelistWidth.value,
+    width: currentLeftSiderBar.value === 'Explorer' ? filelistWidth.value : 0,
     start: true,
   }
 }
@@ -94,10 +93,10 @@ const handleDrag = (e: MouseEvent) => {
   e.stopPropagation()
   if (dragInfo.start && e.pageX != 0) {
     const w = dragInfo.width + (e.pageX - dragInfo.pageX)
-    console.debug('Dragging')
+    console.debug('Dragging', w)
     if (w < props.siderMinWidth / 2) {
       globalVarStore.setCurrentLeftSiderBar(null)
-    } else if (w >= props.siderMinWidth) {
+    } else if (w >= props.siderMinWidth / 2) {
       globalVarStore.setCurrentLeftSiderBar('Explorer', false)
     }
     filelistWidth.value = w < props.siderMinWidth ? props.siderMinWidth : w
@@ -563,7 +562,7 @@ defineExpose({
     tabIndex="1"
     :class="`monaco-tree-editor ${globalVarStore.getThemeMode().value}`"
   >
-    <Message></Message>
+    <MessagePopup></MessagePopup>
     <LeftSiderBar></LeftSiderBar>
     <FileList
       v-show="currentLeftSiderBar === 'Explorer'"

@@ -9,6 +9,10 @@
   --monaco-c-gray-2: rgb(129, 129, 129);
   --monaco-c-gray-3: rgb(236, 236, 236);
   --monaco-c-gray-4: rgb(220, 220, 220);
+  --monaco-c-gray-5: rgb(81, 81, 81);
+  --monaco-c-gray-6: rgb(98, 98, 98);
+  --monaco-c-gray-7: rgb(186, 186, 186);
+  --monaco-c-gray-8: rgb(142, 142, 142);
   --monaco-c-white-1: rgb(255, 255, 255);
   --monaco-c-white-2: rgb(204, 204, 204);
   --monaco-c-white-3: rgb(243, 243, 243);
@@ -47,6 +51,9 @@
   --monaco-bg-folders-item-active: var(--monaco-c-blue-2);
   --monaco-bg-folders-item-hover: var(--monaco-c-black-5);
   --monaco-bg-folders-item-new: var(--monaco-c-gray-1);
+  --monaco-bg-folders-scrollbar-thumb: var(--monaco-c-gray-1);
+  --monaco-bg-folders-scrollbar-thumb-hover: var(--monaco-c-gray-5);
+  --monaco-bg-folders-scrollbar-thumb-active: var(--monaco-c-gray-6);
   --monaco-text-folders-item-active: var(--monaco-text-base-1);
 
   --monaco-bg-contextmenu: var(--monaco-c-black-2);
@@ -57,6 +64,7 @@
   --monaco-bg-openedtab-item-active: var(--monaco-c-black-3);
   --monaco-bg-openedtab-item-close-hover: var(--monaco-c-black-1);
 
+  --monaco-bg-pages-item-hover: var(--monaco-c-black-2);
   --monaco-bg-pages-button: var(--monaco-c-blue-3);
   --monaco-bg-pages-button-hover: var(--monaco-c-blue-4);
   --monaco-bg-pages-select: var(--monaco-c-gray-1);
@@ -75,7 +83,9 @@
   --monaco-bg-folders-item-active: var(--monaco-c-blue-5);
   --monaco-bg-folders-item-hover: var(--monaco-c-gray-3);
   --monaco-bg-folders-item-new: var(--monaco-c-white-1);
-  --monaco-border-folders-item-active: var(--monaco-c-blue-1);
+  --monaco-bg-folders-scrollbar-thumb: var(--monaco-c-gray-7);
+  --monaco-bg-folders-scrollbar-thumb-hover: var(--monaco-c-gray-8);
+  --monaco-bg-folders-scrollbar-thumb-active: var(--monaco-c-gray-6);
   --monaco-text-folders-item-active: var(--monaco-c-white-1);
 
   --monaco-bg-contextmenu: var(--monaco-c-white-1);
@@ -105,15 +115,13 @@
   background-color: var(--monaco-bg-base-1);
 
   &-drag {
-    width: 8px;
-    margin: 0 -5px;
+    width: 6px;
     background: rgba(0, 0, 0, 0);
     height: 100%;
     cursor: col-resize;
     flex-shrink: 0;
 
     &:hover {
-      width: 10px;
       background: var(--monaco-border-base-2);
     }
   }

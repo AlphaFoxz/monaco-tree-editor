@@ -8,6 +8,7 @@
     padding: 0 15px;
     font-weight: 400;
     font-size: 28px;
+    cursor: default;
     &:hover {
       background-color: var(--monaco-bg-pages-item-hover);
     }
@@ -30,6 +31,9 @@
 
       &:focus {
         border-color: var(--monaco-border-base-2);
+      }
+      option {
+        line-height: 26px;
       }
     }
     &-button {

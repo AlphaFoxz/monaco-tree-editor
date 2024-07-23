@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import './index.scss'
 import PrettierIcon from '../icons/Prettier.vue'
 import { useMonaco } from '../monaco-store'
 

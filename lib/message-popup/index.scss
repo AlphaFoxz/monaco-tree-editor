@@ -16,7 +16,7 @@
     box-shadow: 0 0 10px black;
     font-size: 16px;
     line-height: 24px;
-    color: var(--monaco-text-2);
+    color: var(--monaco-text-base-2);
     label {
       word-break: break-all;
       font-size: 16px;
@@ -29,7 +29,7 @@
       height: 16px;
       cursor: pointer;
       &:hover {
-        background-color: var(--monaco-border-1);
+        background-color: var(--monaco-border-base-1);
       }
     }
   }

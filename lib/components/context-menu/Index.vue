@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useContextMenu, type ContextMenuItem, type TriggerType, type PositionType } from './define'
 import './index.scss'
 
@@ -26,6 +26,10 @@ const { left, right, top, bottom, visible } = useContextMenu(
   props.trigger,
   props.position as PositionType
 )
+const to = ref('body')
+onMounted(() => {
+  to.value = '#monaco-tree-editor-root'
+})
 
 const handleClick = (item: ContextMenuItem<any>) => {
   console.debug('当前选择', item)
@@ -56,7 +60,7 @@ const handleAfterEnter = (el: Element) => {
 <template>
   <div ref="containerRef" data-type="context-menu">
     <slot></slot>
-    <Teleport v-if="visible" to="#monaco-tree-editor-root">
+    <Teleport v-if="visible" :to="to">
       <Transition
         @before-enter="handleBeforeEnter"
         @enter="handleEnter"

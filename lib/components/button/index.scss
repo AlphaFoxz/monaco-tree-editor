@@ -5,8 +5,9 @@
   font-weight: 500;
   background-color: var(--monaco-bg-button);
   cursor: pointer;
+  border-color: var(--monaco-border-base-2);
   border-width: 1px;
-  border-style: groove;
+  border-style: solid;
 
   &:hover {
     background-color: var(--monaco-bg-button-hover);
