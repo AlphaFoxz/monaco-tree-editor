@@ -21,6 +21,7 @@ const enUS: Messages = {
   'msg.renamingFolder': '[ {path} ] Renaming Folder...',
   'msg.renameSuccessed': 'Rename Successed',
   'msg.renameFailed': 'Rename Failed {msg}',
+  'msg.languageChanged': 'Language Changed To {lang}',
   'ctxmenu.openFile': 'Open File',
   'ctxmenu.copyPath': 'Copy Path',
   'ctxmenu.copyRelativePath': 'Copy Relative Path',
@@ -51,8 +52,9 @@ const enUS: Messages = {
   'button.collapseAll': 'Collapse Folders in Explorer',
   'button.rename': 'Rename..',
   'button.delete': 'Delete',
-  'button.manage': 'Manage',
-  'button.folders': 'Folders',
+  'menu.manage': 'Manage',
+  'menu.folders': 'Folders',
+  'menu.settings': 'Settings',
 }
 
 export default enUS

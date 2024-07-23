@@ -3,7 +3,7 @@ import * as monaco_define from 'monaco-editor'
 import DarkTheme from './themes/dark'
 import LightTheme from './themes/light'
 import { nextTick, ref } from 'vue'
-import { type FileInfo, type Files } from './define'
+import { type FileInfo, type Files, BuiltInPage } from './define'
 import { useGlobalVar } from './global-var-store'
 import type { ThemeMode } from './themes/define'
 
@@ -59,7 +59,6 @@ async function monacoImported() {
 async function init(dom: HTMLElement, options?: monaco_define.editor.IStandaloneEditorConstructionOptions) {
   await monacoImported()
   editor = monaco.editor.create(dom, { ...options, model: null })
-
   editorDom = dom
   const editorService = (editor as any)._codeEditorService
   const openEditorBase = editorService.openCodeEditor.bind(editorService)
@@ -144,14 +143,15 @@ async function loadFileTree(files: Files) {
     path: string
   }[] = []
   const notExsist: string[] = []
-  openedFiles.value.map((item) => {
+  const builtInPages: string[] = Object.keys(BuiltInPage)
+  for (const item of openedFiles.value) {
     const tmpPath = item.path
-    if (files[tmpPath]) {
+    if (files[tmpPath] || tmpPath[0] === '<') {
       tmpOpenedFiles.push(item)
     } else {
       notExsist.push(tmpPath)
     }
-  })
+  }
   for (const key of notExsist) {
     closeFile(key)
   }
@@ -220,6 +220,10 @@ function getValue(path: string) {
 }
 //恢复视图
 function restoreModel(path: string): monaco_define.editor.ITextModel | undefined {
+  if (path[0] === '<') {
+    currentPath.value = path
+    return
+  }
   const model = monaco.editor.getModels().find((model) => model.uri.path === path)
   if (path !== prePath.value && prePath.value) {
     editorStates.value.set(prePath.value, editor?.saveViewState())

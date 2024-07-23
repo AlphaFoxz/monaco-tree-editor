@@ -19,6 +19,7 @@ type keys =
   | 'msg.renamingFolder'
   | 'msg.renameSuccessed'
   | 'msg.renameFailed'
+  | 'msg.languageChanged'
   | 'ctxmenu.openFile'
   | 'ctxmenu.copyPath'
   | 'ctxmenu.copyRelativePath'
@@ -47,8 +48,9 @@ type keys =
   | 'button.collapseAll'
   | 'button.rename'
   | 'button.delete'
-  | 'button.manage'
-  | 'button.folders'
+  | 'menu.manage'
+  | 'menu.folders'
+  | 'menu.settings'
 
 export type Messages = {
   [key in keys]: string

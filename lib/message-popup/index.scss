@@ -4,7 +4,7 @@
   right: 0;
   z-index: 10;
   &-box {
-    background-color: rgb(42, 45, 46);
+    background-color: var(--monaco-bg-5);
     border-radius: 5px;
     border-color: rgb(48, 48, 48);
     border-style: solid;
@@ -16,9 +16,21 @@
     box-shadow: 0 0 10px black;
     font-size: 16px;
     line-height: 24px;
+    color: var(--monaco-text-2);
     label {
       word-break: break-all;
       font-size: 16px;
+    }
+
+    &-close {
+      display: block;
+      float: right;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      &:hover {
+        background-color: var(--monaco-border-1);
+      }
     }
   }
 }

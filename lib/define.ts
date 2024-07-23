@@ -13,6 +13,8 @@ export type FileInfo = {
   children?: { [path: string]: FileInfo } | null
 }
 export enum BuiltInPage {
-  SETTINGS = '<Settings>',
-  KEYBOARD_SHORTCUTS = '<KeyboardShortcuts>',
+  '<Settings>' = '<Settings>',
+  '<KeyboardShortcuts>' = '<KeyboardShortcuts>',
 }
+
+export type BuiltInPageType = keyof BuiltInPage

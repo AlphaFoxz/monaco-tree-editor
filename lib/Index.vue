@@ -12,13 +12,11 @@ import Prettier from './prettier/Index.vue'
 import LeftSiderBar from './left-sider-bar/Index.vue'
 import FileList from './folders/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
-import Modal from './components/modal/Index.vue'
-import IconClose from './icons/Close.vue'
 import GithubFilled from '@ant-design/icons-vue/GithubFilled'
-import Message from './message-bar/Index.vue'
+import Message from './message-popup/Index.vue'
 import { useI18n, type Language, changeLanguage } from './locale'
 import { type LeftSiderBarItem } from './left-sider-bar/define'
-import Settings from './settings/Index.vue'
+import SettingsPage from './pages/SettingsPage.vue'
 
 const props = defineProps({
   files: {
@@ -120,18 +118,12 @@ watch(
 )
 
 // =============== 左边栏 left-sider-bar ================
-const settingVisible = ref(false)
 const globalVarStore = useGlobalVar()
 
 const currentLeftSiderBar = globalVarStore.getCurrentLeftSiderBar()
 watch(globalVarStore.getCurrentLeftSiderBar(), (n) => {
   currentLeftSiderBar.value = n
 })
-const handleTriggerLeftSider = (item: LeftSiderBarItem) => {
-  if (item === 'Setting') {
-    settingVisible.value = true
-  }
-}
 
 // ================ 编辑器部分 editor ================
 const projectName = ref<any>('project')
@@ -566,7 +558,7 @@ defineExpose({
 <template>
   <div ref="rootRef" id="monaco-tree-editor-root" @contextmenu.prevent.stop tabIndex="1" class="monaco-tree-editor">
     <Message></Message>
-    <LeftSiderBar @trigger-active="handleTriggerLeftSider"></LeftSiderBar>
+    <LeftSiderBar></LeftSiderBar>
     <FileList
       v-show="currentLeftSiderBar === 'Explorer'"
       @reload="handleReload"
@@ -596,7 +588,7 @@ defineExpose({
       <OpenedTab :fontSize="fontSize" @save-file="handleSaveFile" />
       <div
         id="editor"
-        v-show="openedCount > 0"
+        v-show="openedCount > 0 && monacoStore.currentPath.value[0] !== '<'"
         ref="editorRef"
         @drop="dragInEditor"
         :style="{
@@ -610,62 +602,12 @@ defineExpose({
           web editor
         </label>
       </div>
-      <Settings v-if="monacoStore.currentPath.value === BuiltInPage.SETTINGS"></Settings>
+      <SettingsPage
+        :custom-menu="settingsMenu"
+        v-show="monacoStore.currentPath.value === BuiltInPage['<Settings>']"
+      ></SettingsPage>
     </div>
     <Prettier @click="handleFormat" class="monaco-tree-editor-prettier" />
-    <Modal
-      v-show="settingVisible"
-      destroyOnClose
-      @close="settingVisible = false"
-      :visible="settingVisible"
-      :target="rootRef"
-    >
-      <div class="monaco-tree-editor-setting">
-        <div class="monaco-tree-editor-setting-header">
-          {{ $t('settings.title').value }}
-          <div @click="settingVisible = false" class="monaco-tree-editor-setting-header-close">
-            <IconClose :style="{ width: '12px', height: '12px' }" />
-          </div>
-        </div>
-        <div class="monaco-tree-editor-setting-content">
-          <div v-if="!language" class="monaco-tree-editor-input-row">
-            <div class="monaco-tree-editor-input-name">
-              {{ $t('settings.language').value + '' }}
-            </div>
-            <div
-              class="monaco-tree-editor-select-item"
-              style="cursor: pointer"
-              @click="
-                () => {
-                  changeLanguage('en-US')
-                  messageStore.success({ content: 'Switch to English', timeoutMs: 2000 })
-                }
-              "
-            >
-              English
-            </div>
-            <div
-              class="monaco-tree-editor-select-item"
-              style="cursor: pointer"
-              @click="
-                () => {
-                  changeLanguage('zh-CN')
-                  messageStore.success({ content: '切换为简体中文', timeoutMs: 2000 })
-                }
-              "
-            >
-              简体中文
-            </div>
-          </div>
-          <div class="monaco-tree-editor-input-row" v-for="(item, i) in settingsMenu" :key="i">
-            <div class="monaco-tree-editor-input-name"></div>
-            <div class="monaco-tree-editor-select-item" style="cursor: pointer" @click="item.handler">
-              {{ item.label }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </Modal>
   </div>
 </template>
 

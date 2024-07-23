@@ -4,6 +4,7 @@ import { type Messages, type Language } from './define'
 import { ref, type ComputedRef, computed, type Ref } from 'vue'
 
 const locale = ref<Messages>(enUS)
+const currentLanguage = ref<Language>('en-US')
 
 function t(key: keyof Messages, defaultValue?: string): string
 function t(key: keyof Messages, attr: Record<string, string | number>, defaultValue?: string): string
@@ -51,10 +52,11 @@ export function changeLanguage(lang: Language) {
     default:
       const _: never = lang
   }
+  currentLanguage.value = lang || 'en-US'
 }
 
-export function getCurrentLanguage(): Ref<Messages> {
-  return locale
+export function getCurrentLanguage(): Ref<Language> {
+  return currentLanguage
 }
 
 /**

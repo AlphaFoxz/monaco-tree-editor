@@ -7,7 +7,7 @@ export default mergeConfig(
   defineConfig({
     resolve: {
       alias: {
-        '~lib': fileURLToPath(new URL('./lib', import.meta.url)),
+        '~': fileURLToPath(new URL('./lib', import.meta.url)),
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },

@@ -54,11 +54,7 @@ defineEmits({
 </script>
 <template>
   <div class="message-container-box" :title="textTip" :style="{ boxShadow: shadow }">
-    <IconClose
-      v-if="closeable"
-      @click="$emit('close', id)"
-      :style="{ display: 'block', float: 'right', width: '16px', height: '16px', cursor: 'pointer' }"
-    />
+    <IconClose v-if="closeable" @click="$emit('close', id)" class="message-container-box-close" />
     <label>
       <slot></slot
       ><IconLoading

@@ -99,5 +99,5 @@ watch(
 </script>
 
 <template>
-  <img :src="imgSrc" @error="handleError" class="monaco-tree-icons" />
+  <img :src="imgSrc" @error="handleError" class="monaco-tree-editor-icons" />
 </template>

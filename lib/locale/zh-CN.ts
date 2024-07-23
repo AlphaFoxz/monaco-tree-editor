@@ -20,6 +20,7 @@ const zhCN: Messages = {
   'msg.renamingFolder': '[ {path} ] 正在重命名文件夹...',
   'msg.renameSuccessed': '重命名成功',
   'msg.renameFailed': '重命名失败 {msg}',
+  'msg.languageChanged': '语言已切换为 {lang}',
   'ctxmenu.openFile': '打开文件',
   'ctxmenu.copyPath': '复制路径',
   'ctxmenu.copyRelativePath': '复制相对路径',
@@ -48,8 +49,9 @@ const zhCN: Messages = {
   'button.collapseAll': '折叠文件夹',
   'button.rename': '重命名...',
   'button.delete': '删除',
-  'button.manage': '管理',
-  'button.folders': '文件夹',
+  'menu.manage': '管理',
+  'menu.folders': '文件夹',
+  'menu.settings': '设置',
 }
 
 export default zhCN

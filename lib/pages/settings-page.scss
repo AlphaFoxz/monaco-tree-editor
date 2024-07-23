@@ -1,0 +1,37 @@
+.monaco-tree-editor-settings {
+  padding: 25px;
+  color: var(--monaco-text-2);
+
+  &-title {
+    padding: 0 15px;
+    font-weight: 400;
+    font-size: 28px;
+  }
+
+  &-item {
+    padding: 15px;
+    &-select {
+      width: 320px;
+      height: 26px;
+      background-color: var(--monaco-bg-4);
+      color: inherit;
+      border-radius: 0;
+
+      &:focus,
+      &::after {
+        border-color: var(--monaco-border-4);
+      }
+    }
+    &-button {
+      display: inline-block;
+      line-height: 30px;
+      cursor: pointer;
+      padding: 0 5px;
+      border-radius: 2px;
+      background-color: var(--monaco-bg-6);
+      &:hover {
+        background-color: var(--monaco-bg-7);
+      }
+    }
+  }
+}

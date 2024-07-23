@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Editor as MonacoTreeEditor, useMonaco, type Files } from '~lib'
-import { useMessage } from '~lib'
+import { Editor as MonacoTreeEditor, useMonaco, type Files } from '~'
+import { useMessage } from '~'
 import { ref, onMounted } from 'vue'
 import * as monaco from 'monaco-editor'
 import * as server from './mock-server'

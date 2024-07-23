@@ -1,19 +1,31 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useContextMenu, type ContextMenuItem } from './define'
+import { useContextMenu, type ContextMenuItem, type TriggerType, type PositionType } from './define'
 import './index.scss'
 
-defineProps({
+const props = defineProps({
   menu: {
     type: Array<ContextMenuItem<any>>,
     required: true,
+  },
+  trigger: {
+    type: Array<TriggerType>,
+    default: () => undefined,
+  },
+  position: {
+    type: String,
+    default: () => undefined,
   },
 })
 const emit = defineEmits({
   select: (_selected: ContextMenuItem<any>) => true,
 })
 const containerRef = ref<HTMLElement>()
-const { x, y, visible } = useContextMenu(containerRef)
+const { left, right, top, bottom, visible } = useContextMenu(
+  containerRef,
+  props.trigger,
+  props.position as PositionType
+)
 
 const handleClick = (item: ContextMenuItem<any>) => {
   console.debug('当前选择', item)
@@ -42,16 +54,23 @@ const handleAfterEnter = (el: Element) => {
 </script>
 
 <template>
-  <div ref="containerRef">
+  <div ref="containerRef" data-type="context-menu">
     <slot></slot>
     <Teleport to="body">
-      <Transition @before-enter="handleBeforeEnter" @enter="handleEnter" @afterEnter="handleAfterEnter">
+      <Transition
+        @before-enter="handleBeforeEnter"
+        @enter="handleEnter"
+        @afterEnter="handleAfterEnter"
+        @contextmenu.prevent.stop
+      >
         <div
           v-if="visible"
           class="context-menu"
           :style="{
-            left: x + 'px',
-            top: y + 'px',
+            left: left === undefined ? undefined : left + 'px',
+            right: right === undefined ? undefined : right + 'px',
+            top: top === undefined ? undefined : top + 'px',
+            bottom: bottom === undefined ? undefined : bottom + 'px',
           }"
         >
           <div class="menu-list">

@@ -18,20 +18,23 @@
   --monaco-c-white-3: rgb(243, 243, 243);
   --monaco-c-blue-1: rgb(0, 127, 212);
   --monaco-c-blue-2: rgb(4, 57, 94);
-  --monaco-c-blue-3: rgb(0, 127, 212);
+  --monaco-c-blue-3: rgb(14, 99, 156);
+  --monaco-c-blue-4: rgb(17, 119, 187);
 
   --monaco-bg-1: var(--monaco-c-black-1);
   --monaco-bg-2: var(--monaco-c-black-2);
   --monaco-bg-3: var(--monaco-c-black-3);
   --monaco-bg-4: var(--monaco-c-black-4);
   --monaco-bg-5: var(--monaco-c-black-5);
+  --monaco-bg-6: var(--monaco-c-blue-3);
+  --monaco-bg-7: var(--monaco-c-blue-4);
   --monaco-text-1: var(--monaco-c-white-2);
   --monaco-text-2: var(--monaco-c-white-1);
   --monaco-text-3: var(--monaco-c-white-3);
   --monaco-border-1: var(--monaco-c-gray-1);
   --monaco-border-2: var(--monaco-c-white-1);
   --monaco-border-3: var(--monaco-c-gray-2);
-  --monaco-border-4: var(--monaco-c-blue-3);
+  --monaco-border-4: var(--monaco-c-blue-1);
   --monaco-drag-hover: var(--monaco-c-blue-1);
   --monaco-cursor-1: var(--monaco-c-blue-1);
   --monaco-cursor-2: var(--monaco-c-blue-2);
