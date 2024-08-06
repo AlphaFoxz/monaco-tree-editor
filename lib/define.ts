@@ -17,4 +17,4 @@ export enum BuiltInPage {
   '<KeyboardShortcuts>' = '<KeyboardShortcuts>',
 }
 
-export type BuiltInPageType = keyof BuiltInPage
+export type BuiltInPageType = '<Settings>' | '<KeyboardShortcuts>'

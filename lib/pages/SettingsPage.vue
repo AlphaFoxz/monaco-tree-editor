@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import './settings-page.scss'
+import './index.scss'
 import { useI18n, getCurrentLanguage, changeLanguage, type Language } from '../locale'
-import { useMessage } from '../message-store'
-import { useGlobalVar } from '../global-var-store'
+import { useMessage } from '../stores/message-store'
+import { useGlobalVar } from '../stores/global-var-store'
 import { type ThemeMode } from '../themes/define'
 
 const props = defineProps({
@@ -42,25 +42,25 @@ function handleSelectColorTheme(e: Event) {
 </script>
 
 <template>
-  <div class="monaco-tree-editor-settings">
-    <div class="monaco-tree-editor-settings-title">{{ $t('settings.language').value }}</div>
-    <div class="monaco-tree-editor-settings-item">
-      <select class="monaco-tree-editor-settings-item-select" :value="language" @change="handleSelectLanguage">
+  <div class="monaco-tree-editor-pages">
+    <div class="monaco-tree-editor-pages-title">{{ $t('settings.language').value }}</div>
+    <div class="monaco-tree-editor-pages-item">
+      <select class="monaco-tree-editor-pages-item-select" :value="language" @change="handleSelectLanguage">
         <option value="en-US">English</option>
         <option value="zh-CN">简体中文</option>
       </select>
     </div>
 
-    <div class="monaco-tree-editor-settings-title">{{ $t('settings.colorTheme').value }}</div>
-    <div class="monaco-tree-editor-settings-item">
-      <select class="monaco-tree-editor-settings-item-select" :value="colorTheme" @change="handleSelectColorTheme">
+    <div class="monaco-tree-editor-pages-title">{{ $t('settings.colorTheme').value }}</div>
+    <div class="monaco-tree-editor-pages-item">
+      <select class="monaco-tree-editor-pages-item-select" :value="colorTheme" @change="handleSelectColorTheme">
         <option value="dark">{{ $t('settings.colorTheme.dark').value }}</option>
         <option value="light">{{ $t('settings.colorTheme.light').value }}</option>
       </select>
     </div>
 
-    <div class="monaco-tree-editor-settings-item" v-for="(item, i) in props.customMenu" :key="i">
-      <label class="monaco-tree-editor-settings-item-button" @click="item.handler">
+    <div class="monaco-tree-editor-pages-item" v-for="(item, i) in props.customMenu" :key="i">
+      <label class="monaco-tree-editor-pages-item-button" @click="item.handler">
         {{ item.label }}
       </label>
     </div>

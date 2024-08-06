@@ -116,7 +116,7 @@
     border-color: rgba(0, 0, 0, 0);
   }
 
-  &-file-item > div:has(.monaco-tree-editor-list-file-item-row-focused) {
+  &-file-item > .file:has(.monaco-tree-editor-list-file-item-row-focused) {
     background-color: var(--monaco-bg-folders-item-active);
     border-color: var(--monaco-border-base-2);
     color: var(--monaco-text-folders-item-active);

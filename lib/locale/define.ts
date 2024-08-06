@@ -53,6 +53,7 @@ type keys =
   | 'menu.manage'
   | 'menu.folders'
   | 'menu.settings'
+  | 'menu.keyboardShortcuts'
 
 export type Messages = {
   [key in keys]: string

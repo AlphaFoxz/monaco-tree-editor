@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import './index.scss'
 import PrettierIcon from '../icons/Prettier.vue'
-import { useMonaco } from '../monaco-store'
+import { useMonaco } from '../stores/monaco-store'
 
 const monacoStore = useMonaco()
 const handleClick = () => {

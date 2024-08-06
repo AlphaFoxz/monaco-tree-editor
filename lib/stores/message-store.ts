@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid'
 import { ref } from 'vue'
-import { type MessageOptions } from './message-popup/define'
-import { debounce } from './common'
+import { type MessageOptions } from '../message-popup/define'
+import { debounce } from '../common'
 
 const messages = ref<MessageOptions[]>([])
 const debounceMap = new Map<string, Function>()

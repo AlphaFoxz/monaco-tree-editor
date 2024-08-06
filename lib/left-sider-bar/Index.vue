@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import './index.scss'
 import { type LeftSiderBarItem } from './define'
-import ContextMenu from '../components/context-menu/Index.vue'
+import { type BuiltInPageType } from '../define'
 import { type ContextMenuItem } from '../components/context-menu/define'
+import ContextMenu from '../components/context-menu/Index.vue'
 import IconsSetting from '../icons/Setting.vue'
 import FileOutlined from '@ant-design/icons-vue/FileOutlined'
 import ItemTemp from './ItemTemp.vue'
-import { useGlobalVar } from '../global-var-store'
+import { useGlobalVar } from '../stores/global-var-store'
 import { useI18n } from '../locale'
-import { useMonaco } from '../monaco-store'
+import { useMonaco } from '../stores/monaco-store'
 
 const emit = defineEmits({
   triggerActive: (item: LeftSiderBarItem) => true,
@@ -26,9 +27,12 @@ function handleClick(item: LeftSiderBarItem) {
 
 //========================= Manage =========================
 const monacoStore = useMonaco()
-const manageBtnMenu: Array<ContextMenuItem<any>> = [{ label: $t('menu.settings') }]
-function handleSelectManage() {
-  monacoStore.openOrFocusPath('<Settings>')
+const manageBtnMenu: Array<ContextMenuItem<any>> = [
+  { label: $t('menu.settings'), value: '<Settings>' },
+  { label: $t('menu.keyboardShortcuts'), value: '<KeyboardShortcuts>' },
+]
+function handleSelectManage(selected: { label: string; value: BuiltInPageType }) {
+  monacoStore.openOrFocusPath(selected.value!)
 }
 </script>
 
@@ -42,7 +46,7 @@ function handleSelectManage() {
     >
       <FileOutlined
     /></ItemTemp>
-    <ContextMenu @select="handleSelectManage" position="RB" :trigger="['Click']" :menu="manageBtnMenu">
+    <ContextMenu @select="i => handleSelectManage(i as any)" position="RB" :trigger="['Click']" :menu="manageBtnMenu">
       <ItemTemp
         :current-active="globalVarStore.getCurrentLeftSiderBar().value || ''"
         style="position: absolute; bottom: 0"

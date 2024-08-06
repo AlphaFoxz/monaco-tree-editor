@@ -20,10 +20,10 @@ export function debounce(fn: Function, delay: number = 500): Function {
  */
 export function throttle(fn: Function, delay: number = 500): Function {
   let refuse = false
-  return () => {
+  return function () {
     if (refuse) return
     refuse = true
-    fn()
+    fn(...arguments)
     setTimeout(() => {
       refuse = false
     }, delay)

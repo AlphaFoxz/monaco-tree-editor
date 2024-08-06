@@ -1,6 +1,6 @@
 import { h } from 'vue'
 import PrettierIcon from '../icons/Prettier.vue'
-import { useMonaco } from '../monaco-store'
+import { useMonaco } from '../stores/monaco-store'
 import './index.scss'
 
 const monacoStore = useMonaco()

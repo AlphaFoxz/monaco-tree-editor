@@ -54,6 +54,7 @@ const zhCN: Messages = {
   'menu.manage': '管理',
   'menu.folders': '文件夹',
   'menu.settings': '设置',
+  'menu.keyboardShortcuts': '快捷键',
 }
 
 export default zhCN

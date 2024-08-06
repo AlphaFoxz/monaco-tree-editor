@@ -2,7 +2,7 @@
 import { onMounted, ref, watch, getCurrentInstance, type ComponentInternalInstance, nextTick } from 'vue'
 import TabItem from './TabItem.vue'
 import './index.scss'
-import { useMonaco } from '../monaco-store'
+import { useMonaco } from '../stores/monaco-store'
 
 defineProps({
   rootEl: HTMLElement,

@@ -57,6 +57,7 @@ const enUS: Messages = {
   'menu.manage': 'Manage',
   'menu.folders': 'Folders',
   'menu.settings': 'Settings',
+  'menu.keyboardShortcuts': 'Keyboard Shortcuts',
 }
 
 export default enUS

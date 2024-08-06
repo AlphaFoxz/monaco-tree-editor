@@ -1,4 +1,4 @@
-.monaco-tree-editor-settings {
+.monaco-tree-editor-pages {
   width: 100%;
   height: 100%;
   padding: 25px;
@@ -26,6 +26,7 @@
       height: 26px;
       background-color: var(--monaco-bg-pages-select);
       border-color: var(--monaco-border-base-1);
+      border-width: 1px;
       color: inherit;
       border-radius: 0;
       cursor: pointer;
@@ -35,6 +36,7 @@
       }
       option {
         line-height: 26px;
+        background-color: inherit;
       }
     }
     &-button {

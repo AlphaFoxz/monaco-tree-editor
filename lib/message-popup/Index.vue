@@ -2,7 +2,7 @@
 import './index.scss'
 import BoxTemp from './Box.vue'
 import { type MessageOptions } from './define'
-import { useMessage } from '../message-store'
+import { useMessage } from '../stores/message-store'
 import { watch, ref, onMounted } from 'vue'
 
 const messageStore = useMessage()

@@ -1,6 +1,7 @@
 .context-menu {
   color: var(--monaco-text-base);
   position: fixed;
+  z-index: 10;
   .menu-list {
     background-color: var(--monaco-bg-contextmenu);
     border-style: ridge;

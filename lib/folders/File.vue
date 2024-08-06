@@ -9,7 +9,7 @@ import Icons from '../icons/Index.vue'
 import FileTemp from './File.vue'
 import { type Files } from '../define'
 import { computed, nextTick, onMounted, ref, watch, type ComputedRef } from 'vue'
-import { useMonaco } from '../monaco-store'
+import { useMonaco } from '../stores/monaco-store'
 import { type ContextMenuItem } from '../components/context-menu/define'
 import { useI18n } from '../locale'
 
@@ -306,7 +306,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
       :data-src="file.path"
       @click="handlePathChange"
       :key="file.path"
-      :class="`monaco-tree-editor-list-file-item-row ${
+      :class="`file monaco-tree-editor-list-file-item-row ${
         currentPath === file.path ? 'monaco-tree-editor-list-file-item-row-focused' : ''
       }`"
     >
@@ -383,6 +383,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
     <div
       v-show="showChild || root"
       :style="{ paddingLeft: file.isFolder ? '7px' : '0' }"
+      :class="file.children[item].isFolder ? 'folder' : 'file'"
       v-for="(item, _index) in keys"
     >
       <FileTemp

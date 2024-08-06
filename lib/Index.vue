@@ -2,11 +2,11 @@
 import './index.scss'
 import { onMounted, ref, watch, nextTick, onBeforeUnmount, type ComputedRef } from 'vue'
 import { type Files, BuiltInPage } from './define'
-import { longestCommonPrefix } from './common'
-import { useMonaco } from './monaco-store'
-import { useHotkey } from './hotkey-store'
-import { useMessage } from './message-store'
-import { useGlobalVar } from './global-var-store'
+import { longestCommonPrefix, throttle } from './common'
+import { useMonaco } from './stores/monaco-store'
+import { useHotkey } from './stores/hotkey-store'
+import { useMessage } from './stores/message-store'
+import { useGlobalVar } from './stores/global-var-store'
 import * as monaco_define from 'monaco-editor'
 import Prettier from './prettier/Index.vue'
 import LeftSiderBar from './left-sider-bar/Index.vue'
@@ -16,6 +16,7 @@ import GithubFilled from '@ant-design/icons-vue/GithubFilled'
 import MessagePopup from './message-popup/Index.vue'
 import { useI18n, type Language, changeLanguage } from './locale'
 import SettingsPage from './pages/SettingsPage.vue'
+import KeyboardShortcutsPage from './pages/KeyboardShortcuts.vue'
 
 const props = defineProps({
   files: {
@@ -76,6 +77,19 @@ watch(
 
 // ================ 拖拽功能 dragging ================
 const filelistWidth = ref(props.siderMinWidth)
+const throttleResize = throttle((e: MouseEvent) => {
+  if (dragInfo.start && e.pageX != 0) {
+    const w = dragInfo.width + (e.pageX - dragInfo.pageX)
+    console.debug('Dragging', w)
+    if (w < props.siderMinWidth / 2) {
+      globalVarStore.setCurrentLeftSiderBar(null)
+    } else if (w >= props.siderMinWidth / 2) {
+      globalVarStore.setCurrentLeftSiderBar('Explorer', false)
+    }
+    filelistWidth.value = w < props.siderMinWidth ? props.siderMinWidth : w
+    monacoStore.resize()
+  }
+}, 5)
 let dragInfo = {
   pageX: 0,
   width: 0,
@@ -91,19 +105,7 @@ const handleDragStart = (e: MouseEvent) => {
 }
 const handleDrag = (e: MouseEvent) => {
   e.stopPropagation()
-  if (dragInfo.start && e.pageX != 0) {
-    const w = dragInfo.width + (e.pageX - dragInfo.pageX)
-    console.debug('Dragging', w)
-    if (w < props.siderMinWidth / 2) {
-      globalVarStore.setCurrentLeftSiderBar(null)
-    } else if (w >= props.siderMinWidth / 2) {
-      globalVarStore.setCurrentLeftSiderBar('Explorer', false)
-    }
-    filelistWidth.value = w < props.siderMinWidth ? props.siderMinWidth : w
-    nextTick(() => {
-      monacoStore.resize()
-    })
-  }
+  throttleResize(e)
 }
 const handleDragEnd = (_e: MouseEvent) => {
   console.debug('dragEnd')
@@ -609,8 +611,12 @@ defineExpose({
       </div>
       <SettingsPage
         :custom-menu="settingsMenu"
-        v-show="monacoStore.currentPath.value === BuiltInPage['<Settings>']"
+        v-if="monacoStore.currentPath.value === BuiltInPage['<Settings>']"
       ></SettingsPage>
+      <KeyboardShortcutsPage
+        :custom-menu="settingsMenu"
+        v-if="monacoStore.currentPath.value === BuiltInPage['<KeyboardShortcuts>']"
+      ></KeyboardShortcutsPage>
     </div>
     <Prettier @click="handleFormat" class="monaco-tree-editor-prettier" />
   </div>

@@ -1,11 +1,11 @@
 // import * as monaco_define from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco_define from 'monaco-editor'
-import DarkTheme from './themes/dark'
-import LightTheme from './themes/light'
+import DarkTheme from '../themes/dark'
+import LightTheme from '../themes/light'
 import { nextTick, ref, watch } from 'vue'
-import { type FileInfo, type Files, BuiltInPage } from './define'
+import { type FileInfo, type Files, BuiltInPage } from '../define'
 import { useGlobalVar } from './global-var-store'
-import type { ThemeMode } from './themes/define'
+import type { ThemeMode } from '../themes/define'
 
 const globalVarStore = useGlobalVar()
 watch(globalVarStore.getThemeMode(), (themeMode) => {
