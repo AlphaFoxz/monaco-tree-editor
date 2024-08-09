@@ -39,16 +39,30 @@ function unlockFile(path: string) {
 function getOpenedTabsHeight(): number {
   return document.getElementsByClassName('monaco-tree-editor-opened-tab')[0].clientHeight
 }
-function setCurrentLeftSiderBar(item: LeftSiderBarItem | null, autoClose = true) {
+/**
+ * Switch current active left sider bar, if `autoClose` = true and the param `item` is
+ * the same as currentLeftSiderBar.value, it will close
+ * @param item
+ * @param autoClose
+ */
+function switchCurrentLeftSiderBar(item: LeftSiderBarItem | null, autoClose = true) {
   if (autoClose && currentLeftSiderBar.value === item) {
     currentLeftSiderBar.value = null
   } else {
     currentLeftSiderBar.value = item
   }
 }
+/**
+ * Change language
+ * @param lang
+ */
 function changeLanguage(lang: Language) {
   currentLanguage.value = lang
 }
+/**
+ * Change theme
+ * @param theme
+ */
 async function changeTheme(theme: ThemeMode) {
   if (!monacoStore) {
     monacoStore = useMonaco()
@@ -85,7 +99,7 @@ export function useGlobalSettings(options?: {
       getOpenedTabsHeight,
     },
     action: {
-      setCurrentLeftSiderBar,
+      switchCurrentLeftSiderBar,
       changeLanguage,
       changeTheme,
     },

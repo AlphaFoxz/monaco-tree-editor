@@ -97,9 +97,9 @@ const throttleResize = throttle((e: MouseEvent) => {
     const w = dragInfo.width + (e.pageX - dragInfo.pageX)
     console.debug('Dragging', w)
     if (w < props.siderMinWidth / 2) {
-      globalSettingsStore.action.setCurrentLeftSiderBar(null)
+      globalSettingsStore.action.switchCurrentLeftSiderBar(null)
     } else if (w >= props.siderMinWidth / 2) {
-      globalSettingsStore.action.setCurrentLeftSiderBar('Explorer', false)
+      globalSettingsStore.action.switchCurrentLeftSiderBar('Explorer', false)
     }
     filelistWidth.value = w < props.siderMinWidth ? props.siderMinWidth : w
     monacoStore._action.resize()
@@ -622,7 +622,7 @@ defineExpose({
         }"
       ></div>
       <div
-        v-show="!monacoStore.action.isReady || !monacoStore.state.currentPath.value"
+        v-show="!monacoStore.state.isReady || !monacoStore.state.currentPath.value"
         class="monaco-tree-editor-area-empty"
       >
         <label>

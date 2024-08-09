@@ -19,7 +19,7 @@ const { $t } = useI18n()
 const globalSettingsStore = useGlobalSettings()
 function handleClick(item: LeftSiderBarItem) {
   const t = globalSettingsStore.state.currentLeftSiderBar.value
-  globalSettingsStore.action.setCurrentLeftSiderBar(item)
+  globalSettingsStore.action.switchCurrentLeftSiderBar(item)
   if (t !== item) {
     emit('triggerActive', item)
   }

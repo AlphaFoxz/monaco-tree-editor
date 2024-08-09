@@ -28,6 +28,9 @@ type OpenedFileInfo = { status?: string; path: string }
 
 let originalFileTree: Files
 let monaco: typeof monaco_define
+/**
+ * It will be true when monaco-editor has been initialized
+ */
 const isReady = ref(false)
 const valueListener = ref<monaco_define.IDisposable>()
 let editor: monaco_define.editor.IStandaloneCodeEditor
@@ -58,7 +61,11 @@ export async function untilMonacoImported() {
     }, 100)
   })
 }
-//初始化
+/**
+ * Initialize
+ * @param dom
+ * @param options
+ */
 async function init(dom: HTMLElement, options?: monaco_define.editor.IStandaloneEditorConstructionOptions) {
   await untilMonacoImported()
   editor = monaco.editor.create(dom, { ...options, model: null })
@@ -91,6 +98,10 @@ async function setTheme(name: ThemeMode) {
   // 设置主题
   monaco.editor.setTheme(name)
 }
+/**
+ * Equals to function of 'updateOptions' in monaco-editor.editor
+ * @param options
+ */
 function updateOptions(options: monaco_define.editor.IStandaloneEditorConstructionOptions) {
   editor.updateOptions(options)
 }
@@ -362,7 +373,7 @@ function newFolder(path: string) {
   fileTree.value = tree
 }
 /**
- * 移除名称为空的文件/文件夹
+ * remove file or folder witch name is blank
  * @param path
  */
 function removeBlank(path: string) {
@@ -385,6 +396,9 @@ function hasChanged(path: string): boolean {
   }
   return originalFileTree[path].content !== m?.getValue()
 }
+/**
+ * Execute format command with current model
+ */
 function format() {
   editor?.getAction('editor.action.formatDocument')?.run()
 }
@@ -408,6 +422,7 @@ export const useMonaco = (m?: typeof monaco_define) => {
       editor,
       currentPath,
       openedFiles,
+      isReady,
     },
     _action: {
       init,
@@ -425,7 +440,6 @@ export const useMonaco = (m?: typeof monaco_define) => {
     },
     action: {
       updateOptions,
-      isReady,
       format,
     },
   }

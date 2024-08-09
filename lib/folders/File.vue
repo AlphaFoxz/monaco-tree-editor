@@ -263,7 +263,7 @@ const handleBlur = (_e?: Event) => {
   }
 }
 const handlePathChange = (_e?: MouseEvent) => {
-  if (editing.value || !monacoStore.action.isReady.value) {
+  if (editing.value || !monacoStore.state.isReady.value) {
     return
   }
   const key = props.file.path
