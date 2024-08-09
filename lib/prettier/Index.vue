@@ -5,7 +5,7 @@ import { useMonaco } from '../stores/monaco-store'
 
 const monacoStore = useMonaco()
 const handleClick = () => {
-  monacoStore.format()
+  monacoStore.action.format()
 }
 </script>
 

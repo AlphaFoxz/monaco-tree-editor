@@ -14,8 +14,10 @@
   },
   "repository": "https://github.com/AlphaFoxz/monaco-tree-editor",
   "dependencies": {
-    "@ant-design/icons-vue": "^7.0.1",
-    "nanoid": "^5.0.7",
-    "vue": "~3.3.13"
+    "nanoid": "^5.0.7"
+  },
+  "devDependencies": {
+    "vue": "~3.3.13",
+    "monaco-editor": "^0.44.0"
   }
 }

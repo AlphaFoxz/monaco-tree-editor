@@ -7,13 +7,13 @@ import * as server from './mock-server'
 
 const messageStore = useMessage()
 onMounted(() => {
-  const id = messageStore.info({
+  const id = messageStore.action.info({
     content: 'testing..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.close(id)
-    messageStore.success({
+    messageStore.action.close(id)
+    messageStore.action.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,

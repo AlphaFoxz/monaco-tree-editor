@@ -282,13 +282,13 @@ import { onMounted } from 'vue'
 
 const messageStore = useMessage()
 onMounted(() => {
-  const id = messageStore.info({
+  const id = messageStore.action.info({
     content: 'testing..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.close(id)
-    messageStore.success({
+    messageStore.action.close(id)
+    messageStore.action.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
@@ -361,8 +361,6 @@ const handleContextMenuSelect = (path: string, item: { label: string | ComputedR
 ### I18n
 
 language currently has two options: `en-US` and `zh-CN`.
-If not specified language, the default language is `en-US`, and the settings menu will display the language switch function.
-If specified language, the settings menu will not display the language switch function, and it will be controlled by the outside.
 
 ```vue
 <!--
@@ -370,6 +368,18 @@ en-US: English (Default)
 zh-CN: 简体中文
 -->
 <MonacoTreeEditor language="en-US"></MonacoTreeEditor>
+```
+
+### Theme
+
+theme currently has two options: `dark` and `light`.
+
+```vue
+<!--
+dark: dark theme
+light: light theme
+-->
+<MonacoTreeEditor theme="dark"></MonacoTreeEditor>
 ```
 
 ### Custom drag and drop
@@ -382,7 +392,7 @@ const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 
   if (!targetPath.endsWith('.ts') && !srcPath.endsWith('.js')) {
     return
   }
-  const editor = monacoStore.getEditor()
+  const editor = monacoStore.state.editor
   const lineIndex = editor.getPosition()?.lineNumber!
   let str = 'import "' + _relativePathFrom(srcPath, targetPath) + '"'
   editor.executeEdits('drop', [{ range: new monaco.Range(lineIndex, 0, lineIndex, 0), text: str }])

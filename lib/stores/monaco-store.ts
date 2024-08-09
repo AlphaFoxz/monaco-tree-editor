@@ -4,11 +4,11 @@ import DarkTheme from '../themes/dark'
 import LightTheme from '../themes/light'
 import { nextTick, ref, watch } from 'vue'
 import { type FileInfo, type Files, BuiltInPage } from '../define'
-import { useGlobalVar } from './global-var-store'
+import { useGlobalSettings } from './global-settings-store'
 import type { ThemeMode } from '../themes/define'
 
-const globalVarStore = useGlobalVar()
-watch(globalVarStore.getThemeMode(), (themeMode) => {
+const globalSettingsStore = useGlobalSettings()
+watch(globalSettingsStore.state.currentThemeMode, (themeMode) => {
   setTheme(themeMode)
 })
 
@@ -44,7 +44,7 @@ let fileTree = ref<FileInfo>({
   children: {},
   path: '/',
 })
-async function monacoImported() {
+export async function untilMonacoImported() {
   return new Promise<void>((resolve) => {
     if (monaco) {
       resolve()
@@ -60,7 +60,7 @@ async function monacoImported() {
 }
 //初始化
 async function init(dom: HTMLElement, options?: monaco_define.editor.IStandaloneEditorConstructionOptions) {
-  await monacoImported()
+  await untilMonacoImported()
   editor = monaco.editor.create(dom, { ...options, model: null })
   editorDom = dom
   const editorService = (editor as any)._codeEditorService
@@ -78,13 +78,14 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
   }
   defineTheme('dark', DarkTheme)
   defineTheme('light', LightTheme)
-  setTheme(globalVarStore.getThemeMode().value)
+  setTheme(globalSettingsStore.state.currentThemeMode.value)
   isReady.value = true
 }
 function defineTheme(name: ThemeMode, theme: monaco_define.editor.IStandaloneThemeData) {
   monaco.editor.defineTheme(name, theme)
 }
-function setTheme(name: ThemeMode) {
+async function setTheme(name: ThemeMode) {
+  await untilMonacoImported()
   // 定义主题
   console.debug('切换monaco主题', name)
   // 设置主题
@@ -134,7 +135,7 @@ async function loadFileTree(files: Files) {
     })
   })
   fileTree.value = tree
-  await monacoImported()
+  await untilMonacoImported()
   Object.keys(files).forEach((key) => {
     const value = files[key].content
     if (typeof value === 'string') {
@@ -213,9 +214,6 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
       tabSize,
     })
   }
-}
-function getEditor(): monaco_define.editor.IStandaloneCodeEditor {
-  return editor
 }
 function getValue(path: string) {
   const model = monaco.editor.getModels().find((model) => model.uri.path === path)
@@ -363,6 +361,10 @@ function newFolder(path: string) {
   })
   fileTree.value = tree
 }
+/**
+ * 移除名称为空的文件/文件夹
+ * @param path
+ */
 function removeBlank(path: string) {
   const paths = path.startsWith('/') ? path.slice(1).split('/') : path.split('/')
   const tree = fileTree.value
@@ -387,7 +389,7 @@ function format() {
   editor?.getAction('editor.action.formatDocument')?.run()
 }
 function resize() {
-  editorDom.style.height = `calc(100% - ${globalVarStore.getOpenedTabsHeight() + 6}px)`
+  editorDom.style.height = `calc(100% - ${globalSettingsStore._action.getOpenedTabsHeight() + 6}px)`
   editor?.layout()
 }
 
@@ -396,26 +398,35 @@ export const useMonaco = (m?: typeof monaco_define) => {
     monaco = m
   }
   return {
-    monaco,
-    init,
-    restoreModel,
-    updateOptions,
-    openOrFocusPath,
-    isReady,
-    hasChanged,
-    currentPath,
-    prefix,
-    fileSeparator,
-    closeFile,
-    newFile,
-    newFolder,
-    removeBlank,
-    getEditor,
-    getValue,
-    format,
-    resize,
-    openedFiles,
-    loadFileTree,
-    fileTree,
+    _state: {
+      prefix,
+      fileSeparator,
+      fileTree,
+    },
+    state: {
+      monaco,
+      editor,
+      currentPath,
+      openedFiles,
+    },
+    _action: {
+      init,
+      restoreModel,
+      openOrFocusPath,
+      hasChanged,
+      closeFile,
+      newFile,
+      newFolder,
+      removeBlank,
+      getValue,
+      resize,
+      loadFileTree,
+      untilMonacoImported,
+    },
+    action: {
+      updateOptions,
+      isReady,
+      format,
+    },
   }
 }

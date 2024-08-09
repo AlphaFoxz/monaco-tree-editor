@@ -158,8 +158,8 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
       editing.value = true
       break
     case '@copyPath':
-      let path = monacoStore.prefix.value + props.file.path
-      if (monacoStore.fileSeparator.value === '\\') {
+      let path = monacoStore._state.prefix.value + props.file.path
+      if (monacoStore._state.fileSeparator.value === '\\') {
         path = path.replace(/\//g, '\\')
       }
       if (navigator.clipboard) {
@@ -227,7 +227,7 @@ const handleBlur = (_e?: Event) => {
   let name = nameRef.value?.textContent
   if (!name || /^\s*$/.test(name)) {
     //remove component
-    monacoStore.removeBlank(props.file.path)
+    monacoStore._action.removeBlank(props.file.path)
     return
   }
   name = name.trim()
@@ -247,7 +247,7 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore.removeBlank(props.file.path)
+          monacoStore._action.removeBlank(props.file.path)
         }
       )
     } else {
@@ -256,20 +256,20 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore.removeBlank(props.file.path)
+          monacoStore._action.removeBlank(props.file.path)
         }
       )
     }
   }
 }
 const handlePathChange = (_e?: MouseEvent) => {
-  if (editing.value || !monacoStore.isReady.value) {
+  if (editing.value || !monacoStore.action.isReady.value) {
     return
   }
   const key = props.file.path
-  const model = monacoStore.restoreModel(key)
+  const model = monacoStore._action.restoreModel(key)
   if (model) {
-    monacoStore.openOrFocusPath(key)
+    monacoStore._action.openOrFocusPath(key)
   }
 }
 watch([editing, () => props.file], (v) => {

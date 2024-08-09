@@ -279,13 +279,13 @@ import { onMounted } from 'vue'
 
 const messageStore = useMessage()
 onMounted(() => {
-  const id = messageStore.info({
+  const id = messageStore.action.info({
     content: '测试中..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.close(id)
-    messageStore.success({
+    messageStore.action.close(id)
+    messageStore.action.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
@@ -358,8 +358,6 @@ const handleContextMenuSelect = (path: string, item: { label: string | ComputedR
 ### 国际化 I18n
 
 language 目前有 2 个可选值，`en-US`和`zh-CN`。
-如果不指定 language，则默认为`en-US`，同时组件中的设置菜单将显示语言切换功能。
-如果指定 language，组件中的设置菜单将不显示语言切换功能，统一由外部控制是否切换。
 
 ```vue
 <!--
@@ -367,6 +365,18 @@ en-US: English (Default)
 zh-CN: 简体中文
 -->
 <MonacoTreeEditor language="en-US"></MonacoTreeEditor>
+```
+
+### 主题
+
+theme 目前有 2 个可选值，`dark`和`light`。
+
+```vue
+<!--
+dark: 深色主题
+light: 浅色主题
+-->
+<MonacoTreeEditor theme="dark"></MonacoTreeEditor>
 ```
 
 ### 自定义拖拽事件
@@ -379,7 +389,7 @@ const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 
   if (!targetPath.endsWith('.ts') && !srcPath.endsWith('.js')) {
     return
   }
-  const editor = monacoStore.getEditor()
+  const editor = monacoStore.state.editor
   const lineIndex = editor.getPosition()?.lineNumber!
   let str = 'import "' + _relativePathFrom(srcPath, targetPath) + '"'
   editor.executeEdits('drop', [{ range: new monaco.Range(lineIndex, 0, lineIndex, 0), text: str }])

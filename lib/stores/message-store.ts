@@ -72,13 +72,18 @@ function keepAlive(id: string) {
 
 export const useMessage = () => {
   return {
-    messages,
-    info,
-    success,
-    warn,
-    error,
-    keepAlive,
-    updateOptions,
-    close,
+    _state: {},
+    state: { messages },
+    _action: {
+      keepAlive,
+    },
+    action: {
+      info,
+      success,
+      warn,
+      error,
+      updateOptions,
+      close,
+    },
   }
 }

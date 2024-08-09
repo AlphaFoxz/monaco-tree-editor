@@ -6,8 +6,8 @@ import { useMessage } from '../stores/message-store'
 import { watch, ref, onMounted } from 'vue'
 
 const messageStore = useMessage()
-const messages = ref<MessageOptions[]>(messageStore.messages.value)
-watch(messageStore.messages, (n) => {
+const messages = ref<MessageOptions[]>(messageStore.state.messages.value)
+watch(messageStore.state.messages, (n) => {
   messages.value = n
 })
 const to = ref('body')
@@ -22,8 +22,8 @@ onMounted(() => {
       <div class="message-container">
         <BoxTemp
           v-for="item in messages"
-          @close="messageStore.close"
-          @mousemove="messageStore.keepAlive(item.id!)"
+          @close="messageStore.action.close"
+          @mousemove="messageStore._action.keepAlive(item.id!)"
           :id="item.id!"
           :closeable="item.closeable"
           :loading="item.loading"

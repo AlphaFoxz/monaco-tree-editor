@@ -42,8 +42,8 @@ if (props.file!.path && props.file!.path.indexOf('.') !== -1) {
 } else {
   fileType = 'default_file'
 }
-const active = ref(monacoStore.currentPath.value === props.file!.path)
-watch(monacoStore.currentPath, (n) => {
+const active = ref(monacoStore.state.currentPath.value === props.file!.path)
+watch(monacoStore.state.currentPath, (n) => {
   active.value = n === props.file!.path
 })
 const handleClick = (e: MouseEvent) => {
@@ -122,7 +122,7 @@ const handleClose = (e?: Event) => {
 }
 const handleSaveAndClose = () => {
   const path = props.file!.path
-  const value = monacoStore.getValue(path)
+  const value = monacoStore._action.getValue(path)
   if (!value) {
     return
   }

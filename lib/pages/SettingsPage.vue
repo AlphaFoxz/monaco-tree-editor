@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import './index.scss'
-import { useI18n, getCurrentLanguage, changeLanguage, type Language } from '../locale'
+import { useI18n, changeLanguage, type Language } from '../locale'
 import { useMessage } from '../stores/message-store'
-import { useGlobalVar } from '../stores/global-var-store'
+import { useGlobalSettings } from '../stores/global-settings-store'
 import { type ThemeMode } from '../themes/define'
 
 const props = defineProps({
@@ -12,11 +12,10 @@ const props = defineProps({
   },
 })
 
-const { $t } = useI18n()
+const { $t, currentLanguage: language } = useI18n()
 const messageStore = useMessage()
-const globalVarStore = useGlobalVar()
-const language = getCurrentLanguage()
-const colorTheme = globalVarStore.getThemeMode()
+const globalSettingsStore = useGlobalSettings()
+const colorTheme = globalSettingsStore.state.currentThemeMode
 
 function handleSelectLanguage(e: Event) {
   const target = e.target as HTMLSelectElement
@@ -29,7 +28,7 @@ function handleSelectLanguage(e: Event) {
       break
     }
   }
-  messageStore.success({
+  messageStore.action.success({
     content: $t('msg.languageChanged', { lang: inner }).value,
     closeable: true,
     timeoutMs: 3000,
@@ -37,7 +36,7 @@ function handleSelectLanguage(e: Event) {
 }
 
 function handleSelectColorTheme(e: Event) {
-  globalVarStore.getThemeMode().value = (e.target as HTMLSelectElement).value as ThemeMode
+  globalSettingsStore.state.currentThemeMode.value = (e.target as HTMLSelectElement).value as ThemeMode
 }
 </script>
 

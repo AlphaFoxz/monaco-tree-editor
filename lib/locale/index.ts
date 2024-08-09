@@ -1,7 +1,7 @@
 import enUS from './en-US'
 import zhCN from './zh-CN'
 import { type Messages, type Language } from './define'
-import { ref, type ComputedRef, computed, type Ref } from 'vue'
+import { ref, type ComputedRef, computed } from 'vue'
 
 const locale = ref<Messages>(enUS)
 const currentLanguage = ref<Language>('en-US')
@@ -55,10 +55,6 @@ export function changeLanguage(lang: Language) {
   currentLanguage.value = lang || 'en-US'
 }
 
-export function getCurrentLanguage(): Ref<Language> {
-  return currentLanguage
-}
-
 /**
  * function t will return a string value
  * function $t will return ComputedRef<string>
@@ -68,6 +64,7 @@ export function useI18n(s?: Language) {
     changeLanguage(s)
   }
   return {
+    currentLanguage,
     t,
     $t,
   }

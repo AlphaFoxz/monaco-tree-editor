@@ -7,7 +7,7 @@ import ContextMenu from '../components/context-menu/Index.vue'
 import IconsSetting from '../icons/Setting.vue'
 import FileOutlined from '@ant-design/icons-vue/FileOutlined'
 import ItemTemp from './ItemTemp.vue'
-import { useGlobalVar } from '../stores/global-var-store'
+import { useGlobalSettings } from '../stores/global-settings-store'
 import { useI18n } from '../locale'
 import { useMonaco } from '../stores/monaco-store'
 
@@ -16,10 +16,10 @@ const emit = defineEmits({
 })
 
 const { $t } = useI18n()
-const globalVarStore = useGlobalVar()
+const globalSettingsStore = useGlobalSettings()
 function handleClick(item: LeftSiderBarItem) {
-  const t = globalVarStore.getCurrentLeftSiderBar().value
-  globalVarStore.setCurrentLeftSiderBar(item)
+  const t = globalSettingsStore.state.currentLeftSiderBar.value
+  globalSettingsStore.action.setCurrentLeftSiderBar(item)
   if (t !== item) {
     emit('triggerActive', item)
   }
@@ -32,7 +32,7 @@ const manageBtnMenu: Array<ContextMenuItem<any>> = [
   // { label: $t('menu.keyboardShortcuts'), value: '<KeyboardShortcuts>' },
 ]
 function handleSelectManage(selected: { label: string; value: BuiltInPageType }) {
-  monacoStore.openOrFocusPath(selected.value!)
+  monacoStore._action.openOrFocusPath(selected.value!)
 }
 </script>
 
@@ -40,7 +40,7 @@ function handleSelectManage(selected: { label: string; value: BuiltInPageType })
   <div class="left-sider-bar">
     <ItemTemp
       @click="handleClick('Explorer')"
-      :current-active="globalVarStore.getCurrentLeftSiderBar().value || ''"
+      :current-active="globalSettingsStore.state.currentLeftSiderBar.value || ''"
       name="Explorer"
       :title="$t('menu.folders').value"
     >
@@ -48,7 +48,7 @@ function handleSelectManage(selected: { label: string; value: BuiltInPageType })
     /></ItemTemp>
     <ContextMenu @select="i => handleSelectManage(i as any)" position="RB" :trigger="['Click']" :menu="manageBtnMenu">
       <ItemTemp
-        :current-active="globalVarStore.getCurrentLeftSiderBar().value || ''"
+        :current-active="globalSettingsStore.state.currentLeftSiderBar.value || ''"
         style="position: absolute; bottom: 0"
         name="Manage"
         :title="$t('menu.manage').value"

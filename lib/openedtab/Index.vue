@@ -17,13 +17,13 @@ const emit = defineEmits({
 
 //========================= 初始化 init =========================
 const monacoStore = useMonaco()
-const openedFiles = ref(monacoStore.openedFiles.value)
+const openedFiles = ref(monacoStore.state.openedFiles.value)
 const currentPath = ref('')
 let instanceRef: ComponentInternalInstance | null
-watch(monacoStore.openedFiles, (n) => {
+watch(monacoStore.state.openedFiles, (n) => {
   openedFiles.value = n
 })
-watch(monacoStore.currentPath, (n) => {
+watch(monacoStore.state.currentPath, (n) => {
   currentPath.value = n
 })
 onMounted(() => {
@@ -36,10 +36,10 @@ const handleSaveFile = (path: string, value: string, resolve?: () => void, rejec
 }
 const handlePathChange = (key: string) => {
   console.debug('pathChange', key)
-  monacoStore.restoreModel(key)
+  monacoStore._action.restoreModel(key)
 }
 const handleCloseFile = (path: string) => {
-  monacoStore.closeFile(path)
+  monacoStore._action.closeFile(path)
 }
 const handleCloseOtherFiles = (path?: string) => {
   console.debug('handleCloseOtherFiles', path)
@@ -81,7 +81,7 @@ const swap = (srcIndex: number, tarIndex: number) => {
   const tmp = result[srcIndex]
   result.splice(srcIndex, 1)
   result.splice(tarIndex, 0, tmp)
-  monacoStore.openedFiles.value = result
+  monacoStore.state.openedFiles.value = result
   flush()
 }
 const visible = ref(true)

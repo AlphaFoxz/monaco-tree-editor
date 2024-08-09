@@ -53,12 +53,12 @@ const { $t } = useI18n()
 //=================== 初始化 init ==================
 const collapse = ref(false)
 const monacoStore = useMonaco()
-const fileTree = ref(monacoStore.fileTree.value)
-const currentPath = ref(monacoStore.currentPath.value)
-watch(monacoStore.currentPath, (n) => {
+const fileTree = ref(monacoStore._state.fileTree.value)
+const currentPath = ref(monacoStore.state.currentPath.value)
+watch(monacoStore.state.currentPath, (n) => {
   currentPath.value = n
 })
-watch(monacoStore.fileTree, (n) => {
+watch(monacoStore._state.fileTree, (n) => {
   fileTree.value = n
 })
 
@@ -74,10 +74,10 @@ const handleCollapseAll = () => {
   collapseTrigger.value = new Date().getTime()
 }
 const handleConfirmNewFile = (path: string) => {
-  monacoStore.newFile(path)
+  monacoStore._action.newFile(path)
 }
 const handleConfirmNewFolder = (path: string) => {
-  monacoStore.newFolder(path)
+  monacoStore._action.newFolder(path)
 }
 const handleNewFile = (path: string, resolve: () => void, reject: () => void) => {
   emit('newFile', path, resolve, reject)

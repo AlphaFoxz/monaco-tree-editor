@@ -34,13 +34,13 @@ server.delay().then(() => {
 // ================ 推送消息 push message ================
 const messageStore = useMessage()
 onMounted(() => {
-  const id = messageStore.info({
+  const id = messageStore.action.info({
     content: 'testing..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.close(id)
-    messageStore.success({
+    messageStore.action.close(id)
+    messageStore.action.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
@@ -196,7 +196,7 @@ const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 
   if (!targetPath.endsWith('.ts') && !srcPath.endsWith('.js')) {
     return
   }
-  const editor = monacoStore.getEditor()
+  const editor = monacoStore.state.editor
   const lineIndex = editor.getPosition()?.lineNumber!
   let str = 'import "' + _relativePathFrom(srcPath, targetPath) + '"'
   editor.executeEdits('drop', [{ range: new monaco.Range(lineIndex, 0, lineIndex, 0), text: str }])
@@ -239,6 +239,7 @@ const _relativePathFrom = (returnPath: string, fromPath: string): string => {
     :sider-min-width="240"
     filelist-title="文件列表"
     language="en-US"
+    theme="light"
     @reload="handleReload"
     @new-file="handleNewFile"
     @new-folder="handleNewFolder"
