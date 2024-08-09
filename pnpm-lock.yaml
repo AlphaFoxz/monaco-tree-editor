@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@ant-design/icons-vue':
-        specifier: ^7.0.1
-        version: 7.0.1(vue@3.3.13(typescript@5.5.4))
       nanoid:
         specifier: ^5.0.7
         version: 5.0.7
@@ -18,6 +15,9 @@ importers:
         specifier: ~3.3.13
         version: 3.3.13(typescript@5.5.4)
     devDependencies:
+      '@ant-design/icons-vue':
+        specifier: ^7.0.1
+        version: 7.0.1(vue@3.3.13(typescript@5.5.4))
       '@tsconfig/node18':
         specifier: ^18.2.4
         version: 18.2.4

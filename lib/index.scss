@@ -114,6 +114,10 @@
   color: var(--monaco-text-base-1);
   background-color: var(--monaco-bg-base-1);
 
+  .minimap {
+    z-index: 0 !important;
+  }
+
   &-drag {
     width: 6px;
     background: rgba(0, 0, 0, 0);
