@@ -298,7 +298,10 @@ onMounted(() => {
 })
 ```
 
-### Hotkeys
+### ~~Hotkeys~~
+
+- unrecommended, this api will be deprecated
+- in the future, a new interactive shortcut key setting feature will be integrated
 
 ```typescript
 import { useHotkey } from 'monaco-tree-editor'

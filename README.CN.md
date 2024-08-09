@@ -295,7 +295,10 @@ onMounted(() => {
 })
 ```
 
-### 快捷键
+### ~~快捷键~~
+
+- 不推荐，这个 api 马上会被弃用
+- 在未来的版本中，会有另一个新的交互式快捷键设置功能被内置
 
 ```typescript
 import { useHotkey } from 'monaco-tree-editor'
