@@ -226,6 +226,9 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
     })
   }
 }
+function getEditor(): monaco_define.editor.IStandaloneCodeEditor {
+  return editor
+}
 function getValue(path: string) {
   const model = monaco.editor.getModels().find((model) => model.uri.path === path)
   return model?.getValue()
@@ -419,7 +422,6 @@ export const useMonaco = (m?: typeof monaco_define) => {
     },
     state: {
       monaco,
-      editor,
       currentPath,
       openedFiles,
       isReady,
@@ -433,6 +435,7 @@ export const useMonaco = (m?: typeof monaco_define) => {
       newFile,
       newFolder,
       removeBlank,
+      getEditor,
       getValue,
       resize,
       loadFileTree,
