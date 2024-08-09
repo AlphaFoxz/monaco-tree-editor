@@ -16,6 +16,7 @@
   --monaco-c-white-1: rgb(255, 255, 255);
   --monaco-c-white-2: rgb(204, 204, 204);
   --monaco-c-white-3: rgb(243, 243, 243);
+  --monaco-c-white-4: rgb(232, 232, 232);
   --monaco-c-blue-1: rgb(0, 127, 212);
   --monaco-c-blue-2: rgb(4, 57, 94);
   --monaco-c-blue-3: rgb(14, 99, 156);
@@ -69,6 +70,11 @@
   --monaco-bg-pages-button-hover: var(--monaco-c-blue-4);
   --monaco-bg-pages-select: var(--monaco-c-gray-1);
   --monaco-text-pages-button: var(--monaco-c-white-1);
+
+  --monaco-bg-messagepopup-box: var(--monaco-c-black-2);
+  --monaco-bg-messagepopup-box-hover: var(--monaco-c-black-4);
+  --monaco-bg-messagepopup-box-shadow: var(--monaco-c-black-6);
+  --monaco-border-messagepopup-box: var(--monaco-c-black-4);
 }
 
 .light {
@@ -101,6 +107,11 @@
   --monaco-bg-pages-button-hover: var(--monaco-c-blue-3);
   --monaco-bg-pages-select: var(--monaco-c-white-1);
   --monaco-text-pages-button: var(--monaco-c-white-1);
+
+  --monaco-bg-messagepopup-box: var(--monaco-c-white-3);
+  --monaco-bg-messagepopup-box-hover: var(--monaco-c-white-4);
+  --monaco-bg-messagepopup-box-shadow: var(--monaco-c-gray-2);
+  --monaco-border-messagepopup-box: var(--monaco-c-white-2);
 }
 
 .monaco-tree-editor {

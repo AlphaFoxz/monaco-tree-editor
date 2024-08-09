@@ -29,7 +29,7 @@ function handleClick(item: LeftSiderBarItem) {
 const monacoStore = useMonaco()
 const manageBtnMenu: Array<ContextMenuItem<any>> = [
   { label: $t('menu.settings'), value: '<Settings>' },
-  { label: $t('menu.keyboardShortcuts'), value: '<KeyboardShortcuts>' },
+  // { label: $t('menu.keyboardShortcuts'), value: '<KeyboardShortcuts>' },
 ]
 function handleSelectManage(selected: { label: string; value: BuiltInPageType }) {
   monacoStore.openOrFocusPath(selected.value!)

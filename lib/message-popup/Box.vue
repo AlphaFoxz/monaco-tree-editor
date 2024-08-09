@@ -2,10 +2,9 @@
 import './index.scss'
 import IconLoading from '../icons/Loading.vue'
 import IconClose from '../icons/Close.vue'
-import { computed } from 'vue'
 import { type MessageType } from './define'
 
-const props = defineProps({
+defineProps({
   id: {
     type: String,
     required: true,
@@ -30,30 +29,13 @@ const props = defineProps({
     },
   },
 })
-const shadow = computed<string>(() => {
-  const type: MessageType = props.type as MessageType
-  const style = '0 0 10px '
-  switch (type) {
-    case 'info':
-      return style + 'black'
-    case 'error':
-      return style + 'darkred'
-    case 'warn':
-      return style + 'darkorange'
-    case 'success':
-      return style + 'darkgreen'
-    default:
-      const _t: never = type
-      return _t
-  }
-})
 
 defineEmits({
   close: (_id: string) => true,
 })
 </script>
 <template>
-  <div class="message-container-box" :title="textTip" :style="{ boxShadow: shadow }">
+  <div class="message-container-box" :title="textTip">
     <IconClose v-if="closeable" @click="$emit('close', id)" class="message-container-box-close" />
     <label>
       <slot></slot

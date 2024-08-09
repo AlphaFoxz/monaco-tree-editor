@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import ContextMenu from '../components/context-menu/Index.vue'
 import Confirm from '../components/modal/Confirm.vue'
 import Icons from '../icons/Index.vue'
+import Close from '../icons/Close.vue'
 import { type ContextMenuItem } from '../components/context-menu/define'
 import { useMonaco } from '../stores/monaco-store'
 import { useI18n } from '../locale'
@@ -197,7 +198,7 @@ defineExpose({
         }"
         class="monaco-tree-editor-opened-tab-item-close"
       >
-        x
+        <Close />
       </span>
     </div>
   </ContextMenu>

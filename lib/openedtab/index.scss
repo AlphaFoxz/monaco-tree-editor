@@ -39,12 +39,21 @@
     }
 
     &-close {
+      display: flex;
       position: relative;
       border-radius: 5px;
       padding: 5px 5px;
       line-height: 10px;
+      align-items: center;
+      align-content: center;
+
       &:hover {
         background-color: var(--monaco-bg-openedtab-item-close-hover);
+      }
+
+      svg {
+        height: 12px;
+        width: auto;
       }
     }
 

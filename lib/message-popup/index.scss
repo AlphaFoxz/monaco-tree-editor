@@ -4,19 +4,22 @@
   right: 0;
   z-index: 10;
   &-box {
-    background-color: var(--monaco-bg-5);
+    background-color: var(--monaco-bg-messagepopup-box);
     border-radius: 5px;
-    border-color: rgb(48, 48, 48);
+    border-color: var(--monaco-border-messagepopup-box);
     border-style: solid;
     border-width: 1px;
     padding: 3px 5px;
     margin: 10px;
     max-width: 50vw;
     min-height: 32px;
-    box-shadow: 0 0 10px black;
+    box-shadow: 0 0 10px var(--monaco-bg-messagepopup-box-shadow);
     font-size: 16px;
     line-height: 24px;
     color: var(--monaco-text-base-2);
+    &:hover {
+      background-color: var(--monaco-bg-messagepopup-box-hover);
+    }
     label {
       word-break: break-all;
       font-size: 16px;
