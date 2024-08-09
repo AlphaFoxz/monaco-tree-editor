@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import './index.scss'
-import { onMounted, ref, watch, nextTick, onBeforeUnmount, type ComputedRef } from 'vue'
+import { onMounted, ref, watch, onBeforeUnmount, type ComputedRef } from 'vue'
 import { type Files, BuiltInPage } from './define'
 import { longestCommonPrefix, throttle } from './common'
 import { useMonaco } from './stores/monaco-store'

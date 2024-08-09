@@ -11,9 +11,6 @@ importers:
       nanoid:
         specifier: ^5.0.7
         version: 5.0.7
-      vue:
-        specifier: ~3.3.13
-        version: 3.3.13(typescript@5.5.4)
     devDependencies:
       '@ant-design/icons-vue':
         specifier: ^7.0.1
@@ -34,11 +31,14 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       '@vue/tsconfig':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.5.1
+        version: 0.5.1
       jsdom:
         specifier: ^22.1.0
         version: 22.1.0
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
       monaco-editor:
         specifier: ^0.44.0
         version: 0.44.0
@@ -60,6 +60,9 @@ importers:
       vitest:
         specifier: ^2.0.4
         version: 2.0.4(@types/node@20.14.11)(jsdom@22.1.0)(less@4.2.0)(sass@1.77.8)
+      vue:
+        specifier: ~3.3.13
+        version: 3.3.13(typescript@5.5.4)
       vue-tsc:
         specifier: ^2.0.28
         version: 2.0.28(typescript@5.5.4)
@@ -454,8 +457,8 @@ packages:
   '@vue/test-utils@2.4.6':
     resolution: {integrity: sha512-FMxEjOpYNYiFe0GkaHsnJPXFHxQ6m4t8vI/ElPGpMWxZKpmRvQ33OIrvRXemy6yha03RxhOlQuy+gZMC3CQSow==}
 
-  '@vue/tsconfig@0.4.0':
-    resolution: {integrity: sha512-CPuIReonid9+zOG/CGTT05FXrPYATEqoDGNrEaqS4hwcw5BUNM2FguC0mOwJD4Jr16UpRVl9N0pY3P+srIbqmg==}
+  '@vue/tsconfig@0.5.1':
+    resolution: {integrity: sha512-VcZK7MvpjuTPx2w6blwnwZAu5/LgBUtejFOi3pPGQFXQN5Ela03FUtd2Qtg4yWGGissVL0dr6Ro1LfOFh+PCuQ==}
 
   abab@2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
@@ -811,6 +814,9 @@ packages:
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
+
+  moment@2.30.1:
+    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
 
   monaco-editor@0.44.0:
     resolution: {integrity: sha512-5SmjNStN6bSuSE5WPT2ZV+iYn1/yI9sd4Igtk23ChvqB7kDk9lZbB9F5frsuvpB+2njdIeGGFf2G4gbE6rCC9Q==}
@@ -1567,7 +1573,7 @@ snapshots:
       js-beautify: 1.15.1
       vue-component-type-helpers: 2.0.28
 
-  '@vue/tsconfig@0.4.0': {}
+  '@vue/tsconfig@0.5.1': {}
 
   abab@2.0.6: {}
 
@@ -1954,6 +1960,8 @@ snapshots:
       brace-expansion: 2.0.1
 
   minipass@7.1.2: {}
+
+  moment@2.30.1: {}
 
   monaco-editor@0.44.0: {}
 

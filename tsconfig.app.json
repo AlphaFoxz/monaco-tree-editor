@@ -1,6 +1,7 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": [
+    "lib/index.ts",
     "lib/*",
     "lib/**/*",
     "lib/**/*.vue",
@@ -12,6 +13,8 @@
   "compilerOptions": {
     "composite": true,
     "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "paths": {
       "~/*": [
         "/lib/*"
@@ -20,10 +23,15 @@
         "/src/*"
       ]
     },
+    "noEmit": false,
     "emitDeclarationOnly": true,
     "declaration": true,
     "declarationDir": "dist",
-    "jsx": "preserve",
-    "jsxImportSource": "vue",
+    "types": [
+      "node",
+      "jsdom"
+    ]
+    // "jsx": "preserve",
+    // "jsxImportSource": "vue",
   }
 }

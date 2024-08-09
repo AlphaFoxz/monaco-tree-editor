@@ -26,12 +26,16 @@ export default defineConfig(({ mode }) => {
       minify: 'esbuild',
       outDir: 'dist',
       target: 'esnext',
+      // terserOptions: {
+      //   module: true,
+      //   mangle: false,
+      // },
       cssCodeSplit: true,
       lib: {
         entry: fileURLToPath(new URL('./lib/index.ts', import.meta.url)),
         name: 'monaco-tree-editor',
         fileName: 'index',
-        formats: ['es', 'umd'],
+        formats: ['es'],
       },
       rollupOptions: {
         external: ['vue'],

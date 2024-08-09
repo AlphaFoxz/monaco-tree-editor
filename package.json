@@ -25,14 +25,13 @@
     "dev": "vite",
     "build": "pnpm build-only && pnpm type-check && pnpm copy-file",
     "build-only": "vite build",
-    "type-check": "vue-tsc -p tsconfig.vitest.json --composite false",
+    "type-check": "vue-tsc -p tsconfig.app.json --composite false",
     "copy-file": "ncp README.md dist/README.md && ncp README.CN.md dist/README.CN.md && ncp LICENSE dist/LICENSE && ncp package.publish.json dist/package.json",
     "preview": "vite preview",
     "test": "vitest"
   },
   "dependencies": {
-    "nanoid": "^5.0.7",
-    "vue": "~3.3.13"
+    "nanoid": "^5.0.7"
   },
   "devDependencies": {
     "@ant-design/icons-vue": "^7.0.1",
@@ -41,15 +40,15 @@
     "@types/node": "^20.14.11",
     "@vitejs/plugin-vue": "^4.6.2",
     "@vue/test-utils": "^2.4.6",
-    "@vue/tsconfig": "^0.4.0",
+    "@vue/tsconfig": "^0.5.1",
     "jsdom": "^22.1.0",
     "monaco-editor": "^0.44.0",
     "ncp": "^2.0.0",
-    "npm-run-all2": "^6.2.2",
     "sass": "^1.77.8",
     "typescript": "^5.5.4",
     "vite": "^5.3.4",
     "vitest": "^2.0.4",
+    "vue": "~3.3.13",
     "vue-tsc": "^2.0.28"
   }
 }
