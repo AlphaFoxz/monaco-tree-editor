@@ -198,7 +198,7 @@ onMounted(() => {
   monacoStore._action.init(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
 })
 onBeforeUnmount(() => {
-  monacoStore.state.editor.dispose()
+  monacoStore.action.getEditor()?.dispose()
 })
 
 // ================ 回调事件 callback events ================
@@ -570,7 +570,7 @@ defineExpose({
     return monacoStore.state.monaco
   },
   getEditor: (): monaco_define.editor.IStandaloneCodeEditor => {
-    return monacoStore.state.editor
+    return monacoStore.action.getEditor()
   },
 })
 </script>
