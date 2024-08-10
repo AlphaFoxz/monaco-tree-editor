@@ -1,6 +1,6 @@
 {
   "name": "monaco-tree-editor",
-  "version": "1.1.0-alpha.6",
+  "version": "1.1.0-rc.0",
   "type": "module",
   "main": "index.umd.cjs",
   "module": "index.js",
