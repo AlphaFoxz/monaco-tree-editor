@@ -73,6 +73,7 @@ export function useContextMenu(
 export type ContextMenuItem<T> = {
   label?: string | ComputedRef<string>
   value?: T
+  onSelect?: () => void
 }
 
 export type TriggerType = 'Click' | 'RClick'

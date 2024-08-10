@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import ContextMenu from '../components/context-menu/Index.vue'
 import Confirm from '../components/modal/Confirm.vue'
 import Icons from '../icons/Index.vue'
@@ -110,15 +110,19 @@ const handleLeave = () => {
 
 //========================= 回调 callback ==========================
 const confirmVisible = ref(false)
-const handleClose = (e?: Event) => {
-  e?.stopPropagation()
-  if (props.file?.status === 'editing') {
-    confirmVisible.value = true
-  } else {
-    if (props.file?.path) {
-      emit('closeFile', props.file?.path)
+const handleClose = async (e?: Event): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    e?.stopPropagation()
+    if (props.file?.status === 'editing') {
+      confirmVisible.value = true
+      resolve()
+    } else {
+      if (props.file?.path) {
+        emit('closeFile', props.file?.path)
+        nextTick(resolve)
+      }
     }
-  }
+  })
 }
 const handleSaveAndClose = () => {
   const path = props.file!.path

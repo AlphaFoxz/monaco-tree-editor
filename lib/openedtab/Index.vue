@@ -41,12 +41,12 @@ const handlePathChange = (key: string) => {
 const handleCloseFile = (path: string) => {
   monacoStore._action.closeFile(path)
 }
-const handleCloseOtherFiles = (path?: string) => {
+const handleCloseOtherFiles = async (path?: string) => {
   console.debug('handleCloseOtherFiles', path)
-  if (!instanceRef) {
+  if (!instanceRef || !instanceRef.refs) {
     return
   }
-  Object.keys(instanceRef.refs).forEach((key) => {
+  for (const key of Object.keys(instanceRef.refs)) {
     if (path === key) {
       return
     }
@@ -56,9 +56,10 @@ const handleCloseOtherFiles = (path?: string) => {
     }
     const target = instanceRef?.refs[key] as any
     if (target) {
-      target[0].tryClose()
+      await target[0].tryClose()
+      delete instanceRef?.refs[key]
     }
-  })
+  }
 }
 
 //========================= 拖动 drag =========================
