@@ -330,7 +330,7 @@ const handleSaveFile = (
   reject = () => {}
 ) => {
   if (value === undefined || !path || !monacoStore._action.hasChanged(path)) {
-    console.debug('there is no changed.')
+    console.debug('there is nothing changed.')
     resolve()
     return
   }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '~'
-import { ComputedRef, onMounted, ref } from 'vue'
+import { ComputedRef, onMounted, ref, watch } from 'vue'
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
@@ -8,6 +8,8 @@ import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import * as server from './mock-server'
+import customTheme from './custom-theme'
+import { registerRestl } from './define-lang'
 
 // ================ 初始化 init monaco-tree-editor ================
 window.MonacoEnvironment = {
@@ -27,8 +29,11 @@ window.MonacoEnvironment = {
 }
 let monacoStore
 // mock delay to test robustness
-server.delay().then(() => {
+server.delay().then(async () => {
   monacoStore = useMonaco(monaco)
+  await monacoStore._action.untilMonacoImported()
+  monacoStore.action.defineTheme('dark', customTheme)
+  registerRestl(monacoStore.state.monaco)
 })
 
 // ================ 推送消息 push message ================
@@ -239,7 +244,7 @@ const _relativePathFrom = (returnPath: string, fromPath: string): string => {
     :sider-min-width="240"
     filelist-title="文件列表"
     language="en-US"
-    theme="light"
+    theme="dark"
     @reload="handleReload"
     @new-file="handleNewFile"
     @new-folder="handleNewFolder"

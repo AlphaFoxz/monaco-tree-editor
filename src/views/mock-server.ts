@@ -72,6 +72,38 @@ let responseFiles: Files = {
 }
 `,
   },
+  'F:\\test_project\\custom-language.restl': {
+    isFile: true,
+    content: `namespace java com.github.alphafoxz.oneboot.app.gen.restl.apis
+namespace ts gen.app.apis
+
+import "../dtos/AppTestDto.restl"
+
+//本api为自动生成代码，请勿修改
+
+/*测试API*/
+@uri(/app/test)
+interface AppTestApi {
+    /*查询单条*/
+    @getUri(/query/{id})
+    AppTestDto.AppTestInfoDto queryOne(/*主键*/ long id)
+    /*分页*/
+    @page
+    @getUri(/queryPage/{pageNum}/{pageSize})
+    AppTestDto.AppTestInfoDto queryPage(/*页码*/ int pageNum, /*每页数据量*/ int pageSize)
+    /*更新*/
+    @postUri(/update)
+    boolean update(/*更新参数*/ AppTestDto.AppTestInfoDto param)
+    /* 测试下载功能 */
+    @getUri(/download)
+    list<byte> download(/*模块名称*/i64 id)
+    /* 测试上传功能 */
+    @formData
+    @postUri(/upload)
+    void upload(/*上传文件*/list<binary> file, /*名称*/string name)
+}
+`,
+  },
 }
 // 模拟延迟，测试健壮性 mock delay to test robustness
 export const delay = async (maxMs = 3000) => {
