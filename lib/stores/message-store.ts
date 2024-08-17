@@ -98,13 +98,31 @@ function keepAlive(id: string) {
   }
 }
 
+/**
+ * useMessage
+ * @returns MessageStore
+ */
 export const useMessage = () => {
   return {
+    /**
+     * Internal state
+     */
     _state: {},
-    state: { messages },
+    /**
+     * Public state
+     */
+    state: {
+      messages,
+    },
+    /**
+     * Internal actions
+     */
     _action: {
       keepAlive,
     },
+    /**
+     * Public actions
+     */
     action: {
       info,
       success,

@@ -47,6 +47,10 @@ let fileTree = ref<FileInfo>({
   children: {},
   path: '/',
 })
+/**
+ * Asynchronously waits until the monaco-editor library has been imported.
+ * @returns A Promise that resolves when monaco-editor is imported.
+ */
 export async function untilMonacoImported() {
   return new Promise<void>((resolve) => {
     if (monaco) {
@@ -88,9 +92,16 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
   setTheme(globalSettingsStore.state.currentThemeMode.value)
   isReady.value = true
 }
+/**
+ * Define a theme for monaco editor
+ * @param name The name of the theme
+ * @param theme The theme data
+ */
 function defineTheme(name: ThemeMode, theme: monaco_define.editor.IStandaloneThemeData) {
+  // Define the theme
   monaco.editor.defineTheme(name, theme)
 }
+
 async function setTheme(name: ThemeMode) {
   await untilMonacoImported()
   // 定义主题
@@ -172,11 +183,18 @@ async function loadFileTree(files: Files) {
   }
   openedFiles.value = tmpOpenedFiles
 }
+/**
+ * Creates or updates a model in the Monaco editor.
+ * @param path The path of the model.
+ * @param value The value of the model.
+ * @param force If true, forces the model to be updated even if the value is the same.
+ */
 function createOrUpdateModel(path: string, value: string, force?: boolean) {
-  // model 是否存在
+  // Check if the model already exists
   let model = monaco.editor.getModels().find((model) => model.uri.path === path)
 
   if (model) {
+    // If the value of the model is different, update it
     const v = model.getValue()
     if (v !== value) {
       model.pushEditOperations(
@@ -189,6 +207,7 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
         ],
         () => []
       )
+      // If force is true, reset the status of the opened file
       if (force) {
         openedFiles.value.map((t) => {
           if (t.path === path) {
@@ -197,6 +216,7 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
         })
       }
     } else {
+      // If the value is the same, reset the status of the opened file
       openedFiles.value.map((t) => {
         if (t.path === path) {
           t.status = undefined
@@ -204,8 +224,11 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
       })
     }
   } else if (path) {
+    // If the model does not exist, create a new one
     let type = ''
     let tabSize = 2
+
+    // Determine the type of the model based on the file extension
     if (path.indexOf('.') !== -1) {
       const extName = path.split('.').slice(-1)[0]
       type = extName
@@ -215,12 +238,18 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
     } else {
       type = 'javascript'
     }
+
+    // Map the file extension to the corresponding language type
     type = typeMap[type] || type
+
+    // Create the model with the specified value and options
     model = monaco.editor.createModel(
       value ?? '',
       type,
       new monaco_define.Uri().with({ path, authority: 'server', scheme: 'file' })
     )
+
+    // Set the tab size for the model
     model.updateOptions({
       tabSize,
     })
@@ -405,27 +434,49 @@ function hasChanged(path: string): boolean {
 function format() {
   editor?.getAction('editor.action.formatDocument')?.run()
 }
-function resize() {
+/**
+ * Resize the editor to fit the available height after the opened tabs.
+ * We use "calc" to subtract the height of the opened tabs from the
+ * available height, and add 6px for the border.
+ * @returns {void}
+ */
+function resize(): void {
   editorDom.style.height = `calc(100% - ${globalSettingsStore._action.getOpenedTabsHeight() + 6}px)`
   editor?.layout()
 }
 
+/**
+ * A hook that provides access to the monaco editor instance.
+ * @param m - Optional monaco instance to set.
+ * @returns An object with properties for state and actions related to the monaco editor.
+ */
 export const useMonaco = (m?: typeof monaco_define) => {
   if (m) {
     monaco = m
   }
+
+  /**
+   * An object containing the internal state of the monaco editor.
+   */
   return {
+    // An object containing the internal state of the monaco editor.
     _state: {
       prefix,
       fileSeparator,
       fileTree,
     },
+    /**
+     * An object containing the public state of the monaco editor.
+     */
     state: {
       monaco,
       currentPath,
       openedFiles,
       isReady,
     },
+    /**
+     * An object containing the internal actions that can be performed on the monaco editor.
+     */
     _action: {
       init,
       restoreModel,
@@ -440,7 +491,11 @@ export const useMonaco = (m?: typeof monaco_define) => {
       loadFileTree,
       untilMonacoImported,
     },
+    /**
+     * An object containing the public actions that can be performed on the monaco editor.
+     */
     action: {
+      defineTheme,
       getEditor,
       updateOptions,
       format,

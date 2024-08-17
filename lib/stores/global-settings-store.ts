@@ -71,11 +71,21 @@ async function changeTheme(theme: ThemeMode) {
   currentThemeMode.value = theme
 }
 
+/**
+ * Custom hook for global settings.
+ *
+ * @param {Object} options - Optional parameters to set initial values.
+ * @param {ThemeMode} options.currentThemeMode - The initial theme mode.
+ * @param {boolean} options.contextMenuVisble - The initial visibility of the context menu.
+ * @param {Language} options.currentLanguage - The initial language.
+ * @returns {Object} - An object containing the state and actions related to the global settings.
+ */
 export function useGlobalSettings(options?: {
   currentThemeMode?: ThemeMode
   contextMenuVisble?: boolean
   currentLanguage?: Language
 }) {
+  // Set initial values from options parameter if provided
   if (options?.currentThemeMode) {
     currentThemeMode.value = options.currentThemeMode
   }
@@ -85,6 +95,8 @@ export function useGlobalSettings(options?: {
   if (options?.currentLanguage) {
     currentLanguage.value = options.currentLanguage
   }
+
+  // Return an object containing the state and actions related to the global settings
   return {
     state: {
       contextMenuVisble,

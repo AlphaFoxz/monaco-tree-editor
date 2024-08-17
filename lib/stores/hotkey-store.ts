@@ -93,6 +93,10 @@ function listen(name: 'root' | 'editor', callback: (e: KeyboardEvent) => void) {
   }
 }
 
+/**
+ * useHotkey
+ * @returns HotkeyStore
+ */
 export const useHotkey = () => {
   return {
     init,
