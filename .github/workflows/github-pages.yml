@@ -18,21 +18,19 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 8
-      - run: cd ./.wiki
       # Pick your own package manager and build script
-      - run: pnpm install
+      - run: cd ./.git-pages && pnpm install
       # Setup environment variables
       # NUXT_APP_BASE_URL is your GitHub Repo Name.
-      - run: |
-          echo 'NUXT_APP_BASE_URL=/monaco-tree-editor' > ./.env
+      - run: cd ./.git-pages && echo 'NUXT_APP_BASE_URL=/monaco-tree-editor' > ./.env
       # `pnpm build` will:
       # 1. copy /README.md to /content/AUTO_GEN_README.md (See package.json->scripts->build)
       # 2. exec `npx nuxt build --preset github_pages` (See https://nuxt.com.cn/deploy/github-pages)
-      - run: pnpm build
+      - run: cd ./.git-pages && pnpm build
       - name: Upload artifact 🚀
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./.output/public
+          path: ./.git-pages/.output/public
 
   # Deployment job
   deploy:
