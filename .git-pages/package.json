@@ -3,10 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "sync": "ncp ./README.md ./content/AUTO_GEN_README.md",
-    "build": "pnpm sync && nuxt build --preset github_pages",
-    "dev": "pnpm sync && nuxt dev",
-    "generate": "pnpm sync && nuxt generate",
+    "build": "nuxt build --preset github_pages",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
@@ -21,14 +20,9 @@
     "vue-router": "^4.4.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.4.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@commitlint/types": "^19.0.3",
     "@nuxtjs/color-mode": "^3.4.4",
     "@primevue/nuxt-module": "^4.0.4",
-    "husky": "^9.1.4",
     "lint-staged": "^15.2.9",
-    "ncp": "^2.0.0",
     "nuxt-primevue": "^0.3.1",
     "prettier": "^3.3.3",
     "sass": "^1.77.8"
