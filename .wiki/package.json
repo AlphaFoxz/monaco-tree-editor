@@ -1,0 +1,40 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "ncp ./README.md ./content/AUTO_GEN_README.md",
+    "build": "pnpm sync && nuxt build --preset github_pages",
+    "dev": "pnpm sync && nuxt dev",
+    "generate": "pnpm sync && nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/content": "~2.12.1",
+    "@primevue/themes": "^4.0.4",
+    "mermaid": "^10.9.1",
+    "nuxt": "^3.12.4",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.0.4",
+    "vue": "^3.4.38",
+    "vue-router": "^4.4.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.4.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@commitlint/types": "^19.0.3",
+    "@nuxtjs/color-mode": "^3.4.4",
+    "@primevue/nuxt-module": "^4.0.4",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.9",
+    "ncp": "^2.0.0",
+    "nuxt-primevue": "^0.3.1",
+    "prettier": "^3.3.3",
+    "sass": "^1.77.8"
+  },
+  "engines": {
+    "node": "^18.18.0 || ^20.9.0 || >=21.1.0",
+    "pnpm": ">=8.6.10"
+  }
+}
