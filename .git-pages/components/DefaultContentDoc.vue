@@ -68,10 +68,10 @@ onMounted(() => {
     <ContentDoc>
       <template #not-found>
         <p>
-          资源未找到：<b>{{ $router.currentRoute.value.fullPath }}</b>
+          {{ $t('contentDoc.notFound') }}: <b>{{ $router.currentRoute.value.fullPath }}</b>
         </p>
-        <p>请尝试使用搜索功能，而非修改url</p>
-        <p>如果是从其他文档连接至本页面，请查看仓库中是否丢失了资源，或链接填写错误</p>
+        <p>{{ $t('contentDoc.notFound.message1') }}</p>
+        <p>{{ $t('contentDoc.notFound.message2') }}</p>
       </template>
       <template #empty>
         <p>文档为空</p>
@@ -79,7 +79,7 @@ onMounted(() => {
     </ContentDoc>
   </main>
   <div v-if="layoutName === 'pc'" class="toc">
-    <p class="title">本页目录</p>
+    <p class="title">{{ $t('toolbar.onThisPage') }}</p>
     <PanelMenu
       theme="dark"
       :expandedKeys="expandedKeys"
@@ -87,7 +87,12 @@ onMounted(() => {
       style="margin-top: 10px; width: 300px"
     ></PanelMenu>
   </div>
-  <Sidebar v-else v-model:visible="tocVisible" header="本页目录" position="right" @click="tocVisible = false"
+  <Sidebar
+    v-else
+    v-model:visible="tocVisible"
+    :header="$t('toolbar.onThisPage')"
+    position="right"
+    @click="tocVisible = false"
     ><PanelMenu
       theme="dark"
       :expandedKeys="expandedKeys"

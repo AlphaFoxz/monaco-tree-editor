@@ -24,3 +24,7 @@ logs
 !.env.example
 
 /pnpm-lock.yaml
+
+
+# IDE FILES
+.vscode/

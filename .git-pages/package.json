@@ -11,17 +11,18 @@
   },
   "dependencies": {
     "@nuxt/content": "~2.12.1",
-    "@primevue/themes": "^4.0.4",
+    "@nuxtjs/i18n": "^8.5.1",
+    "@primevue/themes": "^4.0.5",
     "mermaid": "^10.9.1",
-    "nuxt": "^3.12.4",
+    "nuxt": "^3.13.0",
     "primeicons": "^7.0.0",
-    "primevue": "^4.0.4",
+    "primevue": "^4.0.5",
     "vue": "^3.4.38",
     "vue-router": "^4.4.3"
   },
   "devDependencies": {
     "@nuxtjs/color-mode": "^3.4.4",
-    "@primevue/nuxt-module": "^4.0.4",
+    "@primevue/nuxt-module": "^4.0.5",
     "lint-staged": "^15.2.9",
     "nuxt-primevue": "^0.3.1",
     "prettier": "^3.3.3",
@@ -30,5 +31,6 @@
   "engines": {
     "node": "^18.18.0 || ^20.9.0 || >=21.1.0",
     "pnpm": ">=8.6.10"
-  }
+  },
+  "packageManager": "pnpm@9.0.6+sha512.f6d863130973207cb7a336d6b439a242a26ac8068077df530d6a86069419853dc1ffe64029ec594a9c505a3a410d19643c870aba6776330f5cfddcf10a9c1617"
 }

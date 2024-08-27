@@ -1,5 +1,17 @@
+import fs from 'node:fs'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 const prefix = process.env.NUXT_APP_BASE_URL || ''
+let defaultLocale = 'zh'
+const locales = []
+if (fs.existsSync('./content/zh')) {
+  locales.push({ code: 'zh', file: 'zh.json', name: '中文' })
+}
+if (fs.existsSync('./content/en')) {
+  locales.push({ code: 'en', file: 'en.json', name: 'English' })
+  defaultLocale = 'en'
+}
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   router: {
@@ -9,10 +21,12 @@ export default defineNuxtConfig({
   },
   ssr: false,
   css: ['primeicons/primeicons.css', '~/assets/styles/default.scss'],
-  modules: ['@nuxt/content', '@primevue/nuxt-module', '@nuxtjs/color-mode'],
+  modules: ['@nuxt/content', '@primevue/nuxt-module', '@nuxtjs/color-mode', '@nuxtjs/i18n'],
   runtimeConfig: {
     public: {
       NUXT_APP_BASE_URL: prefix,
+      NUXT_APP_DEFAULT_LOCALE: defaultLocale,
+      NUXT_APP_LOCALE_LIST: locales,
     },
   },
   app: {
@@ -33,6 +47,7 @@ export default defineNuxtConfig({
       },
     },
     documentDriven: {
+      navigation: true,
       injectPage: false,
     },
     experimental: {
@@ -45,6 +60,12 @@ export default defineNuxtConfig({
       theme: 'github-dark',
       langs: ['json', 'js', 'ts', 'html', 'vue', 'shell', 'md', 'yaml', 'java', 'kt', 'sql'],
     },
+  },
+  i18n: {
+    langDir: 'locales/',
+    defaultLocale,
+    locales,
+    strategy: 'prefix',
   },
   colorMode: {
     preference: 'system',

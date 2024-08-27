@@ -25,19 +25,30 @@ const searchVisible = ref(false)
   <div class="root">
     <div class="header">
       <SearchComponent :show="searchVisible" @close="searchVisible = false"></SearchComponent>
-      <Button icon="pi pi-search" style="height: 3rem" label="搜索" @click="searchVisible = true"></Button>
-      <ToggleButton style="height: 3rem" v-model="lightTheme" onLabel="light" offLabel="dark"></ToggleButton>
+      <Button
+        icon="pi pi-search"
+        style="height: 3rem"
+        :label="$t('toolbar.search')"
+        @click="searchVisible = true"
+      ></Button>
+      <ToggleButton
+        style="height: 3rem"
+        v-model="lightTheme"
+        :onLabel="$t('toolbar.theme.light')"
+        :offLabel="$t('toolbar.theme.dark')"
+      ></ToggleButton>
+      <DefaultLanguageSwitcher></DefaultLanguageSwitcher>
       <Button
         icon="pi pi-align-center"
         style="height: 3rem; float: right"
         severity="secondary"
-        label="本页目录"
+        :label="$t('toolbar.onThisPage')"
         @click="globalStore.action.updateTocVisible(true)"
       ></Button>
     </div>
     <div class="container">
       <aside class="sider">
-        <ContentNavigation></ContentNavigation>
+        <DefaultI18nNavigation></DefaultI18nNavigation>
       </aside>
       <ScrollPanel
         style="

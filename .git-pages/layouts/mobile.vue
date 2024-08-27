@@ -32,23 +32,29 @@ const searchVisible = ref(false)
         icon="pi pi-align-center"
         style="height: 3rem"
         severity="secondary"
-        label="菜单"
+        :label="$t('toolbar.menu')"
         @click="navVisible = true"
       ></Button>
       <Button icon="pi pi-search" style="height: 3rem" @click="searchVisible = true"></Button>
-      <ToggleButton style="height: 3rem" v-model="lightTheme" onLabel="light" offLabel="dark"></ToggleButton>
+      <ToggleButton
+        style="height: 3rem"
+        v-model="lightTheme"
+        :onLabel="$t('toolbar.theme.light')"
+        :offLabel="$t('toolbar.theme.dark')"
+      ></ToggleButton>
+      <DefaultLanguageSwitcher></DefaultLanguageSwitcher>
       <Button
         icon="pi pi-align-center"
-        style="height: 3rem; float: right"
+        style="height: 3rem; float: right; z-index: 1"
         severity="secondary"
-        label="本页目录"
+        :label="$t('toolbar.onThisPage')"
         @click="globalStore.action.updateTocVisible(true)"
       ></Button>
     </div>
     <div class="container">
       <Sidebar v-model:visible="navVisible">
         <aside class="sider">
-          <ContentNavigation @click="navVisible = false"></ContentNavigation>
+          <DefaultI18nNavigation @click="navVisible = false"></DefaultI18nNavigation>
         </aside>
       </Sidebar>
       <div class="ddd-doc">

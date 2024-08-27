@@ -21,6 +21,7 @@
     "url": "https://github.com/AlphaFoxz"
   },
   "repository": "https://github.com/AlphaFoxz/monaco-tree-editor",
+  "homepage": "https://alphafoxz.github.io/monaco-tree-editor/",
   "scripts": {
     "dev": "vite",
     "build": "pnpm build-only && pnpm type-check && pnpm copy-file",

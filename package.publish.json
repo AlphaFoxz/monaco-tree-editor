@@ -13,6 +13,7 @@
     "url": "https://github.com/AlphaFoxz"
   },
   "repository": "https://github.com/AlphaFoxz/monaco-tree-editor",
+  "homepage": "https://alphafoxz.github.io/monaco-tree-editor/",
   "dependencies": {
     "nanoid": "^5.0.7"
   },

@@ -2,6 +2,7 @@
 import ScrollPanel from 'primevue/scrollpanel'
 import Button from 'primevue/button'
 import ToggleButton from 'primevue/togglebutton'
+import DefaultLanguageSwitcher from '~/components/DefaultLanguageSwitcher.vue'
 
 const globalStore = useGlobal()
 //====================== 主题 ======================
@@ -21,12 +22,17 @@ const searchVisible = ref(false)
   <div class="root">
     <div class="header">
       <SearchComponent :show="searchVisible" @close="searchVisible = false"></SearchComponent>
-      <Button icon="pi pi-search" label="搜索" @click="searchVisible = true"></Button>
-      <ToggleButton v-model="isLightTheme" onLabel="light" offLabel="dark"></ToggleButton>
+      <Button icon="pi pi-search" :label="$t('toolbar.search')" @click="searchVisible = true"></Button>
+      <ToggleButton
+        v-model="isLightTheme"
+        :onLabel="$t('toolbar.theme.light')"
+        :offLabel="$t('toolbar.theme.dark')"
+      ></ToggleButton>
+      <DefaultLanguageSwitcher></DefaultLanguageSwitcher>
     </div>
     <div class="container">
       <aside class="sider">
-        <ContentNavigation></ContentNavigation>
+        <DefaultI18nNavigation></DefaultI18nNavigation>
       </aside>
       <ScrollPanel
         class="ddd-doc-scroller"
