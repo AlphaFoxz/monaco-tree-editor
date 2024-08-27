@@ -74,7 +74,7 @@ onMounted(() => {
         <p>{{ $t('contentDoc.notFound.message2') }}</p>
       </template>
       <template #empty>
-        <p>文档为空</p>
+        <p>{{ $t('contentDoc.empty') }}</p>
       </template>
     </ContentDoc>
   </main>

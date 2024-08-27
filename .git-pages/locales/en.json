@@ -6,5 +6,6 @@
   "toolbar.onThisPage": "On this page",
   "contentDoc.notFound": "Resource not found",
   "contentDoc.notFound.message1": "Please try using search function, not modify url",
-  "contentDoc.notFound.message2": "If it's from other document link to this page, please check if the resource is lost in the repository, or the link is wrong"
+  "contentDoc.notFound.message2": "If it's from other document link to this page, please check if the resource is lost in the repository, or the link is wrong",
+  "contentDoc.empty": "The document is empty"
 }
