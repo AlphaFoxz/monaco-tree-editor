@@ -1,6 +1,6 @@
 # monaco-tree-editor
 
-Here is [Document](https://alphafoxz.github.io/monaco-tree-editor){target="\_blank"} for more details
+Here is [Document](https://alphafoxz.github.io/monaco-tree-editor) for more details
 
 ## What this repo did?
 

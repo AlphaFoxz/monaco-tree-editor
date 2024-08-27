@@ -1,6 +1,6 @@
 # monaco-tree-editor
 
-更多详情可以在[文档地址](https://alphafoxz.github.io/monaco-tree-editor){target="\_blank"}中查看
+更多详情可以在 [文档地址](https://alphafoxz.github.io/monaco-tree-editor) 中查看
 
 ## 这个库做了什么
 
