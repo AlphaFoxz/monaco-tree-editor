@@ -92,6 +92,12 @@ function listen(name: 'root' | 'editor', callback: (e: KeyboardEvent) => void) {
     callbackMap.set(name, [callback])
   }
 }
+function unlisten(name: 'root' | 'editor', callback: (e: KeyboardEvent) => void) {
+  const funs = callbackMap.get(name)
+  if (funs && funs.includes(callback)) {
+    funs.splice(funs.indexOf(callback), 1)
+  }
+}
 
 /**
  * useHotkey
@@ -101,5 +107,6 @@ export const useHotkey = () => {
   return {
     init,
     listen,
+    unlisten,
   }
 }

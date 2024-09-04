@@ -2,6 +2,8 @@
 import './index.scss'
 import CloseIcon from '../../icons/Close.vue'
 import Button from '../button/Index.vue'
+import { useHotkey } from '../../stores/hotkey-store'
+import { onUnmounted } from 'vue'
 defineProps({
   title: {
     type: String,
@@ -20,16 +22,27 @@ defineProps({
     default: 'info',
   },
 })
-defineEmits({
+const emit = defineEmits({
   close: () => true,
   cancel: () => true,
   ok: () => true,
+})
+
+const hotkeyStore = useHotkey()
+const keypressHandler = (e: KeyboardEvent) => {
+  if (!e.ctrlKey && !e.altKey && e.key === 'Escape') {
+    emit('close')
+  }
+}
+hotkeyStore.listen('root', keypressHandler)
+onUnmounted(() => {
+  hotkeyStore.unlisten('root', keypressHandler)
 })
 </script>
 
 <template>
   <Teleport :to="target">
-    <div ref="componentRef" class="monaco-tree-editor-modal">
+    <div ref="componentRef" @contextmenu.prevent class="monaco-tree-editor-modal">
       <div class="monaco-tree-editor-modal-mask" @click="$emit('close')"></div>
       <div class="monaco-tree-editor-modal-content monaco-tree-editor-modal-content-confirm">
         <div v-if="title" class="monaco-tree-editor-modal-content-title">
