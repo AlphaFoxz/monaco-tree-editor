@@ -8,7 +8,7 @@
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
   "description": "the web ide with file tree based on 'monaco-editor'",
-  "private": false,
+  "private": true,
   "keywords": [
     "moanco-editor",
     "vue-monaco-editor",
