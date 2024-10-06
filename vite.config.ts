@@ -18,6 +18,13 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: [],
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        },
+      },
+    },
     esbuild: {
       drop: mode === 'production' ? ['console', 'debugger'] : [],
     },
