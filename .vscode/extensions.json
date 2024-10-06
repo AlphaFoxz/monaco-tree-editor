@@ -1,9 +1,9 @@
 {
   "recommendations": [
-    "bradlc.vscode-tailwindcss",
     "codeium.codeium",
     "esbenp.prettier-vscode",
     "lokalise.i18n-ally",
     "vue.volar",
+    "gruntfuggly.todo-tree"
   ]
 }
