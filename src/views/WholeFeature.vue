@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '~'
-import { ComputedRef, onMounted, ref, watch } from 'vue'
+import { ComputedRef, onMounted, ref } from 'vue'
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
@@ -51,7 +51,7 @@ onMounted(() => {
       timeoutMs: 15000,
       textTip: 'testing successed!',
     })
-  }, 5000)
+  }, 2000)
 })
 
 // ================ 快捷键 hotkey ==================

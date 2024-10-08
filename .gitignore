@@ -28,4 +28,5 @@ coverage
 *.sln
 *.sw?
 
+# /.env*.local
 /monaco-tree-editor
