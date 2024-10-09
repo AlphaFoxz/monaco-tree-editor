@@ -1,9 +1,22 @@
 {
+  "include": [
+    "lib/*",
+    "lib/**/*",
+    "src/*",
+    "src/**/*",
+    "src/**/*.vue",
+    "env.d.ts"
+  ],
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "moduleResolution": "Bundler",
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "skipLibCheck": true,
     "isolatedModules": true,
     "noEmit": false,
@@ -14,15 +27,25 @@
     "jsxImportSource": "vue",
     //Linting
     "strict": true,
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@/*": [
+        "/src/*"
+      ]
+    },
   },
   "files": [],
   "references": [
     {
       "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.cypress-ct.json"
     },
     {
       "path": "./tsconfig.app.json"

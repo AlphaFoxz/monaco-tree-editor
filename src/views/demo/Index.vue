@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '~'
-import { ComputedRef, onMounted, ref } from 'vue'
+import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '../../../lib'
+import { type ComputedRef, onMounted, ref } from 'vue'
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
@@ -27,7 +27,7 @@ window.MonacoEnvironment = {
   },
   globalAPI: true,
 }
-let monacoStore
+let monacoStore: any
 // mock delay to test robustness
 server.delay().then(async () => {
   monacoStore = useMonaco(monaco)
