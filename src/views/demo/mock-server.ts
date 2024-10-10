@@ -106,7 +106,7 @@ interface AppTestApi {
   },
 }
 // 模拟延迟，测试健壮性 mock delay to test robustness
-export const delay = async (maxMs = 3000) => {
+export const delay = async (maxMs = 500) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       resolve()
@@ -114,7 +114,7 @@ export const delay = async (maxMs = 3000) => {
   })
 }
 export const fetchFiles = async () => {
-  await delay(1000)
+  await delay(200)
   return await JSON.parse(JSON.stringify(responseFiles))
 }
 export const createOrSaveFile = async (path: string, content: string) => {
