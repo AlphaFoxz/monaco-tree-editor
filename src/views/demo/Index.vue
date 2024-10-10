@@ -27,7 +27,7 @@ window.MonacoEnvironment = {
   },
   globalAPI: true,
 }
-let monacoStore: any
+let monacoStore: ReturnType<typeof useMonaco>
 // mock delay to test robustness
 server.delay().then(async () => {
   monacoStore = useMonaco(monaco)
@@ -201,7 +201,7 @@ const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 
   if (!targetPath.endsWith('.ts') && !srcPath.endsWith('.js')) {
     return
   }
-  const editor = monacoStore.state.editor
+  const editor = monacoStore.action.getEditor()
   const lineIndex = editor.getPosition()?.lineNumber!
   let str = 'import "' + _relativePathFrom(srcPath, targetPath) + '"'
   editor.executeEdits('drop', [{ range: new monaco.Range(lineIndex, 0, lineIndex, 0), text: str }])

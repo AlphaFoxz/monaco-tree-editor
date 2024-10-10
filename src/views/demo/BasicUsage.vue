@@ -26,7 +26,7 @@ window.MonacoEnvironment = {
   },
   globalAPI: true,
 }
-let monacoStore
+let monacoStore: ReturnType<typeof useMonaco>
 // 模拟延迟，测试健壮性 mock delay to test robustness
 server.delay().then(() => {
   monacoStore = useMonaco(monaco)
