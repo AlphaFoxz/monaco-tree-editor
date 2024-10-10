@@ -5,9 +5,9 @@ let responseFiles: Files = {
   'F:\\test_project': {
     isFile: false,
   },
-  'F:\\test_project\\test1.html': {
+  'F:\\test_project\\test1.ts': {
     isFile: true,
-    content: '<html><body><h1>Hello World!</h1></body></html>',
+    content: 'console.log("test1.ts")',
   },
 }
 // 模拟延迟，测试健壮性 mock delay to test robustness
