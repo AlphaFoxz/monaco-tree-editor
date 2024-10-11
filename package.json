@@ -1,6 +1,6 @@
 {
   "name": "monaco-tree-editor",
-  "version": "1.1.4-alpha.0",
+  "version": "1.1.4",
   "type": "module",
   "files": [
     "dist"
