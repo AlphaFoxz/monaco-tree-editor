@@ -30,21 +30,11 @@ watch(
   }
 )
 type MatchType = 'content' | 'title' | 'titles'
-type SearchResult = {
-  id: string
-  score: number
-  terms: string[]
-  queryTerms: string[]
-  match: {
-    [key: string]: MatchType[]
-  }
-  title: string
-  titleHtml?: string
-  content: string
-  contentHtml?: string
-  titles?: string[]
-  titlesHtml?: string[]
-}
+type ArrayItem<T> = T extends (infer U)[] ? U : never
+type PromiseResult<T> = T extends Promise<infer U> ? U : never
+type ComputedRefValue<T> = T extends ComputedRef<infer U> ? U : T
+type SearchResults = ComputedRefValue<PromiseResult<ReturnType<typeof searchContent>>>
+type SearchResult = ArrayItem<SearchResults>
 type DisplayResult = {
   id: string
   title: string
@@ -69,15 +59,15 @@ function getFolderTitle(path: string): string {
 function put(container: DisplayResult[], item: SearchResult) {
   for (const term of item.queryTerms) {
     const reg = new RegExp(term, 'ig')
-    item.contentHtml = item.content.replace(reg, function (m) {
+    item.contentHtml = item.content.replace(reg, function (m: string) {
       return `<mark>${m}</mark>`
     })
-    item.titleHtml = item.title.replaceAll(reg, function (m) {
+    item.titleHtml = item.title.replaceAll(reg, function (m: string) {
       return `<mark>${m}</mark>`
     })
     item.titlesHtml = item.titles
     for (let i = 0; item.titles && i < item.titles.length; i++) {
-      item.titlesHtml![i] = item.titles[i].replaceAll(reg, function (m) {
+      item.titlesHtml![i] = item.titles[i].replaceAll(reg, function (m: string) {
         return `<mark>${m}</mark>`
       })
     }
@@ -87,7 +77,7 @@ function put(container: DisplayResult[], item: SearchResult) {
     const t: MatchType[] = []
     for (const k of Object.keys(item.match)) {
       for (const m of item.match[k]) {
-        t.push(m)
+        t.push(m as MatchType)
       }
     }
     if (t.length === 0) {
@@ -164,7 +154,8 @@ function putContent(container: DisplayResult[], item: SearchResult) {
   })
 }
 const search = ref('')
-const results: SearchResult[] = await searchContent(search)
+
+const results = await searchContent(search)
 const displayResults = ref<DisplayResult[]>([])
 watch(results, (v) => {
   const t: DisplayResult[] = []
