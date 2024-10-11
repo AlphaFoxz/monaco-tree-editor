@@ -46,10 +46,11 @@ export default defineConfig(({ mode }) => {
         formats: ['es', 'umd'],
       },
       rollupOptions: {
-        external: ['vue'],
+        external: ['vue', 'monaco-editor'],
         output: {
           globals: {
             vue: 'Vue',
+            'monaco-editor': '__external_monaco-editor__',
           },
         },
       },
