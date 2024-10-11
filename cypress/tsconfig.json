@@ -1,0 +1,11 @@
+{
+  "include": [
+    "support/*.d.ts",
+    "support/*.ts"
+  ],
+  "exclude": [],
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.cypress-ct.tsbuildinfo"
+  }
+}

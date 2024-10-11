@@ -1,3 +1,5 @@
+export {}
+
 type Globalval = {
   existingFileName: string
   existingFilePath: string
