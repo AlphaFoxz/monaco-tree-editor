@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { readonly, ref } from 'vue'
 import { type LeftSiderBarItem } from '../left-sider-bar/define'
 import { type ThemeMode } from '../themes/define'
 import { useI18n } from '../locale'
@@ -8,7 +8,7 @@ import { useMonaco } from './monaco-store'
 const contextMenuVisble = ref(false)
 const savingFiles = ref(new Set<string>())
 const savingTasks = ref<{ [k: string]: NodeJS.Timeout }>({})
-const currentLeftSiderBar = ref<LeftSiderBarItem | null>('Explorer')
+const opendLeftSiderBar = ref<LeftSiderBarItem | null>('Explorer')
 const currentThemeMode = ref<ThemeMode>('dark')
 const { currentLanguage } = useI18n()
 let monacoStore: any
@@ -46,10 +46,10 @@ function getOpenedTabsHeight(): number {
  * @param autoClose
  */
 function switchCurrentLeftSiderBar(item: LeftSiderBarItem | null, autoClose = true) {
-  if (autoClose && currentLeftSiderBar.value === item) {
-    currentLeftSiderBar.value = null
+  if (autoClose && opendLeftSiderBar.value === item) {
+    opendLeftSiderBar.value = null
   } else {
-    currentLeftSiderBar.value = item
+    opendLeftSiderBar.value = item
   }
 }
 /**
@@ -59,16 +59,35 @@ function switchCurrentLeftSiderBar(item: LeftSiderBarItem | null, autoClose = tr
 function changeLanguage(lang: Language) {
   currentLanguage.value = lang
 }
-/**
- * Change theme
- * @param theme
- */
-async function changeTheme(theme: ThemeMode) {
-  if (!monacoStore) {
-    monacoStore = useMonaco()
-  }
-  await monacoStore._action.untilMonacoImported()
-  currentThemeMode.value = theme
+
+// ==================== expose api ====================
+const api = {
+  state: {
+    contextMenuVisble: readonly(contextMenuVisble),
+    themeMode: readonly(currentThemeMode),
+    opendLeftSiderBar: readonly(opendLeftSiderBar),
+    currentLanguage: readonly(currentLanguage),
+  },
+  _action: {
+    lockFile,
+    isFileLocked,
+    unlockFile,
+    getOpenedTabsHeight,
+  },
+  action: {
+    switchCurrentLeftSiderBar,
+    changeLanguage,
+    async setThemeMode(theme: ThemeMode) {
+      if (!monacoStore) {
+        monacoStore = useMonaco()
+      }
+      await monacoStore._action.untilMonacoImported()
+      currentThemeMode.value = theme
+    },
+    setOpendLeftSiderBar(item: LeftSiderBarItem | null) {
+      opendLeftSiderBar.value = item
+    },
+  },
 }
 
 /**
@@ -97,23 +116,5 @@ export function useGlobalSettings(options?: {
   }
 
   // Return an object containing the state and actions related to the global settings
-  return {
-    state: {
-      contextMenuVisble,
-      currentThemeMode,
-      currentLeftSiderBar,
-      currentLanguage,
-    },
-    _action: {
-      lockFile,
-      isFileLocked,
-      unlockFile,
-      getOpenedTabsHeight,
-    },
-    action: {
-      switchCurrentLeftSiderBar,
-      changeLanguage,
-      changeTheme,
-    },
-  }
+  return api
 }

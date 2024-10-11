@@ -1,15 +1,11 @@
 <script setup lang="tsx">
 import './index.scss'
 import BoxTemp from './Box.vue'
-import { type MessageOptions } from './define'
 import { useMessage } from '../stores/message-store'
-import { watch, ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const messageStore = useMessage()
-const messages = ref<MessageOptions[]>(messageStore.state.messages.value)
-watch(messageStore.state.messages, (n) => {
-  messages.value = n
-})
+const messages = messageStore.state.messages
 const to = ref('body')
 onMounted(() => {
   to.value = '#monaco-tree-editor-root'

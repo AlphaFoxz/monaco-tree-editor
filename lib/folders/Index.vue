@@ -8,7 +8,7 @@ import IconArrow from '../icons/Arrow.vue'
 import FileTemp from './File.vue'
 import Confirm from '../components/modal/Confirm.vue'
 import ContextMenu from '../components/context-menu/Index.vue'
-import { ref, watch, type ComputedRef } from 'vue'
+import { ref, type ComputedRef } from 'vue'
 import { useMonaco } from '../stores/monaco-store'
 import { useI18n } from '../locale'
 
@@ -53,14 +53,8 @@ const { $t } = useI18n()
 //=================== 初始化 init ==================
 const collapse = ref(false)
 const monacoStore = useMonaco()
-const fileTree = ref(monacoStore._state.fileTree.value)
-const currentPath = ref(monacoStore.state.currentPath.value)
-watch(monacoStore.state.currentPath, (n) => {
-  currentPath.value = n
-})
-watch(monacoStore._state.fileTree, (n) => {
-  fileTree.value = n
-})
+const fileTree = monacoStore._state.fileTree
+const currentPath = monacoStore.state.currentPath
 
 //=================== 回调 callback ==================
 const fileConfirmVisible = ref(false)

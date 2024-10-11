@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { ref } from 'vue'
+import { readonly, ref } from 'vue'
 import { type MessageOptions } from '../message-popup/define'
 import { debounce } from '../common'
 
@@ -98,38 +98,39 @@ function keepAlive(id: string) {
   }
 }
 
+const api = {
+  /**
+   * Internal state
+   */
+  _state: {},
+  /**
+   * Public state
+   */
+  state: {
+    messages: readonly(messages),
+  },
+  /**
+   * Internal actions
+   */
+  _action: {
+    keepAlive,
+  },
+  /**
+   * Public actions
+   */
+  action: {
+    info,
+    success,
+    warn,
+    error,
+    updateOptions,
+    close,
+  },
+}
 /**
  * useMessage
  * @returns MessageStore
  */
 export const useMessage = () => {
-  return {
-    /**
-     * Internal state
-     */
-    _state: {},
-    /**
-     * Public state
-     */
-    state: {
-      messages,
-    },
-    /**
-     * Internal actions
-     */
-    _action: {
-      keepAlive,
-    },
-    /**
-     * Public actions
-     */
-    action: {
-      info,
-      success,
-      warn,
-      error,
-      updateOptions,
-      close,
-    },
-  }
+  return api
 }

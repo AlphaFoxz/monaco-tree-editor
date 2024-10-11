@@ -24,21 +24,21 @@ const Prettier = (props: any) => {
       //   },
       // ]
     }
-    monacoStore.state.monaco.languages.registerDocumentFormattingEditProvider('javascript', {
+    monacoStore.state.monaco.value!.languages.registerDocumentFormattingEditProvider('javascript', {
       provideDocumentFormattingEdits,
     })
-    monacoStore.state.monaco.languages.registerDocumentFormattingEditProvider('typescript', {
+    monacoStore.state.monaco.value!.languages.registerDocumentFormattingEditProvider('typescript', {
       provideDocumentFormattingEdits,
     })
     setTimeout(() => {
-      monacoStore.state.monaco.languages.registerDocumentFormattingEditProvider('html', {
+      monacoStore.state.monaco.value!.languages.registerDocumentFormattingEditProvider('html', {
         provideDocumentFormattingEdits,
       })
     }, 3000)
-    monacoStore.state.monaco.languages.registerDocumentFormattingEditProvider('css', {
+    monacoStore.state.monaco.value!.languages.registerDocumentFormattingEditProvider('css', {
       provideDocumentFormattingEdits,
     })
-    monacoStore.state.monaco.languages.registerDocumentFormattingEditProvider('less', {
+    monacoStore.state.monaco.value!.languages.registerDocumentFormattingEditProvider('less', {
       provideDocumentFormattingEdits,
     })
   }

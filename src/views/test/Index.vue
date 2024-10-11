@@ -33,7 +33,7 @@ server.delay().then(async () => {
   monacoStore = useMonaco(monaco)
   await monacoStore._action.untilMonacoImported()
   monacoStore.action.defineTheme('dark', customTheme)
-  registerRestl(monacoStore.state.monaco)
+  registerRestl(monacoStore.state.monaco.value!)
 })
 
 // ================ 推送消息 push message ================

@@ -42,9 +42,15 @@ if (props.file!.path && props.file!.path.indexOf('.') !== -1) {
 } else {
   fileType = 'default_file'
 }
-const active = ref(monacoStore.state.currentPath.value === props.file!.path)
-watch(monacoStore.state.currentPath, (n) => {
-  active.value = n === props.file!.path
+const active = ref(false)
+watch(monacoStore.state.currentPath, (p) => {
+  const b = p === props.file!.path
+  active.value = b
+  if (b) {
+    itemRef.value?.scrollIntoView({
+      block: 'nearest',
+    })
+  }
 })
 const handleClick = (e: MouseEvent) => {
   console.debug('active', props.currentPath)
@@ -61,13 +67,6 @@ const pathChange = (e: MouseEvent) => {
   const key = e.currentTarget.dataset.name || e.currentTarget.dataset.src
   emit('pathChange', key!)
 }
-watch(active, () => {
-  if (active) {
-    itemRef.value?.scrollIntoView({
-      block: 'nearest',
-    })
-  }
-})
 
 //========================= 右键菜单 contextmenu ==========================
 type _MenuValue = 'close' | 'closeOthers' | 'closeAll'

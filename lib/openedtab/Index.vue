@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, getCurrentInstance, type ComponentInternalInstance, nextTick } from 'vue'
+import { onMounted, ref, getCurrentInstance, type ComponentInternalInstance, nextTick } from 'vue'
 import TabItem from './TabItem.vue'
 import './index.scss'
 import { useMonaco } from '../stores/monaco-store'
@@ -17,15 +17,9 @@ const emit = defineEmits({
 
 //========================= 初始化 init =========================
 const monacoStore = useMonaco()
-const openedFiles = ref(monacoStore.state.openedFiles.value)
-const currentPath = ref('')
+const openedFiles = monacoStore.state.openedFiles
+const currentPath = monacoStore.state.currentPath
 let instanceRef: ComponentInternalInstance | null
-watch(monacoStore.state.openedFiles, (n) => {
-  openedFiles.value = n
-})
-watch(monacoStore.state.currentPath, (n) => {
-  currentPath.value = n
-})
 onMounted(() => {
   instanceRef = getCurrentInstance()
 })
@@ -82,7 +76,7 @@ const swap = (srcIndex: number, tarIndex: number) => {
   const tmp = result[srcIndex]
   result.splice(srcIndex, 1)
   result.splice(tarIndex, 0, tmp)
-  monacoStore.state.openedFiles.value = result
+  monacoStore.action.setOpenedFiles(result)
   flush()
 }
 const visible = ref(true)

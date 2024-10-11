@@ -18,7 +18,7 @@ const emit = defineEmits({
 const { $t } = useI18n()
 const globalSettingsStore = useGlobalSettings()
 function handleClick(item: LeftSiderBarItem) {
-  const t = globalSettingsStore.state.currentLeftSiderBar.value
+  const t = globalSettingsStore.state.opendLeftSiderBar.value
   globalSettingsStore.action.switchCurrentLeftSiderBar(item)
   if (t !== item) {
     emit('triggerActive', item)
@@ -42,7 +42,7 @@ function handleSelectManage(selected: { label: string; value?: BuiltInPageType; 
   <div class="left-sider-bar">
     <ItemTemp
       @click="handleClick('Explorer')"
-      :current-active="globalSettingsStore.state.currentLeftSiderBar.value || ''"
+      :current-active="globalSettingsStore.state.opendLeftSiderBar.value || ''"
       name="Explorer"
       :title="$t('menu.folders').value"
     >
@@ -50,7 +50,7 @@ function handleSelectManage(selected: { label: string; value?: BuiltInPageType; 
     /></ItemTemp>
     <ContextMenu @select="i => handleSelectManage(i as any)" position="RB" :trigger="['Click']" :menu="manageBtnMenu">
       <ItemTemp
-        :current-active="globalSettingsStore.state.currentLeftSiderBar.value || ''"
+        :current-active="globalSettingsStore.state.opendLeftSiderBar.value || ''"
         style="position: absolute; bottom: 0"
         name="Manage"
         :title="$t('menu.manage').value"

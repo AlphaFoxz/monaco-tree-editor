@@ -85,10 +85,13 @@ watch(
   () => props.theme,
   (n) => {
     if (n) {
-      globalSettingsStore.action.changeTheme(n as ThemeMode)
+      globalSettingsStore.action.setThemeMode(n as ThemeMode)
     }
   }
 )
+
+// =============== 左边栏 left-sider-bar ================
+const currentLeftSiderBar = globalSettingsStore.state.opendLeftSiderBar
 
 // ================ 拖拽功能 dragging ================
 const filelistWidth = ref(props.siderMinWidth)
@@ -133,17 +136,10 @@ watch(
   }
 )
 
-// =============== 左边栏 left-sider-bar ================
-const currentLeftSiderBar = globalSettingsStore.state.currentLeftSiderBar
-watch(globalSettingsStore.state.currentLeftSiderBar, (n) => {
-  currentLeftSiderBar.value = n
-})
-
 // ================ 编辑器部分 editor ================
 const projectName = ref<any>('project')
 let fileSeparator = '/'
 let projectPrefix = ''
-const openedCount = ref(0)
 const monacoStore = useMonaco()
 monacoStore._action.loadFileTree(props.files)
 const editorRef = ref<HTMLElement>()
@@ -173,8 +169,8 @@ const fixFilesPath = (files: Files): Files => {
     }
   })
   files = fixedFiles
-  monacoStore._state.prefix.value = projectPrefix
-  monacoStore._state.fileSeparator.value = fileSeparator
+  monacoStore._action.setPrefix(projectPrefix)
+  monacoStore._action.setFileSeparator(fileSeparator)
   return files
 }
 watch(
@@ -189,9 +185,6 @@ watch(
     monacoStore.action.updateOptions({ fontSize: n })
   }
 )
-watch(monacoStore.state.openedFiles, (n) => {
-  openedCount.value = n.length
-})
 onMounted(() => {
   handleReload()
   monacoStore._action.loadFileTree(fixFilesPath(props.files))
@@ -580,7 +573,7 @@ defineExpose({
     id="monaco-tree-editor-root"
     @contextmenu.prevent.stop
     tabIndex="1"
-    :class="`monaco-tree-editor ${globalSettingsStore.state.currentThemeMode.value}`"
+    :class="`monaco-tree-editor ${globalSettingsStore.state.themeMode.value}`"
   >
     <MessagePopup></MessagePopup>
     <LeftSiderBar></LeftSiderBar>
@@ -613,7 +606,7 @@ defineExpose({
       <OpenedTab :fontSize="fontSize" @save-file="handleSaveFile" />
       <div
         id="editor"
-        v-show="openedCount > 0 && monacoStore.state.currentPath.value[0] !== '<'"
+        v-show="monacoStore.state.openedFiles.value.length > 0 && monacoStore.state.currentPath.value[0] !== '<'"
         ref="editorRef"
         @drop="dragInEditor"
         :style="{

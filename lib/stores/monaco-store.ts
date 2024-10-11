@@ -2,13 +2,13 @@
 import * as monaco_define from 'monaco-editor'
 import DarkTheme from '../themes/dark'
 import LightTheme from '../themes/light'
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, readonly, ref, shallowRef, shallowReadonly, watch } from 'vue'
 import { type FileInfo, type Files, BuiltInPage } from '../define'
 import { useGlobalSettings } from './global-settings-store'
 import type { ThemeMode } from '../themes/define'
 
 const globalSettingsStore = useGlobalSettings()
-watch(globalSettingsStore.state.currentThemeMode, (themeMode) => {
+watch(globalSettingsStore.state.themeMode, (themeMode) => {
   setTheme(themeMode)
 })
 
@@ -27,7 +27,7 @@ const typeMap: {
 type OpenedFileInfo = { status?: string; path: string }
 
 let originalFileTree: Files
-let monaco: typeof monaco_define
+let monaco = shallowRef<typeof monaco_define>()
 /**
  * It will be true when monaco-editor has been initialized
  */
@@ -53,12 +53,12 @@ let fileTree = ref<FileInfo>({
  */
 export async function untilMonacoImported() {
   return new Promise<void>((resolve) => {
-    if (monaco) {
+    if (monaco.value) {
       resolve()
       return
     }
     const interval = setInterval(() => {
-      if (monaco) {
+      if (monaco.value) {
         resolve()
         clearInterval(interval)
       }
@@ -72,7 +72,7 @@ export async function untilMonacoImported() {
  */
 async function init(dom: HTMLElement, options?: monaco_define.editor.IStandaloneEditorConstructionOptions) {
   await untilMonacoImported()
-  editor = monaco.editor.create(dom, { ...options, model: null })
+  editor = monaco.value!.editor.create(dom, { ...options, model: null })
   editorDom = dom
   const editorService = (editor as any)._codeEditorService
   const openEditorBase = editorService.openCodeEditor.bind(editorService)
@@ -80,7 +80,7 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
     const result = await openEditorBase(input, source)
     if (result == null) {
       const fullPath = input.resource.path
-      source.setModel(monaco.editor.getModel(input.resource))
+      source.setModel(monaco.value!.editor.getModel(input.resource))
       openOrFocusPath(fullPath)
       source.setSelection(input.options.selection)
       source.revealLine(input.options.selection.startLineNumber)
@@ -89,7 +89,7 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
   }
   defineTheme('dark', DarkTheme)
   defineTheme('light', LightTheme)
-  setTheme(globalSettingsStore.state.currentThemeMode.value)
+  setTheme(globalSettingsStore.state.themeMode.value)
   isReady.value = true
 }
 /**
@@ -99,7 +99,7 @@ async function init(dom: HTMLElement, options?: monaco_define.editor.IStandalone
  */
 function defineTheme(name: ThemeMode, theme: monaco_define.editor.IStandaloneThemeData) {
   // Define the theme
-  monaco.editor.defineTheme(name, theme)
+  monaco.value!.editor.defineTheme(name, theme)
 }
 
 async function setTheme(name: ThemeMode) {
@@ -107,7 +107,7 @@ async function setTheme(name: ThemeMode) {
   // 定义主题
   console.debug('切换monaco主题', name)
   // 设置主题
-  monaco.editor.setTheme(name)
+  monaco.value!.editor.setTheme(name)
 }
 /**
  * Equals to function of 'updateOptions' in monaco-editor.editor
@@ -191,7 +191,7 @@ async function loadFileTree(files: Files) {
  */
 function createOrUpdateModel(path: string, value: string, force?: boolean) {
   // Check if the model already exists
-  let model = monaco.editor.getModels().find((model) => model.uri.path === path)
+  let model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
 
   if (model) {
     // If the value of the model is different, update it
@@ -243,7 +243,7 @@ function createOrUpdateModel(path: string, value: string, force?: boolean) {
     type = typeMap[type] || type
 
     // Create the model with the specified value and options
-    model = monaco.editor.createModel(
+    model = monaco.value!.editor.createModel(
       value ?? '',
       type,
       new monaco_define.Uri().with({ path, authority: 'server', scheme: 'file' })
@@ -259,7 +259,7 @@ function getEditor(): monaco_define.editor.IStandaloneCodeEditor {
   return editor
 }
 function getValue(path: string) {
-  const model = monaco.editor.getModels().find((model) => model.uri.path === path)
+  const model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
   return model?.getValue()
 }
 //恢复视图
@@ -268,7 +268,7 @@ function restoreModel(path: string): monaco_define.editor.ITextModel | undefined
     currentPath.value = path
     return
   }
-  const model = monaco.editor.getModels().find((model) => model.uri.path === path)
+  const model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
   if (path !== prePath.value && prePath.value) {
     editorStates.value.set(prePath.value, editor?.saveViewState())
   }
@@ -331,7 +331,7 @@ function closeFile(path: string) {
       if (v.path !== path) {
         return true
       }
-      const m = monaco.editor.getModels().find((model) => model.uri.path === path)
+      const m = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
       if (m?.uri.authority && originalFileTree[path]) {
         // 来自用户的文件
         m?.setValue(originalFileTree[path].content!)
@@ -422,7 +422,7 @@ function removeBlank(path: string) {
   fileTree.value = tree
 }
 function hasChanged(path: string): boolean {
-  const m = monaco.editor.getModels().find((model) => model.uri.path === path)
+  const m = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
   if (!m?.uri.authority) {
     return false
   }
@@ -445,6 +445,61 @@ function resize(): void {
   editor?.layout()
 }
 
+// ========================== expose api ==========================
+
+const api = {
+  // An object containing the internal state of the monaco editor.
+  _state: {
+    prefix: readonly(prefix),
+    fileSeparator: readonly(fileSeparator),
+    fileTree: readonly(fileTree),
+  },
+  /**
+   * An object containing the public state of the monaco editor.
+   */
+  state: {
+    monaco: shallowReadonly(monaco),
+    currentPath: readonly(currentPath),
+    openedFiles: shallowReadonly(openedFiles),
+    isReady: readonly(isReady),
+  },
+  /**
+   * An object containing the internal actions that can be performed on the monaco editor.
+   */
+  _action: {
+    init,
+    restoreModel,
+    openOrFocusPath,
+    hasChanged,
+    closeFile,
+    newFile,
+    newFolder,
+    removeBlank,
+    getValue,
+    resize,
+    loadFileTree,
+    untilMonacoImported,
+    setPrefix(p: string) {
+      prefix.value = p
+    },
+    setFileSeparator(s: string) {
+      fileSeparator.value = s
+    },
+  },
+  /**
+   * An object containing the public actions that can be performed on the monaco editor.
+   */
+  action: {
+    defineTheme,
+    getEditor,
+    updateOptions,
+    format,
+    setOpenedFiles(v: Array<OpenedFileInfo>) {
+      openedFiles.value = v
+    },
+  },
+}
+
 /**
  * A hook that provides access to the monaco editor instance.
  * @param m - Optional monaco instance to set.
@@ -452,53 +507,11 @@ function resize(): void {
  */
 export const useMonaco = (m?: typeof monaco_define) => {
   if (m) {
-    monaco = m
+    monaco.value = m
   }
 
   /**
    * An object containing the internal state of the monaco editor.
    */
-  return {
-    // An object containing the internal state of the monaco editor.
-    _state: {
-      prefix,
-      fileSeparator,
-      fileTree,
-    },
-    /**
-     * An object containing the public state of the monaco editor.
-     */
-    state: {
-      monaco,
-      currentPath,
-      openedFiles,
-      isReady,
-    },
-    /**
-     * An object containing the internal actions that can be performed on the monaco editor.
-     */
-    _action: {
-      init,
-      restoreModel,
-      openOrFocusPath,
-      hasChanged,
-      closeFile,
-      newFile,
-      newFolder,
-      removeBlank,
-      getValue,
-      resize,
-      loadFileTree,
-      untilMonacoImported,
-    },
-    /**
-     * An object containing the public actions that can be performed on the monaco editor.
-     */
-    action: {
-      defineTheme,
-      getEditor,
-      updateOptions,
-      format,
-    },
-  }
+  return api
 }
