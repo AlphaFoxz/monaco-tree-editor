@@ -10,6 +10,7 @@
 
 ## 前置要求
 
+- [Nodejs v18.18+](https://nodejs.org/zh-cn)
 - [vue3 v3.3.4+](https://cn.vuejs.org/) 或者 [nuxt3 v3.0+](https://nuxt.com.cn/)
 - [monaco-editor v0.44.0+](https://microsoft.github.io/monaco-editor/)
 - 【推荐】[pnpm 包管理器](https://www.pnpm.cn/)
