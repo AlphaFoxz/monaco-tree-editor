@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, nextTick } from 'vue'
+import { computed, ref, watchEffect, nextTick } from 'vue'
 import ContextMenu from '../components/context-menu/Index.vue'
 import Confirm from '../components/modal/Confirm.vue'
 import Icons from '../icons/Index.vue'
@@ -43,8 +43,8 @@ if (props.file!.path && props.file!.path.indexOf('.') !== -1) {
   fileType = 'default_file'
 }
 const active = ref(false)
-watch(monacoStore.state.currentPath, (p) => {
-  const b = p === props.file!.path
+watchEffect(() => {
+  const b = monacoStore.state.currentPath.value === props.file!.path
   active.value = b
   if (b) {
     itemRef.value?.scrollIntoView({
