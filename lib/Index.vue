@@ -251,7 +251,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
   }
   const oriPath = toOriginPath(path)
   const msgId = messageStore.action.info({
-    content: t('msg.creating', { path }),
+    content: t('msg.creating{path}', { path }),
     loading: true,
   })
   lockFile(path, msgId)
@@ -287,7 +287,7 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
   }
   const oriPath = toOriginPath(path)
   const msgId = messageStore.action.info({
-    content: t('msg.creating', { path }),
+    content: t('msg.creating{path}', { path }),
     loading: true,
   })
   lockFile(path, msgId)
@@ -333,7 +333,7 @@ const handleSaveFile = (
   }
   const oriPath = toOriginPath(path)
   const msgId = messageStore.action.info({
-    content: t('msg.saving', { path }),
+    content: t('msg.saving{path}', { path }),
     loading: true,
   })
   lockFile(path, msgId)
@@ -371,7 +371,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
   }
   const oriPath = toOriginPath(path)
   const msgId = messageStore.action.info({
-    content: t('msg.deletingFile', { path }),
+    content: t('msg.deletingFile{path}', { path }),
     loading: true,
   })
   lockFile(path, msgId)
@@ -393,7 +393,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
       globalSettingsStore._action.unlockFile(path)
       messageStore.action.close(msgId)
       messageStore.action.error({
-        content: t('msg.deleteFailed', { msg }),
+        content: t('msg.deleteFailed{msg}', { msg }),
         closeable: true,
       })
       reject()
@@ -408,7 +408,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
   }
   const oriPath = toOriginPath(path)
   const msgId = messageStore.action.info({
-    content: t('msg.deletingFolder', { path }),
+    content: t('msg.deletingFolder{path}', { path }),
     loading: true,
   })
   lockFile(path, msgId)
@@ -430,7 +430,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
       globalSettingsStore._action.unlockFile(path)
       messageStore.action.close(msgId)
       messageStore.action.error({
-        content: t('msg.deleteFailed', { msg }),
+        content: t('msg.deleteFailed{msg}', { msg }),
         closeable: true,
       })
       reject()
@@ -449,7 +449,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
   tmpArr.push(newName)
   const newPath = tmpArr.join(fileSeparator)
   const msgId = messageStore.action.info({
-    content: t('msg.renamingFile', { path }),
+    content: t('msg.renamingFile{path}', { path }),
     loading: true,
   })
   lockFile(path, msgId)
@@ -491,7 +491,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
   tmpArr.push(newName)
   const newPath = tmpArr.join(fileSeparator)
   const msgId = messageStore.action.info({
-    content: t('msg.renamingFolder', { path }),
+    content: t('msg.renamingFolder{path}', { path }),
     loading: true,
   })
   lockFile(path, msgId)

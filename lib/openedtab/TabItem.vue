@@ -110,18 +110,15 @@ const handleLeave = () => {
 //========================= 回调 callback ==========================
 const confirmVisible = ref(false)
 const handleClose = async (e?: Event): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    e?.stopPropagation()
-    if (props.file?.status === 'editing') {
-      confirmVisible.value = true
-      resolve()
-    } else {
-      if (props.file?.path) {
-        emit('closeFile', props.file?.path)
-        nextTick(resolve)
-      }
+  e?.stopPropagation()
+  if (props.file?.status === 'editing') {
+    confirmVisible.value = true
+  } else {
+    if (props.file?.path) {
+      emit('closeFile', props.file?.path)
+      await nextTick()
     }
-  })
+  }
 }
 const handleSaveAndClose = () => {
   const path = props.file!.path

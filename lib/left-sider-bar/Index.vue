@@ -12,7 +12,7 @@ import { useI18n } from '../locale'
 import { useMonaco } from '../stores/monaco-store'
 
 const emit = defineEmits({
-  triggerActive: (item: LeftSiderBarItem) => true,
+  triggerActive: (_: LeftSiderBarItem) => true,
 })
 
 const { $t } = useI18n()

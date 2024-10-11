@@ -28,7 +28,7 @@ function handleSelectLanguage(e: Event) {
     }
   }
   messageStore.action.success({
-    content: $t('msg.languageChanged', { lang: inner }).value,
+    content: $t('msg.languageChanged{lang}', { lang: inner }).value,
     closeable: true,
     timeoutMs: 3000,
   })

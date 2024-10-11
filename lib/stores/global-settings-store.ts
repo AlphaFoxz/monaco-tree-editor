@@ -90,15 +90,6 @@ const api = {
   },
 }
 
-/**
- * Custom hook for global settings.
- *
- * @param {Object} options - Optional parameters to set initial values.
- * @param {ThemeMode} options.currentThemeMode - The initial theme mode.
- * @param {boolean} options.contextMenuVisble - The initial visibility of the context menu.
- * @param {Language} options.currentLanguage - The initial language.
- * @returns {Object} - An object containing the state and actions related to the global settings.
- */
 export function useGlobalSettings(options?: {
   currentThemeMode?: ThemeMode
   contextMenuVisble?: boolean
