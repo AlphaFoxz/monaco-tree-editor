@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.umd.cjs",
   "module": "index.js",
-  "description": "the web ide with file tree based on 'monaco-editor'",
+  "description": "the web editor with file tree based on 'monaco-editor'",
   "private": false,
   "keywords": ["moanco-editor", "vue-monaco-editor", "vue-monaco-tree", "web-editor"],
   "license": "Apache-2.0",
