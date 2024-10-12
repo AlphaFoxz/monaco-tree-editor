@@ -4,7 +4,6 @@
     "lib/**/*",
     "src/*",
     "src/**/*",
-    "src/**/*.vue",
     "env.d.ts"
   ],
   "compilerOptions": {

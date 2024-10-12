@@ -43,7 +43,7 @@ export default defineConfig(({ mode }) => {
         entry: fileURLToPath(new URL('./lib/index.ts', import.meta.url)),
         name: 'monaco-tree-editor',
         fileName: 'index',
-        formats: ['es', 'umd'],
+        formats: ['es'],
       },
       rollupOptions: {
         external: ['vue', 'monaco-editor'],

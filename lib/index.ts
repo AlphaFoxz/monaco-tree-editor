@@ -1,4 +1,4 @@
-import Editor from './Index.vue'
+import Editor from './Editor.vue'
 import { useGlobalSettings } from './stores/global-settings-store'
 import { useHotkey } from './stores/hotkey-store'
 import { useMessage } from './stores/message-store'
