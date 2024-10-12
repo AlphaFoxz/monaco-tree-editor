@@ -1,8 +1,9 @@
+import type { Files, FileInfo } from './define'
 import Editor from './Editor.vue'
 import { useGlobalSettings } from './stores/global-settings-store'
 import { useHotkey } from './stores/hotkey-store'
-import { useMessage } from './stores/message-store'
 import { useMonaco } from './stores/monaco-store'
-import type { Files } from './define'
+import { useMessage } from './stores/message-store'
 
-export { Editor, useGlobalSettings, useMessage, useHotkey, useMonaco, type Files }
+export type { Files, FileInfo }
+export { Editor, useGlobalSettings, useMessage, useMonaco, useHotkey }

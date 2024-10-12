@@ -1,6 +1,7 @@
 export type Files = {
   [path: string]: FileInfo
 }
+
 export type FileInfo = {
   path?: string
   name?: string
