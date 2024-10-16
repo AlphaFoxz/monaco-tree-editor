@@ -5,7 +5,7 @@ import { type BuiltInPageType } from '../define'
 import { type ContextMenuItem } from '../components/context-menu/define'
 import ContextMenu from '../components/context-menu/Index.vue'
 import IconsSetting from '../icons/Setting.vue'
-import FileOutlined from '@ant-design/icons-vue/FileOutlined'
+import IconsFile from '../icons/File.vue'
 import ItemTemp from './ItemTemp.vue'
 import { useGlobalSettings } from '../stores/global-settings-store'
 import { useI18n } from '../stores/i18n-store'
@@ -46,8 +46,8 @@ function handleSelectManage(selected: { label: string; value?: BuiltInPageType; 
       name="Explorer"
       :title="$t('menu.folders').value"
     >
-      <FileOutlined
-    /></ItemTemp>
+      <IconsFile />
+    </ItemTemp>
     <ContextMenu @select="i => handleSelectManage(i as any)" position="RB" :trigger="['Click']" :menu="manageBtnMenu">
       <ItemTemp
         :current-active="globalSettingsStore.state.opendLeftSiderBar.value || ''"

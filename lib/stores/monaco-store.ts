@@ -2,8 +2,7 @@
 import * as monaco_lib from 'monaco-editor'
 import DarkTheme from '../themes/dark'
 import LightTheme from '../themes/light'
-import { nextTick, readonly, ref, shallowRef, shallowReadonly, watch, watchEffect } from 'vue'
-import { BuiltInPage } from '../define'
+import { nextTick, readonly, ref, shallowRef, shallowReadonly, watch } from 'vue'
 import { useGlobalSettings } from './global-settings-store'
 import type { ThemeMode } from '../themes/define'
 
@@ -22,6 +21,7 @@ export type FileInfo = {
   readonly?: boolean
   children?: { [path: string]: FileInfo } | null
 }
+type OpenedFileInfo = { status?: 'editing' | 'saved'; path: string }
 const typeMap: {
   [key: string]: string
 } = {
@@ -35,15 +35,18 @@ const typeMap: {
   restful: 'restful',
 }
 
-namespace data {
-  type OpenedFileInfo = { status?: string; path: string }
+function getTabSizeByExtension(ext: string): number {
+  return ['java', 'sql', 'py', 'sh', 'cpp', 'cs', 'c', 'h'].includes(ext) ? 4 : 2
+}
 
+namespace data {
   let originalFileTree: Files
   let monaco = shallowRef<MonacoLib>()
   const globalSettingsStore = useGlobalSettings()
-  watchEffect(async () => {
+  setTheme(globalSettingsStore.state.themeMode.value)
+  watch(globalSettingsStore.state.themeMode, async (n) => {
     await untilMonacoImported()
-    setTheme(globalSettingsStore.state.themeMode.value)
+    setTheme(n)
   })
   /**
    * It will be true when monaco-editor has been initialized
@@ -69,13 +72,11 @@ namespace data {
    * @returns A Promise that resolves when monaco-editor is imported.
    */
   async function untilMonacoImported(): Promise<void> {
-    if (monaco.value) {
+    if (monaco.value !== undefined) {
       return
     }
     return new Promise<void>((resolve) => {
       const stop = watch(monaco, (newValue) => {
-        if (newValue === null) {
-        }
         if (newValue !== undefined) {
           stop() // 停止监听
           resolve() // 返回数据
@@ -116,7 +117,6 @@ namespace data {
    * @param theme The theme data
    */
   function defineTheme(name: ThemeMode, theme: monaco_lib.editor.IStandaloneThemeData) {
-    // Define the theme
     monaco.value!.editor.defineTheme(name, theme)
   }
 
@@ -182,12 +182,8 @@ namespace data {
         createOrUpdateModel(key, value, true)
       }
     })
-    const tmpOpenedFiles: {
-      status?: string | undefined
-      path: string
-    }[] = []
+    const tmpOpenedFiles: OpenedFileInfo[] = []
     const notExsist: string[] = []
-    const builtInPages: string[] = Object.keys(BuiltInPage)
     for (const item of openedFiles.value) {
       const tmpPath = item.path
       if (files[tmpPath] || tmpPath[0] === '<') {
@@ -250,9 +246,7 @@ namespace data {
       if (path.indexOf('.') !== -1) {
         const extName = path.split('.').slice(-1)[0]
         type = extName
-        if (['java', 'sql', 'py', 'sh', 'cpp', 'cs', 'c', 'h'].includes(extName)) {
-          tabSize = 4
-        }
+        tabSize = getTabSizeByExtension(extName)
       } else {
         type = 'javascript'
       }
@@ -305,19 +299,17 @@ namespace data {
         editor.focus()
         valueListener.value = model.onDidChangeContent(() => {
           const v = model.getValue()
-          openedFiles.value = openedFiles.value.map((v) => {
-            if (v.path === path) {
+          openedFiles.value = openedFiles.value.map((item) => {
+            if (item.path === path) {
               if (hasChanged(path)) {
-                v.status = 'editing'
+                item.status = 'editing'
               } else {
-                v.status = 'saved'
+                item.status = 'saved'
               }
             }
-            return v
+            return item
           })
-          // emit('fileChange', path, v)
           currentValue.value = v
-          // emit('valueChange', v)
         })
       }
       prePath.value = path
@@ -337,9 +329,7 @@ namespace data {
       openedFiles.value = [...openedFiles.value, { path }]
     }
     currentPath.value = path
-    nextTick(() => {
-      resize()
-    })
+    nextTick(resize)
   }
   function closeFile(path: string) {
     const pre = openedFiles.value
@@ -376,9 +366,7 @@ namespace data {
       }
       openedFiles.value = res
     }
-    nextTick(() => {
-      resize()
-    })
+    nextTick(resize)
   }
   function newFile(path: string) {
     const paths = path.startsWith('/') ? path.slice(1).split('/') : path.split('/')
