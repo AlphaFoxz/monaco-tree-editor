@@ -2,9 +2,10 @@
 import * as monaco_lib from 'monaco-editor'
 import DarkTheme from '../themes/dark'
 import LightTheme from '../themes/light'
-import { nextTick, readonly, ref, shallowRef, shallowReadonly, watch } from 'vue'
+import { nextTick, ref, shallowRef, watch } from 'vue'
 import { useGlobalSettings } from './global-settings-store'
 import type { ThemeMode } from '../themes/define'
+import { defineApi } from '../common'
 
 type MonacoLib = typeof monaco_lib
 export type Files = {
@@ -452,26 +453,18 @@ namespace data {
   }
 
   // ========================== expose api ==========================
-
-  export const api = {
-    // An object containing the internal state of the monaco editor.
+  export const api = defineApi({
     _state: {
-      prefix: readonly(prefix),
-      fileSeparator: readonly(fileSeparator),
-      fileTree: readonly(fileTree),
+      prefix: prefix,
+      fileSeparator: fileSeparator,
+      fileTree: fileTree,
     },
-    /**
-     * An object containing the public state of the monaco editor.
-     */
     state: {
-      monaco: shallowReadonly(monaco),
-      currentPath: readonly(currentPath),
-      openedFiles: shallowReadonly(openedFiles),
-      isReady: readonly(isReady),
+      monaco: monaco,
+      currentPath: currentPath,
+      openedFiles: openedFiles,
+      isReady: isReady,
     },
-    /**
-     * An object containing the internal actions that can be performed on the monaco editor.
-     */
     _action: {
       init,
       restoreModel,
@@ -495,9 +488,6 @@ namespace data {
         monaco.value = m
       },
     },
-    /**
-     * An object containing the public actions that can be performed on the monaco editor.
-     */
     action: {
       defineTheme,
       getEditor,
@@ -507,7 +497,7 @@ namespace data {
         openedFiles.value = v
       },
     },
-  }
+  })
 }
 
 /**

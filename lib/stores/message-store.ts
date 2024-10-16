@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid'
 import { readonly, ref } from 'vue'
 import { type MessageOptions } from '../message-popup/define'
-import { debounce } from '../common'
+import { debounce, defineApi } from '../common'
 
 namespace data {
   const messages = ref<MessageOptions[]>([])
@@ -99,26 +99,13 @@ namespace data {
     }
   }
 
-  export const api = {
-    /**
-     * Internal state
-     */
-    _state: {},
-    /**
-     * Public state
-     */
+  export const api = defineApi({
     state: {
-      messages: readonly(messages),
+      messages: messages,
     },
-    /**
-     * Internal actions
-     */
     _action: {
       keepAlive,
     },
-    /**
-     * Public actions
-     */
     action: {
       info,
       success,
@@ -127,7 +114,7 @@ namespace data {
       updateOptions,
       close,
     },
-  }
+  })
 }
 
 /**

@@ -2,6 +2,7 @@ import { type ComputedRef, computed, readonly, ref } from 'vue'
 import enUS from '../locale/en-US'
 import zhCN from '../locale/zh-CN'
 import { type Messages } from '../define'
+import { defineApi } from '../common'
 
 export const validLanguages = ['en-US', 'zh-CN'] as const
 export type Language = (typeof validLanguages)[number]
@@ -59,16 +60,16 @@ namespace data {
     currentLanguage.value = lang || 'en-US'
   }
 
-  export const api = {
+  export const api = defineApi({
     state: {
-      currentLanguage: readonly(currentLanguage),
+      currentLanguage: currentLanguage,
     },
     action: {
       setLanguage,
       t,
       $t,
     },
-  }
+  })
 }
 
 export function useI18n() {

@@ -2,6 +2,7 @@ import { readonly, ref } from 'vue'
 import { type LeftSiderBarItem } from '../left-sider-bar/define'
 import { type ThemeMode } from '../themes/define'
 import { type Language, useI18n } from './i18n-store'
+import { defineApi } from '../common'
 
 namespace data {
   const contextMenuVisble = ref(false)
@@ -53,12 +54,12 @@ namespace data {
   }
 
   // ==================== expose api ====================
-  export const api = {
+  export const api = defineApi({
     state: {
-      contextMenuVisble: readonly(contextMenuVisble),
-      themeMode: readonly(currentThemeMode),
-      opendLeftSiderBar: readonly(opendLeftSiderBar),
-      currentLanguage: readonly(currentLanguage),
+      contextMenuVisble,
+      themeMode: currentThemeMode,
+      opendLeftSiderBar,
+      currentLanguage,
     },
     _action: {
       lockFile,
@@ -76,7 +77,7 @@ namespace data {
         opendLeftSiderBar.value = item
       },
     },
-  }
+  })
 }
 
 export function useGlobalSettings() {
