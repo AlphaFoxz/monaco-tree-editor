@@ -1,4 +1,4 @@
-import { type Messages } from './define'
+import { type Messages } from '../define'
 const zhCN: Messages = {
   'settings.language': '语言',
   'settings.colorTheme': '颜色主题',

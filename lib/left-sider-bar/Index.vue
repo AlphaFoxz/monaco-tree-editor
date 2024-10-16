@@ -8,14 +8,14 @@ import IconsSetting from '../icons/Setting.vue'
 import FileOutlined from '@ant-design/icons-vue/FileOutlined'
 import ItemTemp from './ItemTemp.vue'
 import { useGlobalSettings } from '../stores/global-settings-store'
-import { useI18n } from '../locale'
+import { useI18n } from '../stores/i18n-store'
 import { useMonaco } from '../stores/monaco-store'
 
 const emit = defineEmits({
   triggerActive: (_: LeftSiderBarItem) => true,
 })
 
-const { $t } = useI18n()
+const { $t } = useI18n().action
 const globalSettingsStore = useGlobalSettings()
 function handleClick(item: LeftSiderBarItem) {
   const t = globalSettingsStore.state.opendLeftSiderBar.value

@@ -10,7 +10,7 @@ import Confirm from '../components/modal/Confirm.vue'
 import ContextMenu from '../components/context-menu/Index.vue'
 import { ref, type ComputedRef } from 'vue'
 import { useMonaco } from '../stores/monaco-store'
-import { useI18n } from '../locale'
+import { useI18n } from '../stores/i18n-store'
 
 defineProps({
   title: {
@@ -48,7 +48,7 @@ const emit = defineEmits({
 })
 
 //=================== 国际化 i18n ==================
-const { $t } = useI18n()
+const { $t } = useI18n().action
 
 //=================== 初始化 init ==================
 const collapse = ref(false)

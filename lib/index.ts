@@ -1,4 +1,4 @@
-import type { Files, FileInfo } from './define'
+import type { Files, FileInfo } from './stores/monaco-store'
 import Editor from './Editor.vue'
 import { useGlobalSettings } from './stores/global-settings-store'
 import { useHotkey } from './stores/hotkey-store'

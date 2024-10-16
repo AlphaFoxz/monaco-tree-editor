@@ -1,4 +1,4 @@
-import { type Messages } from './define'
+import { type Messages } from '../define'
 
 const enUS: Messages = {
   'settings.language': 'Language',

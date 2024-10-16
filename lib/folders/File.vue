@@ -7,11 +7,10 @@ import IconAddfile from '../icons/Addfile.vue'
 import IconAddfolder from '../icons/Addfolder.vue'
 import Icons from '../icons/Index.vue'
 import FileTemp from './File.vue'
-import { type Files } from '../define'
 import { computed, nextTick, onMounted, ref, watch, type ComputedRef } from 'vue'
-import { useMonaco } from '../stores/monaco-store'
+import { type Files, useMonaco } from '../stores/monaco-store'
 import { type ContextMenuItem } from '../components/context-menu/define'
-import { useI18n } from '../locale'
+import { useI18n } from '../stores/i18n-store'
 
 const props = defineProps({
   collapseTrigger: {
@@ -86,7 +85,7 @@ watch([() => props.file, () => props.root], (v) => {
 })
 
 // ================ 右键菜单 contextmenu ================
-const { $t } = useI18n()
+const { $t } = useI18n().action
 type _FileOperation = '@openFile' | '@copyPath' | '@copyRelativePath' | '@renameFile' | '@deleteFile' | string
 type _FolderOperation =
   | '@newFile'

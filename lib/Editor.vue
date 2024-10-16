@@ -1,21 +1,20 @@
 <script setup lang="tsx">
 import './index.scss'
 import { onMounted, ref, watch, onBeforeUnmount, type ComputedRef } from 'vue'
-import { type Files, BuiltInPage } from './define'
+import { BuiltInPage } from './define'
 import { longestCommonPrefix, throttle } from './common'
-import { useMonaco } from './stores/monaco-store'
+import { type Files, useMonaco } from './stores/monaco-store'
 import { useHotkey } from './stores/hotkey-store'
 import { useMessage } from './stores/message-store'
 import { useGlobalSettings } from './stores/global-settings-store'
-import type { ThemeMode } from './themes/define'
-import * as monaco_define from 'monaco-editor'
+import { type ThemeMode, validThemeModes } from './themes/define'
 import Prettier from './prettier/Index.vue'
 import LeftSiderBar from './left-sider-bar/Index.vue'
 import FileList from './folders/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
 import GithubFilled from './icons/GithubFilled.vue'
 import MessagePopup from './message-popup/Index.vue'
-import { useI18n, type Language } from './locale'
+import { type Language, useI18n, validLanguages } from './stores/i18n-store'
 import SettingsPage from './pages/SettingsPage.vue'
 import KeyboardShortcutsPage from './pages/KeyboardShortcuts.vue'
 
@@ -50,8 +49,16 @@ const props = defineProps({
     type: Number,
     default: 14,
   },
-  language: String,
-  theme: String,
+  language: {
+    type: String,
+    default: validLanguages[0],
+    validator: (value: Language) => validLanguages.includes(value),
+  },
+  theme: {
+    type: String,
+    default: validThemeModes[0],
+    validator: (value: ThemeMode) => validThemeModes.includes(value),
+  },
 })
 const emit = defineEmits({
   reload: (_resolve: () => void, _reject: (msg?: string) => void) => true,
@@ -67,18 +74,19 @@ const emit = defineEmits({
 })
 
 // ================ 国际化 i18n ================
-const globalSettingsStore = useGlobalSettings({
-  currentThemeMode: props.theme as ThemeMode,
-})
-const { t } = useI18n((props.language || 'en-US') as Language)
+const globalSettingsStore = useGlobalSettings()
+globalSettingsStore.action.setThemeMode(props.theme as ThemeMode)
+const i18nStore = useI18n()
+i18nStore.action.setLanguage(props.language as Language)
 watch(
   () => props.language,
   (n) => {
     if (n) {
-      globalSettingsStore.action.changeLanguage(n as Language)
+      i18nStore.action.setLanguage(n as Language)
     }
   }
 )
+const { t } = i18nStore.action
 
 // ================ 主题 theme ================
 watch(
@@ -562,7 +570,7 @@ defineExpose({
   getMonaco: () => {
     return monacoStore.state.monaco
   },
-  getEditor: (): monaco_define.editor.IStandaloneCodeEditor => {
+  getEditor: (): ReturnType<typeof monacoStore.action.getEditor> => {
     return monacoStore.action.getEditor()
   },
 })

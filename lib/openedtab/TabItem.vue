@@ -6,7 +6,7 @@ import Icons from '../icons/Index.vue'
 import Close from '../icons/Close.vue'
 import { type ContextMenuItem } from '../components/context-menu/define'
 import { useMonaco } from '../stores/monaco-store'
-import { useI18n } from '../locale'
+import { useI18n } from '../stores/i18n-store'
 
 const props = defineProps({
   file: {
@@ -31,7 +31,7 @@ const emit = defineEmits({
 const monacoStore = useMonaco()
 
 //========================= 国际化 i18n ==========================
-const { $t } = useI18n()
+const { $t } = useI18n().action
 
 //========================= 点击标签 click tab ==========================
 const itemRef = ref<HTMLDivElement>()

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import './index.scss'
-import { useI18n } from '../locale'
+import { useI18n } from '../stores/i18n-store'
 
-const { $t } = useI18n()
+const { $t } = useI18n().action
 </script>
 
 <template>

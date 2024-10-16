@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './index.scss'
-import { useI18n, changeLanguage, type Language } from '../locale'
+import { type Language, useI18n } from '../stores/i18n-store'
 import { useMessage } from '../stores/message-store'
 import { useGlobalSettings } from '../stores/global-settings-store'
 import { type ThemeMode } from '../themes/define'
@@ -12,14 +12,14 @@ const props = defineProps({
   },
 })
 
-const { $t, currentLanguage: language } = useI18n()
+const { currentLanguage } = useI18n().state
+const { setLanguage, $t } = useI18n().action
 const messageStore = useMessage()
 const globalSettingsStore = useGlobalSettings()
 
 function handleSelectLanguage(e: Event) {
   const target = e.target as HTMLSelectElement
-  changeLanguage(target.value as Language)
-  language.value = target.value as Language
+  setLanguage(target.value as Language)
   let inner = ''
   for (const item of target) {
     if (item.selected) {
@@ -43,7 +43,7 @@ function handleSelectColorTheme(e: Event) {
   <div class="monaco-tree-editor-pages">
     <div class="monaco-tree-editor-pages-title">{{ $t('settings.language').value }}</div>
     <div class="monaco-tree-editor-pages-item">
-      <select class="monaco-tree-editor-pages-item-select" :value="language" @change="handleSelectLanguage">
+      <select class="monaco-tree-editor-pages-item-select" :value="currentLanguage" @change="handleSelectLanguage">
         <option value="en-US">English</option>
         <option value="zh-CN">简体中文</option>
       </select>
