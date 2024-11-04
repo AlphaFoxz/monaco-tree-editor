@@ -1,7 +1,7 @@
 import type { Files, FileInfo } from './domain/monaco-agg'
 import Editor from './Editor.vue'
 import { useGlobalSettings } from './domain/global-settings-agg'
-import { useHotkey } from './stores/hotkey-store'
+import { useHotkey } from './domain/hotkey-agg'
 import { useMonaco } from './domain/monaco-agg'
 import { useMessage } from './domain/message-agg'
 

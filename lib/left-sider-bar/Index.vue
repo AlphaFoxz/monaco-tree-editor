@@ -35,7 +35,7 @@ function handleClick(item: LeftSiderBarItem) {
 const monacoStore = useMonaco(props.monacoId)
 const manageBtnMenu: Array<ContextMenuItem<BuiltInPageType | undefined>> = [
   { label: $t('menu.settings'), value: '<Settings>' },
-  // { label: $t('menu.keyboardShortcuts'), value: '<KeyboardShortcuts>' },
+  { label: $t('menu.keyboardShortcuts'), value: '<KeyboardShortcuts>' },
 ]
 function handleSelectManage(selected: { label: string; value?: BuiltInPageType; onSelect?: Function }) {
   if (selected.value) {

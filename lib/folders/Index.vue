@@ -97,11 +97,16 @@ const handleRenameFile = (path: string, name: string) => {
 const handleRenameFolder = (path: string, name: string) => {
   emit('renameFolder', path, name)
 }
+
+defineExpose({
+  handleDeleteFile,
+})
 </script>
 <template>
   <div class="monaco-tree-editor-list-wrapper" :style="{ fontSize: `${fontSize}px` }">
     <Confirm
       v-if="fileConfirmVisible"
+      :monaco-id="monacoId"
       type="warn"
       @ok="
         () => {
@@ -123,6 +128,7 @@ const handleRenameFolder = (path: string, name: string) => {
     </Confirm>
     <Confirm
       v-if="folderConfirmVisible"
+      :monaco-id="monacoId"
       type="warn"
       @ok="
         () => {

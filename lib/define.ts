@@ -1,8 +1,4 @@
-type keys =
-  | 'settings.language'
-  | 'settings.colorTheme'
-  | 'settings.colorTheme.dark'
-  | 'settings.colorTheme.light'
+type MessagesKey =
   | 'msg.reloading'
   | 'msg.reloadSuccessed'
   | 'msg.reloadFailed'
@@ -54,10 +50,146 @@ type keys =
   | 'menu.folders'
   | 'menu.settings'
   | 'menu.keyboardShortcuts'
+  | 'settings.language'
+  | 'settings.colorTheme'
+  | 'settings.colorTheme.dark'
+  | 'settings.colorTheme.light'
+  | 'keybindings.options.header.command'
+  | 'keybindings.options.header.keybinding'
+  | 'keybindings.options.content.format'
 
 export type Messages = {
-  [key in keys]: string
+  [key in MessagesKey]: string
 }
+
+export type KeyName =
+  | 'A'
+  | 'B'
+  | 'C'
+  | 'D'
+  | 'E'
+  | 'F'
+  | 'G'
+  | 'H'
+  | 'I'
+  | 'J'
+  | 'K'
+  | 'L'
+  | 'M'
+  | 'N'
+  | 'O'
+  | 'P'
+  | 'Q'
+  | 'R'
+  | 'S'
+  | 'T'
+  | 'U'
+  | 'V'
+  | 'W'
+  | 'X'
+  | 'Y'
+  | 'Z'
+  | '`'
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
+  | '0'
+  | '-'
+  | '='
+  | '['
+  | ']'
+  | '\\'
+  | ';'
+  | "'"
+  | ','
+  | '.'
+  | '/'
+  | 'Space'
+  | 'Tab'
+  | 'Enter'
+  | 'Escape'
+  | 'Backspace'
+  | 'Delete'
+  | 'ArrowLeft'
+  | 'ArrowRight'
+  | 'ArrowUp'
+  | 'ArrowDown'
+  | 'Home'
+  | 'End'
+  | 'PageUp'
+  | 'PageDown'
+  | 'F1'
+  | 'F2'
+  | 'F3'
+  | 'F4'
+  | 'F5'
+  | 'F6'
+  | 'F7'
+  | 'F8'
+  | 'F9'
+  | 'F10'
+  | 'F11'
+  | 'F12'
+  | 'Insert'
+  | 'Shift'
+  | 'Ctrl'
+  | 'Alt'
+
+export const FACADE_KEY_MAP: Readonly<Record<string, KeyName>> = Object.freeze({
+  '~': '`',
+  '!': '1',
+  '@': '2',
+  '#': '3',
+  $: '4',
+  '%': '5',
+  '^': '6',
+  '&': '7',
+  '*': '8',
+  '(': '9',
+  ')': '0',
+  _: '-',
+  '+': '=',
+  '{': '[',
+  '}': ']',
+  '|': '\\',
+  ':': ';',
+  '"': "'",
+  '<': ',',
+  '>': '.',
+  '?': '/',
+  a: 'A',
+  b: 'B',
+  c: 'C',
+  d: 'D',
+  e: 'E',
+  f: 'F',
+  g: 'G',
+  h: 'H',
+  i: 'I',
+  j: 'J',
+  k: 'K',
+  l: 'L',
+  m: 'M',
+  n: 'N',
+  o: 'O',
+  p: 'P',
+  q: 'Q',
+  r: 'R',
+  s: 'S',
+  t: 'T',
+  u: 'U',
+  v: 'V',
+  w: 'W',
+  x: 'X',
+  y: 'Y',
+  z: 'Z',
+})
 
 export enum BuiltInPage {
   '<Settings>' = '<Settings>',

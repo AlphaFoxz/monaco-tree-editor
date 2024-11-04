@@ -2,9 +2,13 @@
 import './index.scss'
 import CloseIcon from '../../icons/Close.vue'
 import Button from '../button/Index.vue'
-import { useHotkey } from '../../stores/hotkey-store'
+import { useHotkey } from '../../domain/hotkey-agg'
 import { onUnmounted } from 'vue'
-defineProps({
+const props = defineProps({
+  monacoId: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     default: 'Confirm',
@@ -28,15 +32,15 @@ const emit = defineEmits({
   ok: () => true,
 })
 
-const hotkeyStore = useHotkey()
+const hotkeyStore = useHotkey(props.monacoId)
 const keypressHandler = (e: KeyboardEvent) => {
-  if (!e.ctrlKey && !e.altKey && e.key === 'Escape') {
+  if (!e.ctrlKey && !e.altKey && !e.shiftKey && e.key === 'Escape') {
     emit('close')
   }
 }
-hotkeyStore.listen('root', keypressHandler)
+hotkeyStore.actions.listen('root', keypressHandler)
 onUnmounted(() => {
-  hotkeyStore.unlisten('root', keypressHandler)
+  hotkeyStore.actions.unlisten('root', keypressHandler)
 })
 </script>
 

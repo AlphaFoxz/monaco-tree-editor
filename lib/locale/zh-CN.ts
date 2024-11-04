@@ -1,9 +1,6 @@
 import { type Messages } from '../define'
+
 const zhCN: Messages = {
-  'settings.language': '语言',
-  'settings.colorTheme': '颜色主题',
-  'settings.colorTheme.dark': '深色',
-  'settings.colorTheme.light': '浅色',
   'msg.reloading': '加载中...',
   'msg.reloadSuccessed': '加载成功',
   'msg.reloadFailed': '加载失败',
@@ -55,6 +52,13 @@ const zhCN: Messages = {
   'menu.folders': '文件夹',
   'menu.settings': '设置',
   'menu.keyboardShortcuts': '快捷键',
+  'settings.language': '语言',
+  'settings.colorTheme': '颜色主题',
+  'settings.colorTheme.dark': '深色',
+  'settings.colorTheme.light': '浅色',
+  'keybindings.options.header.command': '命令',
+  'keybindings.options.header.keybinding': '快捷键',
+  'keybindings.options.content.format': '格式化',
 }
 
 export default zhCN

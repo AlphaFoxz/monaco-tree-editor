@@ -4,11 +4,10 @@ import { onMounted, ref, watch, onBeforeUnmount, type ComputedRef } from 'vue'
 import { BuiltInPage } from './define'
 import { longestCommonPrefix, throttle } from './common'
 import { type Files, useMonaco } from './domain/monaco-agg'
-import { useHotkey } from './stores/hotkey-store'
+import { type Command as HotkeyCommand, useHotkey } from './domain/hotkey-agg'
 import { useMessage } from './domain/message-agg'
 import { useGlobalSettings } from './domain/global-settings-agg'
 import { type ThemeMode, validThemeModes } from './themes/define'
-import Prettier from './prettier/Index.vue'
 import LeftSiderBar from './left-sider-bar/Index.vue'
 import FileList from './folders/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
@@ -155,9 +154,6 @@ let projectPrefix = ''
 const monacoStore = useMonaco(props.monacoId)
 monacoStore.actions._loadFileTree(props.files)
 const editorRef = ref<HTMLElement>()
-const handleFormat = () => {
-  monacoStore.actions.format()
-}
 const fixFilesPath = (files: Files): Files => {
   const fixedFiles: Files = {}
   projectPrefix = longestCommonPrefix(Object.keys(files))
@@ -553,17 +549,27 @@ const dragInEditor = (e: DragEvent) => {
 }
 
 // ================ 快捷键部分 hotkey ================
-const hotkeyStore = useHotkey()
+const hotkeyStore = useHotkey(props.monacoId)
+const fileListRef = ref()
+hotkeyStore.actions._setCommandHandler((hotkey, e) => {
+  const command = hotkey.command
+  if (hotkey && hotkey.isMatch(e)) {
+    if (command === 'Format') {
+      monacoStore.actions.format()
+    } else if (command === 'Save') {
+      handleSaveFile(monacoStore.states.currentPath.value)
+    } else if (command === 'Delete') {
+      const path = monacoStore.states.currentPath.value
+      if (path) {
+        fileListRef.value.handleDeleteFile(path)
+      }
+    }
+  }
+})
 const rootRef = ref<HTMLElement>()
 onMounted(() => {
-  hotkeyStore.init('root', rootRef.value!)
-  hotkeyStore.init('editor', editorRef.value!)
-  hotkeyStore.listen('editor', (e) => {
-    if (e?.ctrlKey && e.key.toLowerCase() === 's') {
-      console.debug('hotkey', 'Ctrl+s')
-      handleSaveFile(monacoStore.states.currentPath.value)
-    }
-  })
+  hotkeyStore.actions._init('root', rootRef.value!)
+  hotkeyStore.actions._init('editor', editorRef.value!)
 })
 
 // 暴露方法 expose functions
@@ -592,6 +598,7 @@ defineExpose({
     <FileList
       :monaco-id="monacoId"
       v-show="currentLeftSiderBar === 'Explorer'"
+      ref="fileListRef"
       @reload="handleReload"
       @new-file="handleNewFile"
       @new-folder="handleNewFolder"
@@ -641,11 +648,11 @@ defineExpose({
         v-if="monacoStore.states.currentPath.value === BuiltInPage['<Settings>']"
       ></SettingsPage>
       <KeyboardShortcutsPage
+        :monaco-id="monacoId"
         :custom-menu="settingsMenu"
         v-if="monacoStore.states.currentPath.value === BuiltInPage['<KeyboardShortcuts>']"
       ></KeyboardShortcutsPage>
     </div>
-    <Prettier :monaco-id="monacoId" @click="handleFormat" class="monaco-tree-editor-prettier" />
   </div>
 </template>
 

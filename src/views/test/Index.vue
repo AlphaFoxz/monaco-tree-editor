@@ -58,8 +58,8 @@ onMounted(() => {
 
 // ================ 快捷键 hotkey ==================
 const hotkeyStore = useHotkey()
-hotkeyStore.listen('root', (event: KeyboardEvent) => {})
-hotkeyStore.listen('editor', (event: KeyboardEvent) => {
+hotkeyStore.actions.listen('root', (event: KeyboardEvent) => {})
+hotkeyStore.actions.listen('editor', (event: KeyboardEvent) => {
   if (event.ctrlKey && !event.shiftKey && !event.altKey && event.key === 's') {
     // do something...
   }

@@ -177,6 +177,7 @@ defineExpose({
 </script>
 <template>
   <Confirm
+    :monaco-id="monacoId"
     @ok="handleSaveAndClose"
     @cancel="handleCloseWithoutSave"
     @close="confirmVisible = false"

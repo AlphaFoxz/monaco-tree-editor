@@ -1,48 +1,56 @@
 <script setup lang="ts">
-import { onUnmounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import './index.scss'
-import { useHotkey } from '../../stores/hotkey-store'
 const props = defineProps({
-  destroyOnClose: {
-    type: Boolean,
-    default: false,
+  monacoId: {
+    type: String,
+    required: true,
   },
   visible: {
     type: Boolean,
     default: true,
   },
-  target: HTMLElement,
+  target: { type: HTMLElement, default: () => document.body },
 })
 const emit = defineEmits({ close: () => true })
 const elRef = ref<HTMLDivElement>(document.createElement('div'))
-watch(
-  () => props.visible,
-  (v) => {
-    const rootEl = props.target || document.body
-    if (v) {
-      rootEl && rootEl.appendChild(elRef.value)
-    } else {
-      rootEl && rootEl.contains(elRef.value) && rootEl.appendChild(elRef.value)
+
+onBeforeUnmount(
+  watch(
+    () => props.visible,
+    (v) => {
+      const rootEl = props.target
+      if (v) {
+        rootEl && rootEl.appendChild(elRef.value)
+      } else {
+        rootEl && rootEl.contains(elRef.value) && rootEl.appendChild(elRef.value)
+      }
     }
-  }
+  )
 )
-const hotkeyStore = useHotkey()
+
+const modalRef = ref<HTMLElement>()
 const keypressHandler = (e: KeyboardEvent) => {
+  console.debug('esc')
   if (!e.ctrlKey && !e.altKey && e.key === 'Escape') {
     emit('close')
   }
 }
-hotkeyStore.listen('root', keypressHandler)
-onUnmounted(() => {
-  hotkeyStore.unlisten('root', keypressHandler)
+onMounted(() => {
+  modalRef.value!.addEventListener('keypress', keypressHandler)
+})
+onBeforeUnmount(() => {
+  modalRef.value!.removeEventListener('keypress', keypressHandler)
 })
 </script>
 
 <template>
-  <div class="monaco-tree-editor-modal">
-    <div class="monaco-tree-editor-modal-mask" @contextmenu.prevent @click="emit('close')" />
-    <div class="monaco-tree-editor-modal-content" v-show="destroyOnClose && visible">
-      <slot></slot>
+  <Teleport :to="target" v-if="visible">
+    <div class="monaco-tree-editor-modal" ref="modalRef">
+      <div class="monaco-tree-editor-modal-mask" @contextmenu.prevent @click="emit('close')" />
+      <div class="monaco-tree-editor-modal-content">
+        <slot></slot>
+      </div>
     </div>
-  </div>
+  </Teleport>
 </template>

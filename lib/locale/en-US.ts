@@ -1,10 +1,6 @@
 import { type Messages } from '../define'
 
 const enUS: Messages = {
-  'settings.language': 'Language',
-  'settings.colorTheme': 'Color Theme',
-  'settings.colorTheme.dark': 'Dark',
-  'settings.colorTheme.light': 'Light',
   'msg.reloading': 'Reloading...',
   'msg.reloadSuccessed': 'Reload Successed',
   'msg.reloadFailed': 'Reload Failed',
@@ -58,6 +54,13 @@ const enUS: Messages = {
   'menu.folders': 'Folders',
   'menu.settings': 'Settings',
   'menu.keyboardShortcuts': 'Keyboard Shortcuts',
+  'settings.language': 'Language',
+  'settings.colorTheme': 'Color Theme',
+  'settings.colorTheme.dark': 'Dark',
+  'settings.colorTheme.light': 'Light',
+  'keybindings.options.header.command': 'Command',
+  'keybindings.options.header.keybinding': 'Keybinding',
+  'keybindings.options.content.format': 'Format',
 }
 
 export default enUS
