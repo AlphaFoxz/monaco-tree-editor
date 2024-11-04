@@ -1,11 +1,11 @@
 <script setup lang="tsx">
 import './index.scss'
 import BoxTemp from './Box.vue'
-import { useMessage } from '../stores/message-store'
+import { useMessage } from '../domain/message-agg'
 import { ref, onMounted } from 'vue'
 
 const messageStore = useMessage()
-const messages = messageStore.state.messages
+const messages = messageStore.states.messages
 const to = ref('body')
 onMounted(() => {
   to.value = '#monaco-tree-editor-root'
@@ -18,8 +18,8 @@ onMounted(() => {
       <div class="message-container">
         <BoxTemp
           v-for="item in messages"
-          @close="messageStore.action.close"
-          @mousemove="messageStore._action.keepAlive(item.id!)"
+          @close="messageStore.actions.close"
+          @mousemove="messageStore.actions._keepAlive(item.id!)"
           :id="item.id!"
           :closeable="item.closeable"
           :loading="item.loading"

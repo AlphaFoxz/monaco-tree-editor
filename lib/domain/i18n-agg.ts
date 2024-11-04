@@ -1,13 +1,13 @@
-import { type ComputedRef, computed, readonly, ref } from 'vue'
+import { createAgg } from 'vue-fn/domain'
+import { type ComputedRef, computed, ref } from 'vue'
 import enUS from '../locale/en-US'
 import zhCN from '../locale/zh-CN'
 import { type Messages } from '../define'
-import { defineApi } from '../common'
 
 export const validLanguages = ['en-US', 'zh-CN'] as const
 export type Language = (typeof validLanguages)[number]
 
-namespace data {
+const i18nAgg = createAgg(() => {
   const locale = ref<Messages>(enUS)
   const currentLanguage = ref<Language>('en-US')
 
@@ -59,19 +59,18 @@ namespace data {
     }
     currentLanguage.value = lang || 'en-US'
   }
-
-  export const api = defineApi({
-    state: {
-      currentLanguage: currentLanguage,
+  return {
+    states: {
+      currentLanguage,
     },
-    action: {
+    actions: {
       setLanguage,
       t,
       $t,
     },
-  })
-}
+  }
+})
 
 export function useI18n() {
-  return data.api
+  return i18nAgg.api
 }

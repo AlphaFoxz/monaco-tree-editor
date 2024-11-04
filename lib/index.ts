@@ -1,9 +1,9 @@
-import type { Files, FileInfo } from './stores/monaco-store'
+import type { Files, FileInfo } from './domain/monaco-agg'
 import Editor from './Editor.vue'
-import { useGlobalSettings } from './stores/global-settings-store'
+import { useGlobalSettings } from './domain/global-settings-agg'
 import { useHotkey } from './stores/hotkey-store'
-import { useMonaco } from './stores/monaco-store'
-import { useMessage } from './stores/message-store'
+import { useMonaco } from './domain/monaco-agg'
+import { useMessage } from './domain/message-agg'
 
 export type { Files, FileInfo }
 export { Editor, useGlobalSettings, useMessage, useMonaco, useHotkey }

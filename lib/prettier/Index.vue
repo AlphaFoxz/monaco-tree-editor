@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import './index.scss'
 import PrettierIcon from '../icons/Prettier.vue'
-import { useMonaco } from '../stores/monaco-store'
+import { useMonaco } from '../domain/monaco-agg'
 
-const monacoStore = useMonaco()
+const props = defineProps({
+  monacoId: {
+    type: String,
+    required: true,
+  },
+})
+
+const monacoStore = useMonaco(props.monacoId)
 const handleClick = () => {
-  monacoStore.action.format()
+  monacoStore.actions.format()
 }
 </script>
 

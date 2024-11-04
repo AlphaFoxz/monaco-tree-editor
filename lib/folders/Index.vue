@@ -9,10 +9,14 @@ import FileTemp from './File.vue'
 import Confirm from '../components/modal/Confirm.vue'
 import ContextMenu from '../components/context-menu/Index.vue'
 import { ref, type ComputedRef } from 'vue'
-import { useMonaco } from '../stores/monaco-store'
-import { useI18n } from '../stores/i18n-store'
+import { useMonaco } from '../domain/monaco-agg'
+import { useI18n } from '../domain/i18n-agg'
 
-defineProps({
+const props = defineProps({
+  monacoId: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     default: 'EXPLORER',
@@ -48,13 +52,13 @@ const emit = defineEmits({
 })
 
 //=================== 国际化 i18n ==================
-const { $t } = useI18n().action
+const { $t } = useI18n().actions
 
 //=================== 初始化 init ==================
 const collapse = ref(false)
-const monacoStore = useMonaco()
-const fileTree = monacoStore._state.fileTree
-const currentPath = monacoStore.state.currentPath
+const monacoStore = useMonaco(props.monacoId)
+const fileTree = monacoStore.states._fileTree
+const currentPath = monacoStore.states.currentPath
 
 //=================== 回调 callback ==================
 const fileConfirmVisible = ref(false)
@@ -68,10 +72,10 @@ const handleCollapseAll = () => {
   collapseTrigger.value = new Date().getTime()
 }
 const handleConfirmNewFile = (path: string) => {
-  monacoStore._action.newFile(path)
+  monacoStore.actions._newFile(path)
 }
 const handleConfirmNewFolder = (path: string) => {
-  monacoStore._action.newFolder(path)
+  monacoStore.actions._newFolder(path)
 }
 const handleNewFile = (path: string, resolve: () => void, reject: () => void) => {
   emit('newFile', path, resolve, reject)

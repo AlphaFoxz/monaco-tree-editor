@@ -3,10 +3,10 @@ import './index.scss'
 import { onMounted, ref, watch, onBeforeUnmount, type ComputedRef } from 'vue'
 import { BuiltInPage } from './define'
 import { longestCommonPrefix, throttle } from './common'
-import { type Files, useMonaco } from './stores/monaco-store'
+import { type Files, useMonaco } from './domain/monaco-agg'
 import { useHotkey } from './stores/hotkey-store'
-import { useMessage } from './stores/message-store'
-import { useGlobalSettings } from './stores/global-settings-store'
+import { useMessage } from './domain/message-agg'
+import { useGlobalSettings } from './domain/global-settings-agg'
 import { type ThemeMode, validThemeModes } from './themes/define'
 import Prettier from './prettier/Index.vue'
 import LeftSiderBar from './left-sider-bar/Index.vue'
@@ -14,11 +14,15 @@ import FileList from './folders/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
 import GithubFilled from './icons/GithubFilled.vue'
 import MessagePopup from './message-popup/Index.vue'
-import { type Language, useI18n, validLanguages } from './stores/i18n-store'
+import { type Language, useI18n, validLanguages } from './domain/i18n-agg'
 import SettingsPage from './pages/SettingsPage.vue'
 import KeyboardShortcutsPage from './pages/KeyboardShortcuts.vue'
 
 const props = defineProps({
+  monacoId: {
+    type: String,
+    default: 'default',
+  },
   files: {
     type: Object,
     default: () => ({}),
@@ -75,31 +79,31 @@ const emit = defineEmits({
 
 // ================ 国际化 i18n ================
 const globalSettingsStore = useGlobalSettings()
-globalSettingsStore.action.setThemeMode(props.theme as ThemeMode)
+globalSettingsStore.actions.setThemeMode(props.theme as ThemeMode)
 const i18nStore = useI18n()
-i18nStore.action.setLanguage(props.language as Language)
+i18nStore.actions.setLanguage(props.language as Language)
 watch(
   () => props.language,
   (n) => {
     if (n) {
-      i18nStore.action.setLanguage(n as Language)
+      i18nStore.actions.setLanguage(n as Language)
     }
   }
 )
-const { t } = i18nStore.action
+const { t } = i18nStore.actions
 
 // ================ 主题 theme ================
 watch(
   () => props.theme,
   (n) => {
     if (n) {
-      globalSettingsStore.action.setThemeMode(n as ThemeMode)
+      globalSettingsStore.actions.setThemeMode(n as ThemeMode)
     }
   }
 )
 
 // =============== 左边栏 left-sider-bar ================
-const currentLeftSiderBar = globalSettingsStore.state.opendLeftSiderBar
+const currentLeftSiderBar = globalSettingsStore.states.opendLeftSiderBar
 
 // ================ 拖拽功能 dragging ================
 const filelistWidth = ref(props.siderMinWidth)
@@ -108,12 +112,12 @@ const throttleResize = throttle((e: MouseEvent) => {
     const w = dragInfo.width + (e.pageX - dragInfo.pageX)
     console.debug('Dragging', w)
     if (w < props.siderMinWidth / 2) {
-      globalSettingsStore.action.switchCurrentLeftSiderBar(null)
+      globalSettingsStore.actions.switchCurrentLeftSiderBar(null)
     } else if (w >= props.siderMinWidth / 2) {
-      globalSettingsStore.action.switchCurrentLeftSiderBar('Explorer', false)
+      globalSettingsStore.actions.switchCurrentLeftSiderBar('Explorer', false)
     }
     filelistWidth.value = w < props.siderMinWidth ? props.siderMinWidth : w
-    monacoStore._action.resize()
+    monacoStore.actions._resize()
   }
 }, 5)
 let dragInfo = {
@@ -148,11 +152,11 @@ watch(
 const projectName = ref<any>('project')
 let fileSeparator = '/'
 let projectPrefix = ''
-const monacoStore = useMonaco()
-monacoStore._action.loadFileTree(props.files)
+const monacoStore = useMonaco(props.monacoId)
+monacoStore.actions._loadFileTree(props.files)
 const editorRef = ref<HTMLElement>()
 const handleFormat = () => {
-  monacoStore.action.format()
+  monacoStore.actions.format()
 }
 const fixFilesPath = (files: Files): Files => {
   const fixedFiles: Files = {}
@@ -177,29 +181,29 @@ const fixFilesPath = (files: Files): Files => {
     }
   })
   files = fixedFiles
-  monacoStore._action.setPrefix(projectPrefix)
-  monacoStore._action.setFileSeparator(fileSeparator)
+  monacoStore.actions._setPrefix(projectPrefix)
+  monacoStore.actions._setFileSeparator(fileSeparator)
   return files
 }
 watch(
   () => props.files,
   (n) => {
-    monacoStore._action.loadFileTree(fixFilesPath(n))
+    monacoStore.actions._loadFileTree(fixFilesPath(n))
   }
 )
 watch(
   () => props.fontSize,
   (n) => {
-    monacoStore.action.updateOptions({ fontSize: n })
+    monacoStore.actions.updateOptions({ fontSize: n })
   }
 )
 onMounted(() => {
   handleReload()
-  monacoStore._action.loadFileTree(fixFilesPath(props.files))
-  monacoStore._action.init(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
+  monacoStore.actions._loadFileTree(fixFilesPath(props.files))
+  monacoStore.actions._init(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
 })
 onBeforeUnmount(() => {
-  monacoStore.action.getEditor()?.dispose()
+  monacoStore.actions.getEditor()?.dispose()
 })
 
 // ================ 回调事件 callback events ================
@@ -212,53 +216,53 @@ const toOriginPath = (path: string): string => {
   return oriPath
 }
 const lockFile = (filePath: string, loadingMsgId: string) => {
-  globalSettingsStore._action.lockFile(filePath, () => {
-    messageStore.action.close(loadingMsgId)
-    messageStore.action.error({
+  globalSettingsStore.actions._lockFile(filePath, () => {
+    messageStore.actions.close(loadingMsgId)
+    messageStore.actions.error({
       content: t('msg.timeout'),
       closeable: true,
     })
-    globalSettingsStore._action.unlockFile(filePath)
+    globalSettingsStore.actions._unlockFile(filePath)
   })
 }
 const handleReload = (
   resolve = () => {
-    messageStore.action.success({
+    messageStore.actions.success({
       content: t('msg.reloadSuccessed'),
       closeable: true,
       timeoutMs: 3000,
     })
   },
   reject = (msg = '') => {
-    messageStore.action.error({
+    messageStore.actions.error({
       content: t('msg.reloadFailed', { msg }),
       closeable: true,
     })
   }
 ) => {
-  const msgId = messageStore.action.info({
+  const msgId = messageStore.actions.info({
     content: t('msg.reloading'),
     loading: true,
   })
   emit(
     'reload',
     () => {
-      messageStore.action.close(msgId)
+      messageStore.actions.close(msgId)
       resolve()
     },
     (msg = '') => {
-      messageStore.action.close(msgId)
+      messageStore.actions.close(msgId)
       reject(msg)
     }
   )
 }
 const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore._action.isFileLocked(path)) {
+  if (globalSettingsStore.actions._isFileLocked(path)) {
     reject()
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.action.info({
+  const msgId = messageStore.actions.info({
     content: t('msg.creating{path}', { path }),
     loading: true,
   })
@@ -267,9 +271,9 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
     'newFile',
     oriPath,
     () => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.success({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.success({
         content: t('msg.createSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -278,9 +282,9 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.error({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.error({
         content: t('msg.createFailed', { msg }),
         closeable: true,
       })
@@ -289,12 +293,12 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
   )
 }
 const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore._action.isFileLocked(path)) {
+  if (globalSettingsStore.actions._isFileLocked(path)) {
     reject()
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.action.info({
+  const msgId = messageStore.actions.info({
     content: t('msg.creating{path}', { path }),
     loading: true,
   })
@@ -303,9 +307,9 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
     'newFolder',
     oriPath,
     () => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.success({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.success({
         content: t('msg.createSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -314,9 +318,9 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.error({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.error({
         content: t('msg.createFailed', { msg }),
         closeable: true,
       })
@@ -326,21 +330,21 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
 }
 const handleSaveFile = (
   path: string,
-  value = monacoStore._action.getValue(path),
+  value = monacoStore.actions._getValue(path),
   resolve = () => {},
   reject = () => {}
 ) => {
-  if (value === undefined || !path || !monacoStore._action.hasChanged(path)) {
+  if (value === undefined || !path || !monacoStore.actions._hasChanged(path)) {
     console.debug('there is nothing changed.')
     resolve()
     return
   }
-  if (globalSettingsStore._action.isFileLocked(path)) {
+  if (globalSettingsStore.actions._isFileLocked(path)) {
     reject()
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.action.info({
+  const msgId = messageStore.actions.info({
     content: t('msg.saving{path}', { path }),
     loading: true,
   })
@@ -350,9 +354,9 @@ const handleSaveFile = (
     oriPath,
     value,
     () => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.success({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.success({
         content: t('msg.saveSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -361,9 +365,9 @@ const handleSaveFile = (
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.error({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.error({
         content: t('msg.saveFailed', { msg }),
         closeable: true,
       })
@@ -373,12 +377,12 @@ const handleSaveFile = (
 }
 
 const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore._action.isFileLocked(path)) {
+  if (globalSettingsStore.actions._isFileLocked(path)) {
     reject()
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.action.info({
+  const msgId = messageStore.actions.info({
     content: t('msg.deletingFile{path}', { path }),
     loading: true,
   })
@@ -387,9 +391,9 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
     'deleteFile',
     oriPath,
     () => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.success({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.success({
         content: t('msg.deleteSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -398,9 +402,9 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.error({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.error({
         content: t('msg.deleteFailed{msg}', { msg }),
         closeable: true,
       })
@@ -410,12 +414,12 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
 }
 
 const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore._action.isFileLocked(path)) {
+  if (globalSettingsStore.actions._isFileLocked(path)) {
     reject()
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.action.info({
+  const msgId = messageStore.actions.info({
     content: t('msg.deletingFolder{path}', { path }),
     loading: true,
   })
@@ -424,9 +428,9 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
     'deleteFolder',
     oriPath,
     () => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.success({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.success({
         content: t('msg.deleteSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -435,9 +439,9 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.error({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.error({
         content: t('msg.deleteFailed{msg}', { msg }),
         closeable: true,
       })
@@ -447,7 +451,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
 }
 
 const handleRenameFile = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore._action.isFileLocked(path)) {
+  if (globalSettingsStore.actions._isFileLocked(path)) {
     reject()
     return
   }
@@ -456,7 +460,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
   tmpArr.pop()
   tmpArr.push(newName)
   const newPath = tmpArr.join(fileSeparator)
-  const msgId = messageStore.action.info({
+  const msgId = messageStore.actions.info({
     content: t('msg.renamingFile{path}', { path }),
     loading: true,
   })
@@ -466,9 +470,9 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
     oriPath,
     newPath,
     () => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.success({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.success({
         content: t('msg.renameSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -477,9 +481,9 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.error({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.error({
         content: t('msg.renameFailed', { msg }),
         closeable: true,
       })
@@ -489,7 +493,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
 }
 
 const handleRenameFolder = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore._action.isFileLocked(path)) {
+  if (globalSettingsStore.actions._isFileLocked(path)) {
     reject()
     return
   }
@@ -498,7 +502,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
   tmpArr.pop()
   tmpArr.push(newName)
   const newPath = tmpArr.join(fileSeparator)
-  const msgId = messageStore.action.info({
+  const msgId = messageStore.actions.info({
     content: t('msg.renamingFolder{path}', { path }),
     loading: true,
   })
@@ -508,9 +512,9 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
     oriPath,
     newPath,
     () => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.success({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.success({
         content: t('msg.renameSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -519,9 +523,9 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore._action.unlockFile(path)
-      messageStore.action.close(msgId)
-      messageStore.action.error({
+      globalSettingsStore.actions._unlockFile(path)
+      messageStore.actions.close(msgId)
+      messageStore.actions.error({
         content: t('msg.renameFailed', { msg }),
         closeable: true,
       })
@@ -543,7 +547,7 @@ const dragInEditor = (e: DragEvent) => {
   emit(
     'dragInEditor',
     toOriginPath(srcPath),
-    toOriginPath(monacoStore.state.currentPath.value),
+    toOriginPath(monacoStore.states.currentPath.value),
     e.dataTransfer.getData('type') as 'file' | 'folder'
   )
 }
@@ -557,7 +561,7 @@ onMounted(() => {
   hotkeyStore.listen('editor', (e) => {
     if (e?.ctrlKey && e.key.toLowerCase() === 's') {
       console.debug('hotkey', 'Ctrl+s')
-      handleSaveFile(monacoStore.state.currentPath.value)
+      handleSaveFile(monacoStore.states.currentPath.value)
     }
   })
 })
@@ -565,13 +569,13 @@ onMounted(() => {
 // 暴露方法 expose functions
 defineExpose({
   resize: () => {
-    monacoStore._action.resize()
+    monacoStore.actions._resize()
   },
   getMonaco: () => {
-    return monacoStore.state.monaco
+    return monacoStore.states.monaco
   },
-  getEditor: (): ReturnType<typeof monacoStore.action.getEditor> => {
-    return monacoStore.action.getEditor()
+  getEditor: (): ReturnType<typeof monacoStore.actions.getEditor> => {
+    return monacoStore.actions.getEditor()
   },
 })
 </script>
@@ -581,11 +585,12 @@ defineExpose({
     id="monaco-tree-editor-root"
     @contextmenu.prevent.stop
     tabIndex="1"
-    :class="`monaco-tree-editor ${globalSettingsStore.state.themeMode.value}`"
+    :class="`monaco-tree-editor ${globalSettingsStore.states.themeMode.value}`"
   >
     <MessagePopup></MessagePopup>
-    <LeftSiderBar></LeftSiderBar>
+    <LeftSiderBar :monaco-id="monacoId"></LeftSiderBar>
     <FileList
+      :monaco-id="monacoId"
       v-show="currentLeftSiderBar === 'Explorer'"
       @reload="handleReload"
       @new-file="handleNewFile"
@@ -611,10 +616,10 @@ defineExpose({
       class="monaco-tree-editor-drag"
     ></div>
     <div class="monaco-tree-editor-area">
-      <OpenedTab :fontSize="fontSize" @save-file="handleSaveFile" />
+      <OpenedTab :monaco-id="monacoId" :fontSize="fontSize" @save-file="handleSaveFile" />
       <div
         id="editor"
-        v-show="monacoStore.state.openedFiles.value.length > 0 && monacoStore.state.currentPath.value[0] !== '<'"
+        v-show="monacoStore.states.openedFiles.value.length > 0 && monacoStore.states.currentPath.value[0] !== '<'"
         ref="editorRef"
         @drop="dragInEditor"
         :style="{
@@ -623,7 +628,7 @@ defineExpose({
         }"
       ></div>
       <div
-        v-show="!monacoStore.state.isReady || !monacoStore.state.currentPath.value"
+        v-show="!monacoStore.states.isReady || !monacoStore.states.currentPath.value"
         class="monaco-tree-editor-area-empty"
       >
         <label>
@@ -633,14 +638,14 @@ defineExpose({
       </div>
       <SettingsPage
         :custom-menu="settingsMenu"
-        v-if="monacoStore.state.currentPath.value === BuiltInPage['<Settings>']"
+        v-if="monacoStore.states.currentPath.value === BuiltInPage['<Settings>']"
       ></SettingsPage>
       <KeyboardShortcutsPage
         :custom-menu="settingsMenu"
-        v-if="monacoStore.state.currentPath.value === BuiltInPage['<KeyboardShortcuts>']"
+        v-if="monacoStore.states.currentPath.value === BuiltInPage['<KeyboardShortcuts>']"
       ></KeyboardShortcutsPage>
     </div>
-    <Prettier @click="handleFormat" class="monaco-tree-editor-prettier" />
+    <Prettier :monaco-id="monacoId" @click="handleFormat" class="monaco-tree-editor-prettier" />
   </div>
 </template>
 

@@ -1,17 +1,17 @@
-import { readonly, ref } from 'vue'
+import { ref } from 'vue'
 import { type LeftSiderBarItem } from '../left-sider-bar/define'
 import { type ThemeMode } from '../themes/define'
-import { type Language, useI18n } from './i18n-store'
-import { defineApi } from '../common'
+import { type Language, useI18n } from './i18n-agg'
+import { createAgg } from 'vue-fn/domain'
 
-namespace data {
+const agg = createAgg(() => {
   const contextMenuVisble = ref(false)
   const savingFiles = ref(new Set<string>())
   const savingTasks = ref<{ [k: string]: NodeJS.Timeout }>({})
   const opendLeftSiderBar = ref<LeftSiderBarItem | null>('Explorer')
   const currentThemeMode = ref<ThemeMode>('dark')
-  const { currentLanguage } = useI18n().state
-  const { setLanguage } = useI18n().action
+  const { currentLanguage } = useI18n().states
+  const { setLanguage } = useI18n().actions
 
   function lockFile(path: string, timeout: () => void, timeoutMs = 8 * 1000) {
     if (isFileLocked(path)) {
@@ -53,21 +53,18 @@ namespace data {
     }
   }
 
-  // ==================== expose api ====================
-  export const api = defineApi({
-    state: {
+  return {
+    states: {
       contextMenuVisble,
       themeMode: currentThemeMode,
       opendLeftSiderBar,
       currentLanguage,
     },
-    _action: {
-      lockFile,
-      isFileLocked,
-      unlockFile,
-      getOpenedTabsHeight,
-    },
-    action: {
+    actions: {
+      _lockFile: lockFile,
+      _isFileLocked: isFileLocked,
+      _unlockFile: unlockFile,
+      _getOpenedTabsHeight: getOpenedTabsHeight,
       switchCurrentLeftSiderBar,
       setLanguage,
       async setThemeMode(theme: ThemeMode) {
@@ -77,9 +74,9 @@ namespace data {
         opendLeftSiderBar.value = item
       },
     },
-  })
-}
+  }
+})
 
 export function useGlobalSettings() {
-  return data.api
+  return agg.api
 }

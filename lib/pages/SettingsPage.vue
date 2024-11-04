@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import './index.scss'
-import { type Language, useI18n } from '../stores/i18n-store'
-import { useMessage } from '../stores/message-store'
-import { useGlobalSettings } from '../stores/global-settings-store'
+import { type Language, useI18n } from '../domain/i18n-agg'
+import { useMessage } from '../domain/message-agg'
+import { useGlobalSettings } from '../domain/global-settings-agg'
 import { type ThemeMode } from '../themes/define'
 
 const props = defineProps({
@@ -12,8 +12,8 @@ const props = defineProps({
   },
 })
 
-const { currentLanguage } = useI18n().state
-const { setLanguage, $t } = useI18n().action
+const { currentLanguage } = useI18n().states
+const { setLanguage, $t } = useI18n().actions
 const messageStore = useMessage()
 const globalSettingsStore = useGlobalSettings()
 
@@ -27,7 +27,7 @@ function handleSelectLanguage(e: Event) {
       break
     }
   }
-  messageStore.action.success({
+  messageStore.actions.success({
     content: $t('msg.languageChanged{lang}', { lang: inner }).value,
     closeable: true,
     timeoutMs: 3000,
@@ -35,7 +35,7 @@ function handleSelectLanguage(e: Event) {
 }
 
 function handleSelectColorTheme(e: Event) {
-  globalSettingsStore.action.setThemeMode((e.target as HTMLSelectElement).value as ThemeMode)
+  globalSettingsStore.actions.setThemeMode((e.target as HTMLSelectElement).value as ThemeMode)
 }
 </script>
 
@@ -53,7 +53,7 @@ function handleSelectColorTheme(e: Event) {
     <div class="monaco-tree-editor-pages-item">
       <select
         class="monaco-tree-editor-pages-item-select"
-        :value="globalSettingsStore.state.themeMode.value"
+        :value="globalSettingsStore.states.themeMode.value"
         @change="handleSelectColorTheme"
       >
         <option value="dark">{{ $t('settings.colorTheme.dark').value }}</option>

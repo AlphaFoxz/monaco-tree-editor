@@ -7,13 +7,13 @@ import * as server from './mock-server'
 
 const messageStore = useMessage()
 onMounted(() => {
-  const id = messageStore.action.info({
+  const id = messageStore.actions.info({
     content: 'testing..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.action.close(id)
-    messageStore.action.success({
+    messageStore.actions.close(id)
+    messageStore.actions.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
@@ -26,7 +26,8 @@ onMounted(() => {
 let monacoStore: ReturnType<typeof useMonaco>
 // 模拟延迟，测试健壮性 mock delay to test robustness
 server.delay().then(() => {
-  monacoStore = useMonaco(monaco)
+  monacoStore = useMonaco()
+  monacoStore.actions.setMonaco(monaco)
 })
 
 // ================ 回调函数 callback =================

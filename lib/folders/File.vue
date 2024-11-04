@@ -8,9 +8,9 @@ import IconAddfolder from '../icons/Addfolder.vue'
 import Icons from '../icons/Index.vue'
 import FileTemp from './File.vue'
 import { computed, nextTick, onMounted, ref, watch, type ComputedRef } from 'vue'
-import { type Files, useMonaco } from '../stores/monaco-store'
+import { type Files, useMonaco } from '../domain/monaco-agg'
 import { type ContextMenuItem } from '../components/context-menu/define'
-import { useI18n } from '../stores/i18n-store'
+import { useI18n } from '../domain/i18n-agg'
 
 const props = defineProps({
   collapseTrigger: {
@@ -85,7 +85,7 @@ watch([() => props.file, () => props.root], (v) => {
 })
 
 // ================ 右键菜单 contextmenu ================
-const { $t } = useI18n().action
+const { $t } = useI18n().actions
 type _FileOperation = '@openFile' | '@copyPath' | '@copyRelativePath' | '@renameFile' | '@deleteFile' | string
 type _FolderOperation =
   | '@newFile'
@@ -157,7 +157,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
       editing.value = true
       break
     case '@copyPath':
-      const path = monacoStore._action.getAbsolutePath(props.file.path)
+      const path = monacoStore.actions._getAbsolutePath(props.file.path)
       if (navigator.clipboard) {
         navigator.clipboard.writeText(path)
       } else {
@@ -223,7 +223,7 @@ const handleBlur = (_e?: Event) => {
   let name = nameRef.value?.textContent
   if (!name || /^\s*$/.test(name)) {
     //remove component
-    monacoStore._action.removeBlank(props.file.path)
+    monacoStore.actions._removeBlank(props.file.path)
     return
   }
   name = name.trim()
@@ -243,7 +243,7 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore._action.removeBlank(props.file.path)
+          monacoStore.actions._removeBlank(props.file.path)
         }
       )
     } else {
@@ -252,20 +252,20 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore._action.removeBlank(props.file.path)
+          monacoStore.actions._removeBlank(props.file.path)
         }
       )
     }
   }
 }
 const handlePathChange = (_e?: MouseEvent) => {
-  if (editing.value || !monacoStore.state.isReady.value) {
+  if (editing.value || !monacoStore.states.isReady.value) {
     return
   }
   const key = props.file.path
-  const model = monacoStore._action.restoreModel(key)
+  const model = monacoStore.actions._restoreModel(key)
   if (model) {
-    monacoStore._action.openOrFocusPath(key)
+    monacoStore.actions._openOrFocusPath(key)
   }
 }
 watch([editing, () => props.file], (v) => {

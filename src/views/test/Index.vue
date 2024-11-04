@@ -31,22 +31,23 @@ window.MonacoEnvironment = {
 let monacoStore: ReturnType<typeof useMonaco>
 // mock delay to test robustness
 server.delay().then(async () => {
-  monacoStore = useMonaco(monaco)
-  await monacoStore._action.untilMonacoImported()
-  monacoStore.action.defineTheme('dark', customTheme)
-  registerRestl(monacoStore.state.monaco.value!)
+  monacoStore = useMonaco()
+  monacoStore.actions.setMonaco(monaco)
+  await monacoStore.actions._untilMonacoImported()
+  monacoStore.actions.defineTheme('dark', customTheme)
+  registerRestl(monacoStore.states.monaco.value!)
 })
 
 // ================ 推送消息 push message ================
 const messageStore = useMessage()
 onMounted(() => {
-  const id = messageStore.action.info({
+  const id = messageStore.actions.info({
     content: 'testing..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.action.close(id)
-    messageStore.action.success({
+    messageStore.actions.close(id)
+    messageStore.actions.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
@@ -202,7 +203,7 @@ const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 
   if (!targetPath.endsWith('.ts') && !srcPath.endsWith('.js')) {
     return
   }
-  const editor = monacoStore.action.getEditor()
+  const editor = monacoStore.actions.getEditor()
   const lineIndex = editor.getPosition()?.lineNumber!
   let str = 'import "' + _relativePathFrom(srcPath, targetPath) + '"'
   editor.executeEdits('drop', [{ range: new monaco.Range(lineIndex, 0, lineIndex, 0), text: str }])
