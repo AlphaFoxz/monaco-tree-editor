@@ -178,7 +178,8 @@ defineExpose({
       @mouseover="handleOver"
       @mouseleave="handleLeave"
       @mousedown="handleClick"
-      :data-src="file!.path"
+      :title="file.path"
+      :data-src="file.path"
       :class="`monaco-tree-editor-opened-tab-item ${active ? 'monaco-tree-editor-opened-tab-item-active' : ''}`"
     >
       <Icons :type="fileType" :style="{ marginRight: '2px' }" />
