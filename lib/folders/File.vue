@@ -157,10 +157,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
       editing.value = true
       break
     case '@copyPath':
-      let path = monacoStore._state.prefix.value + props.file.path
-      if (monacoStore._state.fileSeparator.value === '\\') {
-        path = path.replace(/\//g, '\\')
-      }
+      const path = monacoStore._action.getAbsolutePath(props.file.path)
       if (navigator.clipboard) {
         navigator.clipboard.writeText(path)
       } else {

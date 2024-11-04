@@ -69,20 +69,36 @@ const pathChange = (e: MouseEvent) => {
 }
 
 //========================= 右键菜单 contextmenu ==========================
-type _MenuValue = 'close' | 'closeOthers' | 'closeAll'
+type _MenuValue = '@close' | '@closeOthers' | '@closeAll' | '@copyPath' | '@copyRelativePath'
 const contextMenu: ContextMenuItem<_MenuValue>[] = [
-  { label: $t('ctxmenu.close'), value: 'close' },
-  { label: $t('ctxmenu.closeOthers'), value: 'closeOthers' },
-  { label: $t('ctxmenu.closeAll'), value: 'closeAll' },
+  { label: $t('ctxmenu.close'), value: '@close' },
+  { label: $t('ctxmenu.closeOthers'), value: '@closeOthers' },
+  { label: $t('ctxmenu.closeAll'), value: '@closeAll' },
+  {},
+  { label: $t('ctxmenu.copyPath'), value: '@copyPath' },
+  { label: $t('ctxmenu.copyRelativePath'), value: '@copyRelativePath' },
 ]
 const handleSelectContextMenu = (item: ContextMenuItem<_MenuValue>) => {
   const v = item.value
-  if (v === 'close') {
+  if (v === '@close') {
     handleClose()
-  } else if (v === 'closeOthers') {
+  } else if (v === '@closeOthers') {
     emit('closeOtherFiles', props.file!.path)
-  } else if (v === 'closeAll') {
+  } else if (v === '@closeAll') {
     emit('closeOtherFiles')
+  } else if (v === '@copyPath') {
+    const path = monacoStore._action.getAbsolutePath(props.file.path)
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(path)
+    } else {
+      // TODO
+    }
+  } else if (v === '@copyRelativePath') {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(props.file.path)
+    } else {
+      // TODO
+    }
   } else {
     const t: undefined = v
     console.debug(t)
@@ -178,7 +194,7 @@ defineExpose({
       @mouseover="handleOver"
       @mouseleave="handleLeave"
       @mousedown="handleClick"
-      :title="file.path"
+      :title="monacoStore._action.getAbsolutePath(file.path)"
       :data-src="file.path"
       :class="`monaco-tree-editor-opened-tab-item ${active ? 'monaco-tree-editor-opened-tab-item-active' : ''}`"
     >

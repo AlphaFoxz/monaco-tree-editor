@@ -487,6 +487,13 @@ namespace data {
       setMonaco(m: MonacoLib) {
         monaco.value = m
       },
+      getAbsolutePath(relativePath: string): string {
+        let path = prefix.value + relativePath
+        if (fileSeparator.value === '\\') {
+          path = path.replace(/\//g, '\\')
+        }
+        return path
+      },
     },
     action: {
       defineTheme,
