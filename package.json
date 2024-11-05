@@ -24,10 +24,10 @@
   "homepage": "https://alphafoxz.github.io/monaco-tree-editor/",
   "scripts": {
     "dev": "vite",
-    "build": "pnpm build:compile && pnpm build:check && pnpm build:sync-file",
+    "build": "pnpm build:compile && pnpm verify && pnpm build:sync-file",
     "build:compile": "vite build",
-    "build:check": "vue-tsc -p tsconfig.app.json --composite false",
     "build:sync-file": "ncp README.md dist/README.md && ncp README.CN.md dist/README.CN.md && ncp LICENSE dist/LICENSE && ncp package.publish.json dist/package.json",
+    "verify": "vue-tsc -p tsconfig.app.json --composite false",
     "test:start-server": "node ./script/get-rand-test-port.mjs && vite -m test",
     "cy:open": "cypress open",
     "cy:run": "cypress run"

@@ -191,9 +191,23 @@ export const FACADE_KEY_MAP: Readonly<Record<string, KeyName>> = Object.freeze({
   z: 'Z',
 })
 
+export function toFacadeKey(key: string | undefined): KeyName | undefined {
+  if (key === undefined) {
+    return key
+  }
+  const length = key.length
+  if (length !== 1) {
+    return key as KeyName
+  }
+  if (FACADE_KEY_MAP[key]) {
+    return FACADE_KEY_MAP[key] as KeyName
+  }
+  return key as KeyName
+}
+
 export enum BuiltInPage {
   '<Settings>' = '<Settings>',
   '<KeyboardShortcuts>' = '<KeyboardShortcuts>',
 }
 
-export type BuiltInPageType = '<Settings>' | '<KeyboardShortcuts>'
+export type BuiltInPageType = keyof typeof BuiltInPage

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import './index.scss'
-const props = defineProps({
+import { Hotkey, useHotkey } from '../../domain/hotkey-agg'
+const porps = defineProps({
   monacoId: {
     type: String,
     required: true,
@@ -12,42 +13,32 @@ const props = defineProps({
   },
   target: { type: HTMLElement, default: () => document.body },
 })
-const emit = defineEmits({ close: () => true })
-const elRef = ref<HTMLDivElement>(document.createElement('div'))
+const emit = defineEmits({ close: () => true, 'update:visible': (visible: boolean) => true })
 
-onBeforeUnmount(
-  watch(
-    () => props.visible,
-    (v) => {
-      const rootEl = props.target
-      if (v) {
-        rootEl && rootEl.appendChild(elRef.value)
-      } else {
-        rootEl && rootEl.contains(elRef.value) && rootEl.appendChild(elRef.value)
-      }
-    }
-  )
-)
-
-const modalRef = ref<HTMLElement>()
-const keypressHandler = (e: KeyboardEvent) => {
-  console.debug('esc')
-  if (!e.ctrlKey && !e.altKey && e.key === 'Escape') {
-    emit('close')
+const esc = new Hotkey({ command: 'Delete', key: 'Escape', when: 'editor' })
+const hotkeyStore = useHotkey(porps.monacoId)
+const handleKeypress = (e: KeyboardEvent) => {
+  if (esc.isMatch(e)) {
+    handleClose()
   }
 }
+function handleClose() {
+  emit('update:visible', false)
+  emit('close')
+}
 onMounted(() => {
-  modalRef.value!.addEventListener('keypress', keypressHandler)
+  hotkeyStore.actions.listen('root', handleKeypress)
 })
 onBeforeUnmount(() => {
-  modalRef.value!.removeEventListener('keypress', keypressHandler)
+  console.debug('unmount modal')
+  hotkeyStore.actions.unlisten('root', handleKeypress)
 })
 </script>
 
 <template>
-  <Teleport :to="target" v-if="visible">
-    <div class="monaco-tree-editor-modal" ref="modalRef">
-      <div class="monaco-tree-editor-modal-mask" @contextmenu.prevent @click="emit('close')" />
+  <Teleport :to="target">
+    <div v-show="visible" class="monaco-tree-editor-modal">
+      <div class="monaco-tree-editor-modal-mask" @click="handleClose" />
       <div class="monaco-tree-editor-modal-content">
         <slot></slot>
       </div>

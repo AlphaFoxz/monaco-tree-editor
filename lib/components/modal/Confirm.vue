@@ -3,7 +3,7 @@ import './index.scss'
 import CloseIcon from '../../icons/Close.vue'
 import Button from '../button/Index.vue'
 import { useHotkey } from '../../domain/hotkey-agg'
-import { onUnmounted } from 'vue'
+import { onBeforeUnmount } from 'vue'
 const props = defineProps({
   monacoId: {
     type: String,
@@ -39,7 +39,7 @@ const keypressHandler = (e: KeyboardEvent) => {
   }
 }
 hotkeyStore.actions.listen('root', keypressHandler)
-onUnmounted(() => {
+onBeforeUnmount(() => {
   hotkeyStore.actions.unlisten('root', keypressHandler)
 })
 </script>

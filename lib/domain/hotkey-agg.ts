@@ -1,6 +1,6 @@
 import { createUnmountableAgg } from 'vue-fn/domain'
 import { onBeforeUnmount, reactive, ref } from 'vue'
-import { type KeyName, FACADE_KEY_MAP } from '../define'
+import { type KeyName, toFacadeKey } from '../define'
 
 export type When = 'root' | 'editor'
 export type Command = 'Format' | 'Save' | 'Delete'
@@ -47,16 +47,6 @@ export class Hotkey implements IHotkey {
     )
   }
 }
-export function toFacadeKey(key: string): KeyName {
-  const length = key.length
-  if (length !== 1) {
-    return key as KeyName
-  }
-  if (FACADE_KEY_MAP[key]) {
-    return FACADE_KEY_MAP[key] as KeyName
-  }
-  return key as KeyName
-}
 export type CommandsHandler = (hotkeys: IHotkey, e: KeyboardEvent) => void
 
 export const IDEA_KEYBINDINGS: IHotkey[] = [
@@ -92,6 +82,9 @@ function createAgg(monacoInstanceId: string) {
       return function (e: KeyboardEvent) {
         e.stopPropagation()
         const key = toFacadeKey(e.key)
+        if (key === undefined) {
+          return
+        }
         if (e.ctrlKey) {
           if (e.altKey && e.shiftKey && preventCtrlAltShiftKeys.includes(key)) {
             e.preventDefault()
