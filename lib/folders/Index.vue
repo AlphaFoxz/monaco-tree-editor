@@ -177,6 +177,7 @@ defineExpose({
     </ContextMenu>
     <div v-show="!collapse" class="monaco-tree-editor-list-files">
       <FileTemp
+        :monaco-id="monacoId"
         @confirm-new-file="handleConfirmNewFile"
         @confirm-new-folder="handleConfirmNewFolder"
         @new-file="handleNewFile"

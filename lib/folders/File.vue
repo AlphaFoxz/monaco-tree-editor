@@ -13,6 +13,10 @@ import { type ContextMenuItem } from '../components/context-menu/define'
 import { useI18n } from '../domain/i18n-agg'
 
 const props = defineProps({
+  monacoId: {
+    type: String,
+    required: true,
+  },
   collapseTrigger: {
     type: Number,
   },
@@ -47,7 +51,7 @@ const emit = defineEmits({
 })
 
 // =================== 初始化 handle init ===================
-const monacoStore = useMonaco()
+const monacoStore = useMonaco(props.monacoId)
 const editing = ref(false)
 const showChild = ref(false)
 const nameRef = ref<HTMLElement>()
@@ -298,7 +302,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
 <template>
   <ContextMenu v-if="file.isFile" :menu="fileContextMenu" @select="handleSelectContextMenu">
     <div
-      :title="file.name"
+      :title="monacoStore.actions._getAbsolutePath(file.path)"
       :data-src="file.path"
       @click="handlePathChange"
       :key="file.path"
@@ -383,6 +387,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
       v-for="(item, _index) in keys"
     >
       <FileTemp
+        :monaco-id="monacoId"
         @rename-file="(path, name) => emit('renameFile', path, name)"
         @rename-folder="(path, name) => emit('renameFolder', path, name)"
         @delete-file="(path) => emit('deleteFile', path)"
