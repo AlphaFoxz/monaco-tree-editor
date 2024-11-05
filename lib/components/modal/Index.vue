@@ -13,7 +13,7 @@ const porps = defineProps({
   },
   target: { type: HTMLElement, default: () => document.body },
 })
-const emit = defineEmits({ close: () => true, 'update:visible': (visible: boolean) => true })
+const emit = defineEmits({ close: () => true, 'update:visible': (_: boolean) => true })
 
 const esc = new Hotkey({ command: 'Delete', key: 'Escape', when: 'editor' })
 const hotkeyStore = useHotkey(porps.monacoId)
