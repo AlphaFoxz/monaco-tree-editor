@@ -56,6 +56,8 @@ const zhCN: Messages = {
   'settings.colorTheme': '颜色主题',
   'settings.colorTheme.dark': '深色',
   'settings.colorTheme.light': '浅色',
+  'keybindings.toolBox.search': '在按键绑定中输入要搜索的内容',
+  'keybindings.toolBox.reset': '重置',
   'keybindings.options.header.command': '命令',
   'keybindings.options.header.keybinding': '快捷键',
   'keybindings.options.content.format': '格式化',

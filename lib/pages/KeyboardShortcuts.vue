@@ -13,7 +13,7 @@ const props = defineProps({
   },
 })
 
-const { $t } = useI18n().actions
+const { t } = useI18n().actions
 const hotkeyStore = useHotkey(props.monacoId)
 const componentRef = ref<HTMLDivElement>()
 const keyboardShortcutsRef = ref<HTMLInputElement>()
@@ -63,14 +63,14 @@ function handleKeyboardShortcutsKeydown(e: Event) {
 
 <template>
   <div class="monaco-tree-editor-pages" ref="componentRef">
-    <input class="search" v-model="search" placeholder="Type to search in keybindings" />
-    <!-- <div class="monaco-tree-editor-pages-item"> -->
-    <button @click="resetHotkeys">reset</button>
-    <!-- </div> -->
+    <div class="tool-box">
+      <input v-model="search" :placeholder="t('keybindings.toolBox.search')" />
+      <button @click="resetHotkeys">{{ t('keybindings.toolBox.reset') }}</button>
+    </div>
     <div class="monaco-tree-editor-pages-item table">
       <div class="header">
-        <div>{{ $t('keybindings.options.header.command').value }}</div>
-        <div>{{ $t('keybindings.options.header.keybinding').value }}</div>
+        <div>{{ t('keybindings.options.header.command') }}</div>
+        <div>{{ t('keybindings.options.header.keybinding') }}</div>
       </div>
       <div class="content" v-for="(hotkey, i) in hotkeyStore.states.hotkeyMap" :key="i">
         <div
@@ -93,9 +93,11 @@ function handleKeyboardShortcutsKeydown(e: Event) {
 </template>
 
 <style scoped lang="scss">
-.search {
-  width: calc(100% - 50px);
+.tool-box {
+  display: grid;
+  grid-template-columns: 1fr auto;
 }
+
 .table {
   margin: 10px 0;
   padding: 0;

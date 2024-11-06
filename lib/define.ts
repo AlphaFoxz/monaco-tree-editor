@@ -54,6 +54,8 @@ type MessagesKey =
   | 'settings.colorTheme'
   | 'settings.colorTheme.dark'
   | 'settings.colorTheme.light'
+  | 'keybindings.toolBox.search'
+  | 'keybindings.toolBox.reset'
   | 'keybindings.options.header.command'
   | 'keybindings.options.header.keybinding'
   | 'keybindings.options.content.format'

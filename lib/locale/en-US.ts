@@ -58,6 +58,8 @@ const enUS: Messages = {
   'settings.colorTheme': 'Color Theme',
   'settings.colorTheme.dark': 'Dark',
   'settings.colorTheme.light': 'Light',
+  'keybindings.toolBox.search': 'Type to search in keybindings',
+  'keybindings.toolBox.reset': 'Reset',
   'keybindings.options.header.command': 'Command',
   'keybindings.options.header.keybinding': 'Keybinding',
   'keybindings.options.content.format': 'Format',
