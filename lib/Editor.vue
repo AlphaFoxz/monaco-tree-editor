@@ -4,7 +4,7 @@ import { onMounted, ref, watch, onBeforeUnmount, type ComputedRef } from 'vue'
 import { BuiltInPage } from './define'
 import { longestCommonPrefix, throttle } from './common'
 import { type Files, useMonaco } from './domain/monaco-agg'
-import { type Command as HotkeyCommand, useHotkey } from './domain/hotkey-agg'
+import { useHotkey } from './domain/hotkey-agg'
 import { useMessage } from './domain/message-agg'
 import { useGlobalSettings } from './domain/global-settings-agg'
 import { type ThemeMode, validThemeModes } from './themes/define'
@@ -325,12 +325,12 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
   )
 }
 const handleSaveFile = (
-  path: string,
-  value = monacoStore.actions._getValue(path),
+  path: string | undefined,
+  value = path === undefined ? '' : monacoStore.actions._getValue(path),
   resolve = () => {},
   reject = () => {}
 ) => {
-  if (value === undefined || !path || !monacoStore.actions._hasChanged(path)) {
+  if (value === undefined || path === undefined || !monacoStore.actions._hasChanged(path)) {
     console.debug('there is nothing changed.')
     resolve()
     return
@@ -543,7 +543,7 @@ const dragInEditor = (e: DragEvent) => {
   emit(
     'dragInEditor',
     toOriginPath(srcPath),
-    toOriginPath(monacoStore.states.currentPath.value),
+    toOriginPath(monacoStore.states.currentPath.value!),
     e.dataTransfer.getData('type') as 'file' | 'folder'
   )
 }
@@ -560,7 +560,7 @@ hotkeyStore.actions._setCommandHandler((hotkey, e) => {
       handleSaveFile(monacoStore.states.currentPath.value)
     } else if (command === 'Delete') {
       const path = monacoStore.states.currentPath.value
-      if (path) {
+      if (path && !(path in BuiltInPage)) {
         fileListRef.value.handleDeleteFile(path)
       }
     }
@@ -626,7 +626,11 @@ defineExpose({
       <OpenedTab :monaco-id="monacoId" :fontSize="fontSize" @save-file="handleSaveFile" />
       <div
         id="editor"
-        v-show="monacoStore.states.openedFiles.value.length > 0 && monacoStore.states.currentPath.value[0] !== '<'"
+        v-show="
+          monacoStore.states.openedFiles.value.length > 0 &&
+          monacoStore.states.currentPath.value !== undefined &&
+          !(monacoStore.states.currentPath.value in BuiltInPage)
+        "
         ref="editorRef"
         @drop="dragInEditor"
         :style="{

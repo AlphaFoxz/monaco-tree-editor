@@ -66,8 +66,7 @@ function createAgg(monacoInstanceId: string) {
     let editorDom: HTMLElement
     const prePath = ref<string | null>()
     const editorStates = ref<Map<any, any>>(new Map())
-    const currentValue = ref('')
-    const currentPath = ref('')
+    const currentPath = ref<string>()
     const openedFiles = ref<Array<OpenedFileInfo>>([])
     const prefix = ref('')
     const fileSeparator = ref('/')
@@ -318,7 +317,6 @@ function createAgg(monacoInstanceId: string) {
               }
               return item
             })
-            currentValue.value = v
           })
         }
         prePath.value = path
