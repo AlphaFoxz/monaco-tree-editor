@@ -6,8 +6,10 @@ import { createUnmountableAgg } from 'vue-fn/domain'
 
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 function createAgg(monacoId: string) {
-  return createUnmountableAgg(() => {
-    const monacoInstanceId = ref(monacoId)
+  return createUnmountableAgg((context) => {
+    context.onScopeDispose(() => {
+      delete aggMap[monacoId]
+    })
     const messages = ref<MessageOptions[]>([])
     const debounceMap = new Map<string, Function>()
     function genId() {
@@ -115,9 +117,6 @@ function createAgg(monacoId: string) {
         error,
         updateOptions,
         close,
-      },
-      destory() {
-        delete aggMap[monacoInstanceId.value]
       },
     }
   })

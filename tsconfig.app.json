@@ -11,6 +11,8 @@
     "moduleResolution": "Bundler",
     "noEmit": false,
     "emitDeclarationOnly": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "declaration": true,
     "declarationDir": "dist",
     "types": [

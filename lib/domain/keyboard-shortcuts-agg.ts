@@ -7,37 +7,41 @@ import { type Command, type When, Hotkey } from './hotkey-agg'
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(id: string) {
-  const when = ref()
-  const command = ref()
-  const ctrlKey = ref(false)
-  const altKey = ref(false)
-  const shiftKey = ref(false)
-  const key = ref<KeyName>()
-  const display = computed(() => {
-    const str = []
-    if (ctrlKey.value) {
-      str.push('Ctrl')
-    }
-    if (altKey.value) {
-      str.push('Alt')
-    }
-    if (shiftKey.value) {
-      str.push('Shift')
-    }
-    const k = key.value as string
-    if (k && k !== 'Control' && k !== 'Shift' && k !== 'Alt') {
-      str.push(key.value)
-    }
-    return str.join(' + ')
-  })
+  return createUnmountableAgg((context) => {
+    context.onScopeDispose(() => {
+      delete aggMap[id]
+    })
 
-  function onKeyboardEvent(e: KeyboardEvent) {
-    ctrlKey.value = e.ctrlKey
-    altKey.value = e.altKey
-    shiftKey.value = e.shiftKey
-    key.value = toFacadeKey(e.key)
-  }
-  return createUnmountableAgg(() => {
+    const when = ref()
+    const command = ref()
+    const ctrlKey = ref(false)
+    const altKey = ref(false)
+    const shiftKey = ref(false)
+    const key = ref<KeyName>()
+    const display = computed(() => {
+      const str = []
+      if (ctrlKey.value) {
+        str.push('Ctrl')
+      }
+      if (altKey.value) {
+        str.push('Alt')
+      }
+      if (shiftKey.value) {
+        str.push('Shift')
+      }
+      const k = key.value as string
+      if (k && k !== 'Control' && k !== 'Shift' && k !== 'Alt') {
+        str.push(key.value)
+      }
+      return str.join(' + ')
+    })
+
+    function onKeyboardEvent(e: KeyboardEvent) {
+      ctrlKey.value = e.ctrlKey
+      altKey.value = e.altKey
+      shiftKey.value = e.shiftKey
+      key.value = toFacadeKey(e.key)
+    }
     return {
       states: {
         display,
@@ -66,9 +70,6 @@ function createAgg(id: string) {
             shiftKey: shiftKey.value,
           })
         },
-      },
-      destory() {
-        delete aggMap[id]
       },
     }
   })

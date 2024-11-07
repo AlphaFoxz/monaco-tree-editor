@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { type LeftSiderBarItem } from '../left-sider-bar/define'
 import { type ThemeMode } from '../themes/define'
-import { type Language, useI18n } from './i18n-agg'
+import { useI18n } from './i18n-agg'
 import { createAgg } from 'vue-fn/domain'
 
 const agg = createAgg(() => {

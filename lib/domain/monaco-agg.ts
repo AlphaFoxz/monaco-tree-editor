@@ -2,10 +2,11 @@
 import * as monaco_lib from 'monaco-editor'
 import DarkTheme from '../themes/dark'
 import LightTheme from '../themes/light'
-import { nextTick, ref, shallowRef, watch, type WatchHandle } from 'vue'
+import { nextTick, reactive, ref, shallowRef, watch, watchEffect } from 'vue'
 import { useGlobalSettings } from '../domain/global-settings-agg'
 import type { ThemeMode } from '../themes/define'
 import { createUnmountableAgg } from 'vue-fn/domain'
+import { BuiltInPage } from '../define'
 
 // ============================= 定义类型和纯函数 =============================
 type MonacoLib = typeof monaco_lib
@@ -44,30 +45,31 @@ function getTabSizeByExtension(ext: string): number {
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(monacoInstanceId: string) {
-  return createUnmountableAgg(() => {
-    let watchHandles: WatchHandle[] = []
+  return createUnmountableAgg((context) => {
+    context.onScopeDispose(() => {
+      delete aggMap[monacoInstanceId]
+    })
+
     let originalFileTree: Files
     let monaco = shallowRef<MonacoLib>()
     const globalSettingsStore = useGlobalSettings()
     setTheme(globalSettingsStore.states.themeMode.value)
-    watchHandles.push(
-      watch(globalSettingsStore.states.themeMode, async (n) => {
-        await untilMonacoImported()
-        setTheme(n)
-      })
-    )
+    watch(globalSettingsStore.states.themeMode, async (n) => {
+      await untilMonacoImported()
+      setTheme(n)
+    })
 
     /**
      * It will be true when monaco-editor has been initialized
      */
     const isReady = ref(false)
-    const valueListener = ref<monaco_lib.IDisposable>()
+    const valueListener = shallowRef<monaco_lib.IDisposable>()
     let editor: monaco_lib.editor.IStandaloneCodeEditor
     let editorDom: HTMLElement
     const prePath = ref<string | null>()
-    const editorStates = ref<Map<any, any>>(new Map())
+    const editorStates = reactive<Map<string, monaco_lib.editor.ICodeEditorViewState | null>>(new Map())
     const currentPath = ref<string>()
-    const openedFiles = ref<Array<OpenedFileInfo>>([])
+    const openedFiles = ref<OpenedFileInfo[]>([])
     const prefix = ref('')
     const fileSeparator = ref('/')
     let fileTree = ref<FileInfo>({
@@ -84,8 +86,8 @@ function createAgg(monacoInstanceId: string) {
         return
       }
       return new Promise<void>((resolve) => {
-        const stop = watch(monaco, (newValue) => {
-          if (newValue !== undefined) {
+        const stop = watchEffect(() => {
+          if (monaco.value !== undefined) {
             stop() // 停止监听
             resolve() // 返回数据
           }
@@ -184,7 +186,7 @@ function createAgg(monacoInstanceId: string) {
       })
       fileTree.value = tree
       await untilMonacoImported()
-      Object.keys(files).forEach((key) => {
+      keys.forEach((key) => {
         const value = files[key].content
         if (typeof value === 'string') {
           createOrUpdateModel(key, value, true)
@@ -194,7 +196,7 @@ function createAgg(monacoInstanceId: string) {
       const notExsist: string[] = []
       for (const item of openedFiles.value) {
         const tmpPath = item.path
-        if (files[tmpPath] || tmpPath[0] === '<') {
+        if (files[tmpPath] || tmpPath in BuiltInPage) {
           tmpOpenedFiles.push(item)
         } else {
           notExsist.push(tmpPath)
@@ -205,16 +207,8 @@ function createAgg(monacoInstanceId: string) {
       }
       openedFiles.value = tmpOpenedFiles
     }
-    /**
-     * Creates or updates a model in the Monaco editor.
-     * @param path The path of the model.
-     * @param value The value of the model.
-     * @param force If true, forces the model to be updated even if the value is the same.
-     */
     function createOrUpdateModel(path: string, value: string, force?: boolean) {
-      // Check if the model already exists
       let model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
-
       if (model) {
         // If the value of the model is different, update it
         const v = model.getValue()
@@ -275,38 +269,29 @@ function createAgg(monacoInstanceId: string) {
         })
       }
     }
-    function getEditor(): monaco_lib.editor.IStandaloneCodeEditor {
-      return editor
-    }
-    function getValue(path: string) {
-      const model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
-      return model?.getValue()
-    }
     //恢复视图
-    function restoreModel(path: string): monaco_lib.editor.ITextModel | undefined {
-      if (path[0] === '<') {
+    function restoreModel(path: string | undefined): monaco_lib.editor.ITextModel | undefined {
+      if (path === undefined || path in BuiltInPage) {
         currentPath.value = path
         return
       }
+
       const model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
       if (path !== prePath.value && prePath.value) {
-        editorStates.value.set(prePath.value, editor?.saveViewState())
+        editorStates.set(prePath.value, editor?.saveViewState())
       }
-      if (valueListener.value && valueListener.value.dispose!) {
-        valueListener.value.dispose()
-      }
+      valueListener.value?.dispose?.()
       if (model && editor) {
         editor.setModel(model)
         // 如果path改变，那么恢复上一次的状态
         if (path !== prePath.value) {
-          const editorState = editorStates.value.get(path)
+          const editorState = editorStates.get(path)
           if (editorState) {
             editor.restoreViewState(editorState)
           }
           // 聚焦editor
           editor.focus()
           valueListener.value = model.onDidChangeContent(() => {
-            const v = model.getValue()
             openedFiles.value = openedFiles.value.map((item) => {
               if (item.path === path) {
                 if (hasChanged(path)) {
@@ -437,9 +422,6 @@ function createAgg(monacoInstanceId: string) {
       }
       return originalFileTree[path].content !== m?.getValue()
     }
-    function format() {
-      editor?.getAction('editor.action.formatDocument')?.run()
-    }
     function resize(): void {
       editorDom.style.height = `calc(100% - ${globalSettingsStore.actions._getOpenedTabsHeight() + 6}px)`
       editor?.layout()
@@ -464,7 +446,10 @@ function createAgg(monacoInstanceId: string) {
         _newFile: newFile,
         _newFolder: newFolder,
         _removeBlank: removeBlank,
-        _getValue: getValue,
+        _getValue(path: string) {
+          const model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
+          return model?.getValue()
+        },
         _resize: resize,
         _loadFileTree: loadFileTree,
         _untilMonacoImported: untilMonacoImported,
@@ -478,6 +463,9 @@ function createAgg(monacoInstanceId: string) {
           monaco.value = m
         },
         _getAbsolutePath(relativePath: string): string {
+          if (relativePath in BuiltInPage) {
+            return relativePath
+          }
           let path = prefix.value + relativePath
           if (fileSeparator.value === '\\') {
             path = path.replace(/\//g, '\\')
@@ -485,9 +473,13 @@ function createAgg(monacoInstanceId: string) {
           return path
         },
         defineTheme,
-        getEditor,
+        getEditor(): monaco_lib.editor.IStandaloneCodeEditor {
+          return editor
+        },
         updateOptions,
-        format,
+        format() {
+          editor?.getAction('editor.action.formatDocument')?.run()
+        },
         setOpenedFiles(v: Array<OpenedFileInfo>) {
           openedFiles.value = v
         },
@@ -495,20 +487,23 @@ function createAgg(monacoInstanceId: string) {
           monaco.value = m
         },
       },
-      destory() {
-        for (const handle of watchHandles) {
-          handle()
-        }
-        delete aggMap[monacoInstanceId]
-      },
+      events: {},
     }
   })
 }
 
-export function useMonaco(monacoInstanceId: string = 'default') {
+function useAgg(monacoInstanceId: string) {
   if (!aggMap[monacoInstanceId]) {
     const agg = createAgg(monacoInstanceId)
     aggMap[monacoInstanceId] = agg
   }
-  return aggMap[monacoInstanceId].api
+  return aggMap[monacoInstanceId]
+}
+
+export function useMonaco(monacoInstanceId: string = 'default') {
+  return useAgg(monacoInstanceId).api
+}
+
+export function useMonacoEvent(monacoInstanceId: string = 'default') {
+  return useAgg(monacoInstanceId).events
 }

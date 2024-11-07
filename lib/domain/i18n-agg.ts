@@ -47,15 +47,12 @@ const i18nAgg = createAgg(() => {
   }
 
   function setLanguage(lang: Language) {
-    switch (lang) {
-      case 'en-US':
-        locale.value = enUS
-        break
-      case 'zh-CN':
-        locale.value = zhCN
-        break
-      default:
-        const _: never = lang
+    if (lang === 'en-US') {
+      locale.value = enUS
+    } else if (lang === 'zh-CN') {
+      locale.value = zhCN
+    } else {
+      isNever(lang)
     }
     currentLanguage.value = lang || 'en-US'
   }

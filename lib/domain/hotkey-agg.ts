@@ -57,7 +57,11 @@ export const IDEA_KEYBINDINGS: IHotkey[] = [
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(monacoInstanceId: string) {
-  return createUnmountableAgg(() => {
+  return createUnmountableAgg((context) => {
+    context.onScopeDispose(() => {
+      delete aggMap[monacoInstanceId]
+    })
+
     const commandHandler = ref<CommandsHandler>(() => {})
     const hotkeyMap = reactive<{ [key in Command]: IHotkey }>({
       Format: new Hotkey({ when: 'editor', command: 'Format', ctrlKey: true, altKey: true, key: 'L' }),
@@ -168,9 +172,6 @@ function createAgg(monacoInstanceId: string) {
         clearKeybindings,
         listen,
         unlisten,
-      },
-      destory() {
-        delete aggMap[monacoInstanceId]
       },
     }
   })
