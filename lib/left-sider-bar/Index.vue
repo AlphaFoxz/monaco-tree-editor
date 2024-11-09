@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import './index.scss'
-import { type LeftSiderBarItem } from './define'
-import { type BuiltInPageType } from '../define'
+import { type LeftSiderBarItem, type BuiltInPageType } from '../domain/define'
 import { type ContextMenuItem } from '../components/context-menu/define'
 import ContextMenu from '../components/context-menu/Index.vue'
 import IconsSetting from '../icons/Setting.vue'

@@ -1,6 +1,5 @@
 import { ref } from 'vue'
-import { type LeftSiderBarItem } from '../left-sider-bar/define'
-import { type ThemeMode } from '../themes/define'
+import { type LeftSiderBarItem, type ThemeMode } from './define'
 import { useI18n } from './i18n-agg'
 import { createAgg } from 'vue-fn/domain'
 

@@ -2,7 +2,7 @@ import { createAgg } from 'vue-fn/domain'
 import { type ComputedRef, computed, ref } from 'vue'
 import enUS from '../locale/en-US'
 import zhCN from '../locale/zh-CN'
-import { type Messages } from '../define'
+import { type Messages } from './define'
 
 export const validLanguages = ['en-US', 'zh-CN'] as const
 export type Language = (typeof validLanguages)[number]

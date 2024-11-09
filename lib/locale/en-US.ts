@@ -1,4 +1,4 @@
-import { type Messages } from '../define'
+import { type Messages } from '../domain/define'
 
 const enUS: Messages = {
   'msg.reloading': 'Reloading...',

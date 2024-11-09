@@ -1,13 +1,12 @@
 <script setup lang="tsx">
 import './index.scss'
 import { onMounted, ref, watch, onBeforeUnmount, type ComputedRef } from 'vue'
-import { BuiltInPage } from './define'
-import { longestCommonPrefix, throttle } from './common'
+import { type ThemeMode, VALID_THEME_MODES, BuiltInPage } from './domain/define'
+import { throttle } from './common'
 import { type Files, useMonaco } from './domain/monaco-agg'
 import { useHotkey } from './domain/hotkey-agg'
 import { useMessage } from './domain/message-agg'
 import { useGlobalSettings } from './domain/global-settings-agg'
-import { type ThemeMode, validThemeModes } from './themes/define'
 import LeftSiderBar from './left-sider-bar/Index.vue'
 import FileList from './folders/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
@@ -59,8 +58,8 @@ const props = defineProps({
   },
   theme: {
     type: String,
-    default: validThemeModes[0],
-    validator: (value: ThemeMode) => validThemeModes.includes(value),
+    default: VALID_THEME_MODES[0],
+    validator: (value: ThemeMode) => VALID_THEME_MODES.includes(value),
   },
 })
 const emit = defineEmits({
@@ -148,43 +147,14 @@ watch(
 )
 
 // ================ 编辑器部分 editor ================
-const projectName = ref<any>('project')
-let fileSeparator = '/'
-let projectPrefix = ''
+
 const monacoStore = useMonaco(props.monacoId)
 monacoStore.actions._loadFileTree(props.files)
 const editorRef = ref<HTMLElement>()
-const fixFilesPath = (files: Files): Files => {
-  const fixedFiles: Files = {}
-  projectPrefix = longestCommonPrefix(Object.keys(files))
-  if (projectPrefix.endsWith('\\') || projectPrefix.endsWith('/')) {
-    projectPrefix = projectPrefix.substring(0, projectPrefix.length - 1)
-  }
-  let _projectName = projectPrefix.replace(/\\/g, '/')
-  _projectName = _projectName.substring(_projectName.lastIndexOf('/') + 1)
-  projectName.value = _projectName || undefined
-  console.debug('projectName', _projectName)
-  Object.keys(files).forEach((path) => {
-    if (path.includes('\\')) {
-      fileSeparator = '\\'
-    }
-    const info = files[path]
-    path = path.replace(projectPrefix, '')
-    path = path.replace(/\\/g, '/')
-    fixedFiles[path] = {
-      ...info,
-      path: path,
-    }
-  })
-  files = fixedFiles
-  monacoStore.actions._setPrefix(projectPrefix)
-  monacoStore.actions._setFileSeparator(fileSeparator)
-  return files
-}
 watch(
   () => props.files,
   (n) => {
-    monacoStore.actions._loadFileTree(fixFilesPath(n))
+    monacoStore.actions._loadFileTree(n)
   }
 )
 watch(
@@ -195,7 +165,7 @@ watch(
 )
 onMounted(() => {
   handleReload()
-  monacoStore.actions._loadFileTree(fixFilesPath(props.files))
+  monacoStore.actions._loadFileTree(props.files)
   monacoStore.actions._init(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
 })
 onBeforeUnmount(() => {
@@ -205,8 +175,8 @@ onBeforeUnmount(() => {
 // ================ 回调事件 callback events ================
 const messageStore = useMessage()
 const toOriginPath = (path: string): string => {
-  let oriPath = projectPrefix + path
-  if (fileSeparator === '\\') {
+  let oriPath = monacoStore.states.prefix.value + path
+  if (monacoStore.states.fileSeparator.value === '\\') {
     oriPath = oriPath.replace(/\//g, '\\')
   }
   return oriPath
@@ -451,6 +421,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
     reject()
     return
   }
+  const fileSeparator = monacoStore.states.fileSeparator.value
   const oriPath = toOriginPath(path)
   let tmpArr = oriPath.split(fileSeparator)
   tmpArr.pop()
@@ -493,6 +464,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
     reject()
     return
   }
+  const fileSeparator = monacoStore.states.fileSeparator.value
   const oriPath = toOriginPath(path)
   let tmpArr = oriPath.split(fileSeparator)
   tmpArr.pop()
@@ -609,7 +581,7 @@ defineExpose({
       :file-menu="fileMenu"
       :folder-menu="folderMenu"
       @contextmenu-select="handleContextmenuSelect"
-      :project-name="projectName"
+      :project-name="monacoStore.states.projectName.value"
       :rootEl="rootRef"
       :title="filelistTitle"
       :fontSize="fontSize"

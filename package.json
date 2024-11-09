@@ -26,7 +26,7 @@
     "dev": "vite",
     "build": "pnpm build:compile && pnpm verify && pnpm build:sync-file",
     "build:compile": "vite build",
-    "build:sync-file": "ncp README.md dist/README.md && ncp README.CN.md dist/README.CN.md && ncp LICENSE dist/LICENSE && ncp package.publish.json dist/package.json",
+    "build:sync-file": "node ./script/build-sync-file.mjs",
     "verify": "vue-tsc -p tsconfig.app.json --composite false",
     "test:start-server": "node ./script/get-rand-test-port.mjs && vite -m test",
     "cy:open": "cypress open",

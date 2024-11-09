@@ -1,6 +1,6 @@
 import { createUnmountableAgg } from 'vue-fn/domain'
 import { onBeforeUnmount, reactive, ref } from 'vue'
-import { type KeyName, toFacadeKey } from '../define'
+import { type KeyName, toFacadeKey } from './define'
 
 export type When = 'root' | 'editor'
 export type Command = 'Format' | 'Save' | 'Delete'

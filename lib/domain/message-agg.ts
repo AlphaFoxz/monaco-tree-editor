@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid'
 import { ref } from 'vue'
-import { type MessageOptions } from '../message-popup/define'
+import { type MessageOptions } from './define'
 import { debounce } from '../common'
 import { createUnmountableAgg } from 'vue-fn/domain'
 
