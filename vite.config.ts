@@ -49,8 +49,8 @@ export default defineConfig(({ mode }) => {
         external: ['vue', 'monaco-editor'],
         output: {
           globals: {
-            vue: 'Vue',
-            'monaco-editor': '__external_monaco-editor__',
+            vue: '__Vue',
+            'monaco-editor': '__MonacoEditor',
           },
         },
       },

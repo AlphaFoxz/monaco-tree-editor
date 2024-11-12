@@ -3,7 +3,7 @@ import { onBeforeUnmount, reactive, ref } from 'vue'
 import { type KeyName, toFacadeKey } from './define'
 
 export type When = 'root' | 'editor'
-export type Command = 'Format' | 'Save' | 'Delete'
+export type Command = 'Format' | 'Save' | 'Delete' | 'Find'
 
 export interface IHotkey {
   readonly when: When
@@ -57,7 +57,7 @@ export const IDEA_KEYBINDINGS: IHotkey[] = [
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(monacoInstanceId: string) {
-  return createUnmountableAgg((context) => {
+  return createUnmountableAgg(monacoInstanceId, (context) => {
     context.onScopeDispose(() => {
       delete aggMap[monacoInstanceId]
     })
@@ -67,6 +67,7 @@ function createAgg(monacoInstanceId: string) {
       Format: new Hotkey({ when: 'editor', command: 'Format', ctrlKey: true, altKey: true, key: 'L' }),
       Save: new Hotkey({ when: 'editor', command: 'Save', ctrlKey: true, key: 'S' }),
       Delete: new Hotkey({ when: 'root', command: 'Delete', key: 'Delete' }),
+      Find: new Hotkey({ when: 'root', command: 'Find', ctrlKey: true, key: 'F' }),
     })
 
     const domMap: Map<When, HTMLElement> = new Map()

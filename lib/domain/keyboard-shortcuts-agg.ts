@@ -7,7 +7,7 @@ import { type Command, type When, Hotkey } from './hotkey-agg'
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(id: string) {
-  return createUnmountableAgg((context) => {
+  return createUnmountableAgg(id, (context) => {
     context.onScopeDispose(() => {
       delete aggMap[id]
     })

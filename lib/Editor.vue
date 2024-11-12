@@ -3,7 +3,7 @@ import './index.scss'
 import { onMounted, ref, watch, onBeforeUnmount, type ComputedRef } from 'vue'
 import { type ThemeMode, VALID_THEME_MODES, BuiltInPage } from './domain/define'
 import { throttle } from './common'
-import { type Files, useMonaco } from './domain/monaco-agg'
+import { useMonaco } from './domain/monaco-agg'
 import { useHotkey } from './domain/hotkey-agg'
 import { useMessage } from './domain/message-agg'
 import { useGlobalSettings } from './domain/global-settings-agg'
@@ -110,7 +110,7 @@ const throttleResize = throttle((e: MouseEvent) => {
     const w = dragInfo.width + (e.pageX - dragInfo.pageX)
     console.debug('Dragging', w)
     if (w < props.siderMinWidth / 2) {
-      globalSettingsStore.actions.switchCurrentLeftSiderBar(null)
+      globalSettingsStore.actions.switchCurrentLeftSiderBar(undefined)
     } else if (w >= props.siderMinWidth / 2) {
       globalSettingsStore.actions.switchCurrentLeftSiderBar('Explorer', false)
     }
@@ -535,6 +535,9 @@ hotkeyStore.actions._setCommandHandler((hotkey, e) => {
       if (path && !(path in BuiltInPage)) {
         fileListRef.value.handleDeleteFile(path)
       }
+    } else if (command === 'Find') {
+    } else {
+      isNever(command)
     }
   }
 })

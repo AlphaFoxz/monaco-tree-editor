@@ -1,6 +1,10 @@
 import type { Files } from './types'
 import { longestCommonPrefix } from '../../common'
 
+export function getTabSizeByExtension(ext: string): number {
+  return ['java', 'sql', 'py', 'sh', 'cpp', 'cs', 'c', 'h'].includes(ext) ? 4 : 2
+}
+
 export function fixFilesPath(files: Files) {
   const fixedFiles: Files = {}
   let projectPrefix = '/'

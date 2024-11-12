@@ -1,4 +1,3 @@
-// import * as monaco_define from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco_lib from 'monaco-editor'
 import DarkTheme from '../../themes/dark'
 import LightTheme from '../../themes/light'
@@ -7,20 +6,14 @@ import { useGlobalSettings } from '../global-settings-agg'
 import { createUnmountableAgg } from 'vue-fn/domain'
 import { type ThemeMode, BuiltInPage } from '../define'
 import { type Files, type MonacoLib, type OpenedFileInfo, type FileInfo, TYPE_MAP } from './types'
-import { fixFilesPath } from './fun'
-export { type Files, type MonacoLib, type OpenedFileInfo, type FileInfo, TYPE_MAP }
-
-// ============================= 定义类型和纯函数 =============================
-
-function getTabSizeByExtension(ext: string): number {
-  return ['java', 'sql', 'py', 'sh', 'cpp', 'cs', 'c', 'h'].includes(ext) ? 4 : 2
-}
+import { fixFilesPath, getTabSizeByExtension } from './fun'
+export * from './types'
 
 // ============================= 定义聚合 =============================
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(monacoInstanceId: string) {
-  return createUnmountableAgg((context) => {
+  return createUnmountableAgg(monacoInstanceId, (context) => {
     context.onScopeDispose(() => {
       delete aggMap[monacoInstanceId]
     })
@@ -35,14 +28,11 @@ function createAgg(monacoInstanceId: string) {
       setTheme(n)
     })
 
-    /**
-     * It will be true when monaco-editor has been initialized
-     */
     const isReady = ref(false)
     const valueListener = shallowRef<monaco_lib.IDisposable>()
     let editor: monaco_lib.editor.IStandaloneCodeEditor
     let editorDom: HTMLElement
-    const prePath = ref<string | null>()
+    const prePath = ref<string>()
     const editorStates = reactive<Map<string, monaco_lib.editor.ICodeEditorViewState | null>>(new Map())
     const currentPath = ref<string>()
     const openedFiles = ref<OpenedFileInfo[]>([])
@@ -53,10 +43,7 @@ function createAgg(monacoInstanceId: string) {
       children: {},
       path: '/',
     })
-    /**
-     * Asynchronously waits until the monaco-editor library has been imported.
-     * @returns A Promise that resolves when monaco-editor is imported.
-     */
+
     async function untilMonacoImported(): Promise<void> {
       if (monaco.value !== undefined) {
         return
@@ -70,11 +57,7 @@ function createAgg(monacoInstanceId: string) {
         })
       })
     }
-    /**
-     * Initialize
-     * @param dom
-     * @param options
-     */
+
     async function init(dom: HTMLElement, options?: monaco_lib.editor.IStandaloneEditorConstructionOptions) {
       await untilMonacoImported()
       editor = monaco.value!.editor.create(dom, { ...options, model: null })
@@ -97,11 +80,7 @@ function createAgg(monacoInstanceId: string) {
       setTheme(globalSettingsStore.states.themeMode.value)
       isReady.value = true
     }
-    /**
-     * Define a theme for monaco editor
-     * @param name The name of the theme
-     * @param theme The theme data
-     */
+
     function defineTheme(name: ThemeMode, theme: monaco_lib.editor.IStandaloneThemeData) {
       monaco.value!.editor.defineTheme(name, theme)
     }
@@ -113,10 +92,7 @@ function createAgg(monacoInstanceId: string) {
       // 设置主题
       monaco.value!.editor.setTheme(name)
     }
-    /**
-     * Equals to function of 'updateOptions' in monaco-editor.editor
-     * @param options
-     */
+
     function updateOptions(options: monaco_lib.editor.IStandaloneEditorConstructionOptions) {
       editor.updateOptions(options)
     }
@@ -195,7 +171,6 @@ function createAgg(monacoInstanceId: string) {
     function createOrUpdateModel(path: string, value: string, force?: boolean) {
       let model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
       if (model) {
-        // If the value of the model is different, update it
         const v = model.getValue()
         if (v !== value) {
           model.pushEditOperations(
@@ -208,7 +183,6 @@ function createAgg(monacoInstanceId: string) {
             ],
             () => []
           )
-          // If force is true, reset the status of the opened file
           if (force) {
             openedFiles.value.map((t) => {
               if (t.path === path) {
@@ -217,7 +191,6 @@ function createAgg(monacoInstanceId: string) {
             })
           }
         } else {
-          // If the value is the same, reset the status of the opened file
           openedFiles.value.map((t) => {
             if (t.path === path) {
               t.status = undefined
@@ -225,11 +198,8 @@ function createAgg(monacoInstanceId: string) {
           })
         }
       } else if (path) {
-        // If the model does not exist, create a new one
         let type = ''
         let tabSize = 2
-
-        // Determine the type of the model based on the file extension
         if (path.indexOf('.') !== -1) {
           const extName = path.split('.').slice(-1)[0]
           type = extName
@@ -237,18 +207,12 @@ function createAgg(monacoInstanceId: string) {
         } else {
           type = 'javascript'
         }
-
-        // Map the file extension to the corresponding language type
         type = TYPE_MAP[type] || type
-
-        // Create the model with the specified value and options
         model = monaco.value!.editor.createModel(
           value ?? '',
           type,
           new monaco_lib.Uri().with({ path, authority: 'server', scheme: 'file' })
         )
-
-        // Set the tab size for the model
         model.updateOptions({
           tabSize,
         })
@@ -310,7 +274,7 @@ function createAgg(monacoInstanceId: string) {
     }
     function closeFile(path: string) {
       const pre = openedFiles.value
-      let activePath = ''
+      let activePath = currentPath.value === path ? undefined : currentPath.value
       if (pre.length) {
         const res = pre.filter((v, index) => {
           if (v.path !== path) {
@@ -323,6 +287,9 @@ function createAgg(monacoInstanceId: string) {
           } else {
             // 可能是源码之类的，不存在当前项目中的文件，在关闭时直接销毁，不涉及保存
             m?.dispose()
+          }
+          if (activePath) {
+            return false
           }
           if (pre[index + 1]) {
             activePath = pre[index + 1].path
@@ -337,9 +304,9 @@ function createAgg(monacoInstanceId: string) {
           currentPath.value = activePath
         }
         if (res.length === 0) {
-          restoreModel('')
+          restoreModel(undefined)
           currentPath.value = ''
-          prePath.value = ''
+          prePath.value = undefined
         }
         openedFiles.value = res
       }
@@ -493,8 +460,4 @@ function useAgg(monacoInstanceId: string) {
 
 export function useMonaco(monacoInstanceId: string = 'default') {
   return useAgg(monacoInstanceId).api
-}
-
-export function useMonacoEvent(monacoInstanceId: string = 'default') {
-  return useAgg(monacoInstanceId).events
 }

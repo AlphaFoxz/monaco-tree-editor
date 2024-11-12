@@ -6,7 +6,7 @@ import { createUnmountableAgg } from 'vue-fn/domain'
 
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 function createAgg(monacoId: string) {
-  return createUnmountableAgg((context) => {
+  return createUnmountableAgg(monacoId, (context) => {
     context.onScopeDispose(() => {
       delete aggMap[monacoId]
     })

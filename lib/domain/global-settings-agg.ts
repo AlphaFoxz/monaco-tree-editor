@@ -7,7 +7,7 @@ const agg = createAgg(() => {
   const contextMenuVisble = ref(false)
   const savingFiles = ref(new Set<string>())
   const savingTasks = ref<{ [k: string]: NodeJS.Timeout }>({})
-  const opendLeftSiderBar = ref<LeftSiderBarItem | null>('Explorer')
+  const opendLeftSiderBar = ref<LeftSiderBarItem | undefined>('Explorer')
   const currentThemeMode = ref<ThemeMode>('dark')
   const { currentLanguage } = useI18n().states
   const { setLanguage } = useI18n().actions
@@ -44,9 +44,9 @@ const agg = createAgg(() => {
    * @param item
    * @param autoClose
    */
-  function switchCurrentLeftSiderBar(item: LeftSiderBarItem | null, autoClose = true) {
+  function switchCurrentLeftSiderBar(item: LeftSiderBarItem | undefined, autoClose = true) {
     if (autoClose && opendLeftSiderBar.value === item) {
-      opendLeftSiderBar.value = null
+      opendLeftSiderBar.value = undefined
     } else {
       opendLeftSiderBar.value = item
     }
@@ -66,11 +66,8 @@ const agg = createAgg(() => {
       _getOpenedTabsHeight: getOpenedTabsHeight,
       switchCurrentLeftSiderBar,
       setLanguage,
-      async setThemeMode(theme: ThemeMode) {
+      setThemeMode(theme: ThemeMode) {
         currentThemeMode.value = theme
-      },
-      setOpendLeftSiderBar(item: LeftSiderBarItem | null) {
-        opendLeftSiderBar.value = item
       },
     },
   }
