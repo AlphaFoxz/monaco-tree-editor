@@ -7,11 +7,14 @@ import { useMonaco } from './domain/monaco-agg'
 import { useHotkey } from './domain/hotkey-agg'
 import { useMessage } from './domain/message-agg'
 import { useGlobalSettings } from './domain/global-settings-agg'
+
 import LeftSiderBar from './left-sider-bar/Index.vue'
 import FileList from './folders/Index.vue'
 import OpenedTab from './openedtab/Index.vue'
 import GithubFilled from './icons/GithubFilled.vue'
 import MessagePopup from './message-popup/Index.vue'
+import DarkTheme from './themes/dark'
+import LightTheme from './themes/light'
 import { type Language, useI18n, validLanguages } from './domain/i18n-agg'
 import SettingsPage from './pages/SettingsPage.vue'
 import KeyboardShortcutsPage from './pages/KeyboardShortcuts.vue'
@@ -147,26 +150,28 @@ watch(
 )
 
 // ================ 编辑器部分 editor ================
-
-const monacoStore = useMonaco(props.monacoId)
-monacoStore.actions._loadFileTree(props.files)
-const editorRef = ref<HTMLElement>()
+const monacoStore = useMonaco(undefined, props.monacoId)
 watch(
   () => props.files,
-  (n) => {
-    monacoStore.actions._loadFileTree(n)
+  async (v) => {
+    await monacoStore.actions._loadFileTree(v)
+    console.debug('fileTree loaded')
   }
 )
+const editorRef = ref<HTMLElement>()
 watch(
   () => props.fontSize,
   (n) => {
     monacoStore.actions.updateOptions({ fontSize: n })
   }
 )
-onMounted(() => {
+onMounted(async () => {
   handleReload()
-  monacoStore.actions._loadFileTree(props.files)
-  monacoStore.actions._init(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
+  await monacoStore.actions._mount(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
+  monacoStore.actions.defineTheme('dark', DarkTheme)
+  monacoStore.actions.defineTheme('light', LightTheme)
+  monacoStore.actions.setTheme(globalSettingsStore.states.themeMode.value)
+  console.debug('monaco mounted')
 })
 onBeforeUnmount(() => {
   monacoStore.actions.getEditor()?.dispose()
@@ -530,12 +535,11 @@ hotkeyStore.actions._setCommandHandler((hotkey, e) => {
       monacoStore.actions.format()
     } else if (command === 'Save') {
       handleSaveFile(monacoStore.states.currentPath.value)
-    } else if (command === 'Delete') {
+    } else if (command === 'DeleteFile') {
       const path = monacoStore.states.currentPath.value
       if (path && !(path in BuiltInPage)) {
         fileListRef.value.handleDeleteFile(path)
       }
-    } else if (command === 'Find') {
     } else {
       isNever(command)
     }
@@ -549,15 +553,9 @@ onMounted(() => {
 
 // 暴露方法 expose functions
 defineExpose({
-  resize: () => {
-    monacoStore.actions._resize()
-  },
-  getMonaco: () => {
-    return monacoStore.states.monaco
-  },
-  getEditor: (): ReturnType<typeof monacoStore.actions.getEditor> => {
-    return monacoStore.actions.getEditor()
-  },
+  resize: monacoStore.actions._resize,
+  getMonaco: monacoStore.actions.getMonaco,
+  getEditor: monacoStore.actions.getEditor,
 })
 </script>
 <template>
@@ -614,7 +612,7 @@ defineExpose({
         }"
       ></div>
       <div
-        v-show="!monacoStore.states.isReady || !monacoStore.states.currentPath.value"
+        v-show="!monacoStore.states.initialized.value || !monacoStore.states.currentPath.value"
         class="monaco-tree-editor-area-empty"
       >
         <label>

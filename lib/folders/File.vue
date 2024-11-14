@@ -51,7 +51,7 @@ const emit = defineEmits({
 })
 
 // =================== 初始化 handle init ===================
-const monacoStore = useMonaco(props.monacoId)
+const monacoStore = useMonaco(undefined, props.monacoId)
 const editing = ref(false)
 const showChild = ref(false)
 const nameRef = ref<HTMLElement>()
@@ -263,7 +263,7 @@ const handleBlur = (_e?: Event) => {
   }
 }
 const handlePathChange = (_e?: MouseEvent) => {
-  if (editing.value || !monacoStore.states.isReady.value) {
+  if (editing.value || !monacoStore.states.initialized.value) {
     return
   }
   const key = props.file.path

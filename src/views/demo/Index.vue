@@ -27,14 +27,11 @@ window.MonacoEnvironment = {
   },
   globalAPI: true,
 }
-let monacoStore: ReturnType<typeof useMonaco>
+const monacoStore = useMonaco(monaco)
 // mock delay to test robustness
-server.delay().then(async () => {
-  monacoStore = useMonaco()
-  monacoStore.actions.setMonaco(monaco)
-  await monacoStore.actions._untilMonacoImported()
+onMounted(() => {
   monacoStore.actions.defineTheme('dark', customTheme)
-  registerRestl(monacoStore.states.monaco.value!)
+  registerRestl(monacoStore.actions.getMonaco())
 })
 
 // ================ 推送消息 push message ================

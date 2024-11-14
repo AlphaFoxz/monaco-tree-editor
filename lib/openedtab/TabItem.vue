@@ -32,7 +32,7 @@ const emit = defineEmits({
   abortSave: (_path: string) => true,
   closeOtherFiles: (_path?: string) => true,
 })
-const monacoStore = useMonaco(props.monacoId)
+const monacoStore = useMonaco(undefined, props.monacoId)
 
 //========================= 国际化 i18n ==========================
 const { $t } = useI18n().actions

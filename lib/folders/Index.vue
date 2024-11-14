@@ -56,7 +56,7 @@ const { $t } = useI18n().actions
 
 //=================== 初始化 init ==================
 const collapse = ref(false)
-const monacoStore = useMonaco(props.monacoId)
+const monacoStore = useMonaco(undefined, props.monacoId)
 const fileTree = monacoStore.states._fileTree
 const currentPath = monacoStore.states.currentPath
 

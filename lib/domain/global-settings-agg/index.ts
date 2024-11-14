@@ -1,11 +1,11 @@
 import { ref } from 'vue'
-import { type LeftSiderBarItem, type ThemeMode } from './define'
-import { useI18n } from './i18n-agg'
+import { type LeftSiderBarItem, type ThemeMode } from '../define'
+import { useI18n } from '../i18n-agg'
 import { createAgg } from 'vue-fn/domain'
 
 const agg = createAgg(() => {
   const contextMenuVisble = ref(false)
-  const savingFiles = ref(new Set<string>())
+  const savingFiles = new Set<string>()
   const savingTasks = ref<{ [k: string]: NodeJS.Timeout }>({})
   const opendLeftSiderBar = ref<LeftSiderBarItem | undefined>('Explorer')
   const currentThemeMode = ref<ThemeMode>('dark')
@@ -16,7 +16,7 @@ const agg = createAgg(() => {
     if (isFileLocked(path)) {
       return null
     }
-    savingFiles.value.add(path)
+    savingFiles.add(path)
     const intervalId = setInterval(() => {
       unlockFile(path)
       timeout()
@@ -25,10 +25,10 @@ const agg = createAgg(() => {
     return intervalId
   }
   function isFileLocked(filePath: string) {
-    return savingFiles.value.has(filePath)
+    return savingFiles.has(filePath)
   }
   function unlockFile(path: string) {
-    savingFiles.value.delete(path)
+    savingFiles.delete(path)
     const intervalId = savingTasks.value[path]
     if (intervalId) {
       delete savingTasks.value[path]
@@ -53,6 +53,7 @@ const agg = createAgg(() => {
   }
 
   return {
+    events: {},
     states: {
       contextMenuVisble,
       themeMode: currentThemeMode,

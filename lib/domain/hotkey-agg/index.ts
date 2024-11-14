@@ -1,87 +1,56 @@
-import { createUnmountableAgg } from 'vue-fn/domain'
-import { onBeforeUnmount, reactive, ref } from 'vue'
-import { type KeyName, toFacadeKey } from './define'
-
-export type When = 'root' | 'editor'
-export type Command = 'Format' | 'Save' | 'Delete' | 'Find'
-
-export interface IHotkey {
-  readonly when: When
-  readonly key: KeyName | undefined
-  readonly command: Command
-  readonly ctrlKey: boolean
-  readonly altKey: boolean
-  readonly shiftKey: boolean
-  isMatch(e: KeyboardEvent): boolean
-}
-export type HotkeyOptions = {
-  when: When
-  key: KeyName | undefined
-  command: Command
-  ctrlKey?: boolean
-  altKey?: boolean
-  shiftKey?: boolean
-}
-export class Hotkey implements IHotkey {
-  readonly when: When
-  readonly key: KeyName | undefined
-  readonly command: Command
-  readonly ctrlKey: boolean
-  readonly altKey: boolean
-  readonly shiftKey: boolean
-  constructor(options: HotkeyOptions) {
-    const { when, key, command, ctrlKey, altKey, shiftKey } = options
-    this.command = command
-    this.key = key
-    this.when = when
-    this.ctrlKey = ctrlKey || false
-    this.altKey = altKey || false
-    this.shiftKey = shiftKey || false
-  }
-  isMatch(e: KeyboardEvent) {
-    return (
-      this.key === toFacadeKey(e.key) &&
-      e.ctrlKey === this.ctrlKey &&
-      e.altKey === this.altKey &&
-      e.shiftKey === this.shiftKey
-    )
-  }
-}
-export type CommandsHandler = (hotkeys: IHotkey, e: KeyboardEvent) => void
-
-export const IDEA_KEYBINDINGS: IHotkey[] = [
-  new Hotkey({ when: 'editor', command: 'Format', ctrlKey: true, altKey: true, key: 'L' }),
-  new Hotkey({ when: 'editor', command: 'Save', ctrlKey: true, key: 'S' }),
-]
+import { createBroadcastEvent, createRequestEvent, createUnmountableAgg } from 'vue-fn/domain'
+import { onBeforeUnmount, reactive, ref, type WatchHandle } from 'vue'
+import { type KeyName, toFacadeKey } from '../define'
+export * from './define'
+import type { Command, CommandsHandler, IHotkey, When } from './define'
+import { Hotkey } from './define'
+import type { HotkeyStorePlugin } from './plugins'
 
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
+const storePlugins: HotkeyStorePlugin[] = []
+const aggHandleMap: Record<string, WatchHandle[]> = {}
 
 function createAgg(monacoInstanceId: string) {
   return createUnmountableAgg(monacoInstanceId, (context) => {
+    // ============================ 销毁逻辑 ============================
     context.onScopeDispose(() => {
       delete aggMap[monacoInstanceId]
+      if (aggHandleMap[monacoInstanceId]) {
+        for (const handle of aggHandleMap[monacoInstanceId]) {
+          handle.stop()
+        }
+      }
+      delete aggHandleMap[monacoInstanceId]
     })
 
+    // ============================ 定义变量和默认值 ============================
     const commandHandler = ref<CommandsHandler>(() => {})
     const hotkeyMap = reactive<{ [key in Command]: IHotkey }>({
       Format: new Hotkey({ when: 'editor', command: 'Format', ctrlKey: true, altKey: true, key: 'L' }),
       Save: new Hotkey({ when: 'editor', command: 'Save', ctrlKey: true, key: 'S' }),
-      Delete: new Hotkey({ when: 'root', command: 'Delete', key: 'Delete' }),
-      Find: new Hotkey({ when: 'root', command: 'Find', ctrlKey: true, key: 'F' }),
+      DeleteFile: new Hotkey({ when: 'root', command: 'DeleteFile', key: 'Delete' }),
     })
-
     const domMap: Map<When, HTMLElement> = new Map()
     const callbackMap: Map<When, Array<Function>> = new Map()
 
     const preventCtrlAltShiftKeys: KeyName[] = []
     const preventCtrlShiftKeys: KeyName[] = ['P']
     const preventCtrlAltKeys: KeyName[] = []
-    const preventCtrlKeys: KeyName[] = ['R', 'S', 'D', 'T', 'W']
+    const preventCtrlKeys: KeyName[] = ['E', 'R', 'S', 'D', 'T', 'W']
 
     const preventAltShiftKeys: KeyName[] = []
     const preventAltKeys: KeyName[] = ['ArrowLeft', 'ArrowRight']
 
     const preventKeys: KeyName[] = ['F1', 'F3', 'F5', 'F12']
+
+    // ============================ 定义事件 ============================
+    const needLoadCacheEvent = createRequestEvent({}, (hotkeys: IHotkey[]) => {
+      addKeybindings(hotkeys)
+    })
+    context.onBeforeInitialize(() => {
+      needLoadCacheEvent.publishRequest({})
+    })
+    const onSaveTriggeredEvent = createBroadcastEvent({ hotkeyMap })
 
     function listenKeyDown(when: When) {
       return function (e: KeyboardEvent) {
@@ -123,7 +92,7 @@ function createAgg(monacoInstanceId: string) {
         }
       }
     }
-    function init(name: When, bind: HTMLElement) {
+    function bindDom(name: When, bind: HTMLElement) {
       domMap.set(name, bind)
       const onKeyDown = listenKeyDown(name)
       bind.addEventListener('keydown', onKeyDown)
@@ -133,6 +102,7 @@ function createAgg(monacoInstanceId: string) {
     }
     function addKeybinding(hotkey: IHotkey) {
       hotkeyMap[hotkey.command] = hotkey
+      onSaveTriggeredEvent.publish({ hotkeyMap })
     }
     function addKeybindings(keybindings: IHotkey[]) {
       for (const hotkey of keybindings) {
@@ -160,11 +130,15 @@ function createAgg(monacoInstanceId: string) {
     }
 
     return {
+      events: {
+        needLoadCache: needLoadCacheEvent,
+        onSaveTriggered: onSaveTriggeredEvent,
+      },
       states: {
         hotkeyMap,
       },
       actions: {
-        _init: init,
+        _init: bindDom,
         _setCommandHandler(handler: CommandsHandler) {
           commandHandler.value = handler
         },
@@ -180,7 +154,28 @@ function createAgg(monacoInstanceId: string) {
 
 export function useHotkey(monacoInstanceId: string = 'default') {
   if (!aggMap[monacoInstanceId]) {
-    aggMap[monacoInstanceId] = createAgg(monacoInstanceId)
+    const agg = createAgg(monacoInstanceId)
+    aggMap[monacoInstanceId] = agg
+    if (aggHandleMap[monacoInstanceId] === undefined) {
+      aggHandleMap[monacoInstanceId] = []
+    }
+    for (const plugin of storePlugins) {
+      aggHandleMap[monacoInstanceId].push(
+        agg.api.events.needLoadCache.watchPublishRequest(({ reply }) => {
+          console.debug('加载hotkey缓存')
+          reply(plugin.getCachedHotkeys())
+        })
+      )
+      aggHandleMap[monacoInstanceId].push(
+        agg.api.events.onSaveTriggered.watchPublish(({ data }) => {
+          plugin.saveHotkeys(data.hotkeyMap)
+        })
+      )
+    }
   }
   return aggMap[monacoInstanceId].api
+}
+
+export function registerHotkeyStorePlugin(plugin: HotkeyStorePlugin) {
+  storePlugins.push(plugin)
 }

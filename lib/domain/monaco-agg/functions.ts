@@ -5,7 +5,7 @@ export function getTabSizeByExtension(ext: string): number {
   return ['java', 'sql', 'py', 'sh', 'cpp', 'cs', 'c', 'h'].includes(ext) ? 4 : 2
 }
 
-export function fixFilesPath(files: Files) {
+export function prepareFiles(files: Files) {
   const fixedFiles: Files = {}
   let projectPrefix = '/'
   let fileSeparator = '/'
@@ -29,8 +29,6 @@ export function fixFilesPath(files: Files) {
     }
   })
   files = fixedFiles
-  // monacoStore.actions._setPrefix(projectPrefix)
-  // monacoStore.actions._setFileSeparator(fileSeparator)
   return {
     files,
     prefix: projectPrefix,

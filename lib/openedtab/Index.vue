@@ -20,7 +20,7 @@ const emit = defineEmits({
 })
 
 //========================= 初始化 init =========================
-const monacoStore = useMonaco(props.monacoId)
+const monacoStore = useMonaco(undefined, props.monacoId)
 const openedFiles = monacoStore.states.openedFiles
 const currentPath = monacoStore.states.currentPath
 let instanceRef: ComponentInternalInstance | null

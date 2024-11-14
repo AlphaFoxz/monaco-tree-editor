@@ -31,7 +31,7 @@ function handleClick(item: LeftSiderBarItem) {
 }
 
 //========================= Manage =========================
-const monacoStore = useMonaco(props.monacoId)
+const monacoStore = useMonaco(undefined, props.monacoId)
 const manageBtnMenu: Array<ContextMenuItem<BuiltInPageType | undefined>> = [
   { label: $t('menu.settings'), value: '<Settings>' },
   { label: $t('menu.keyboardShortcuts'), value: '<KeyboardShortcuts>' },

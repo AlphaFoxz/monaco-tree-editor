@@ -1,34 +1,34 @@
 import * as monaco_lib from 'monaco-editor'
-import DarkTheme from '../../themes/dark'
-import LightTheme from '../../themes/light'
-import { nextTick, reactive, ref, shallowRef, watch, watchEffect } from 'vue'
+import { nextTick, reactive, ref, shallowRef, watch } from 'vue'
 import { useGlobalSettings } from '../global-settings-agg'
-import { createUnmountableAgg } from 'vue-fn/domain'
+import { createBroadcastEvent, createUnmountableAgg, Utils as AggUtils } from 'vue-fn/domain'
 import { type ThemeMode, BuiltInPage } from '../define'
 import { type Files, type MonacoLib, type OpenedFileInfo, type FileInfo, TYPE_MAP } from './types'
-import { fixFilesPath, getTabSizeByExtension } from './fun'
+import { prepareFiles, getTabSizeByExtension } from './functions'
 export * from './types'
 
 // ============================= 定义聚合 =============================
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
-function createAgg(monacoInstanceId: string) {
+function createAgg(monacoInstanceId: string, m: MonacoLib) {
   return createUnmountableAgg(monacoInstanceId, (context) => {
     context.onScopeDispose(() => {
       delete aggMap[monacoInstanceId]
     })
 
+    // ================================= 声明变量 ===============================
+    const { promise: untilDomMounted, callback: domMontedCallback } = AggUtils.createPromiseCallback(() => {})
+    const {} = context
+
     const projectName = ref<any>('project')
     let originalFileTree: Files
-    let monaco = shallowRef<MonacoLib>()
+    const monaco = shallowRef(m)
     const globalSettingsStore = useGlobalSettings()
     setTheme(globalSettingsStore.states.themeMode.value)
-    watch(globalSettingsStore.states.themeMode, async (n) => {
-      await untilMonacoImported()
+    watch(globalSettingsStore.states.themeMode, (n) => {
       setTheme(n)
     })
 
-    const isReady = ref(false)
     const valueListener = shallowRef<monaco_lib.IDisposable>()
     let editor: monaco_lib.editor.IStandaloneCodeEditor
     let editorDom: HTMLElement
@@ -44,22 +44,11 @@ function createAgg(monacoInstanceId: string) {
       path: '/',
     })
 
-    async function untilMonacoImported(): Promise<void> {
-      if (monaco.value !== undefined) {
-        return
-      }
-      return new Promise<void>((resolve) => {
-        const stop = watchEffect(() => {
-          if (monaco.value !== undefined) {
-            stop() // 停止监听
-            resolve() // 返回数据
-          }
-        })
-      })
-    }
-
-    async function init(dom: HTMLElement, options?: monaco_lib.editor.IStandaloneEditorConstructionOptions) {
-      await untilMonacoImported()
+    // ================================= 聚合初始化 =================================
+    async function mountMonacoToDom(
+      dom: HTMLElement,
+      options?: monaco_lib.editor.IStandaloneEditorConstructionOptions
+    ) {
       editor = monaco.value!.editor.create(dom, { ...options, model: null })
       editorDom = dom
       const editorService = (editor as any)._codeEditorService
@@ -75,18 +64,16 @@ function createAgg(monacoInstanceId: string) {
         }
         return result
       }
-      defineTheme('dark', DarkTheme)
-      defineTheme('light', LightTheme)
-      setTheme(globalSettingsStore.states.themeMode.value)
-      isReady.value = true
+      domMontedCallback()
     }
 
-    function defineTheme(name: ThemeMode, theme: monaco_lib.editor.IStandaloneThemeData) {
+    async function defineTheme(name: ThemeMode, theme: monaco_lib.editor.IStandaloneThemeData) {
+      await untilDomMounted
       monaco.value!.editor.defineTheme(name, theme)
     }
 
     async function setTheme(name: ThemeMode) {
-      await untilMonacoImported()
+      await untilDomMounted
       // 定义主题
       console.debug('切换monaco主题', name)
       // 设置主题
@@ -96,13 +83,15 @@ function createAgg(monacoInstanceId: string) {
     function updateOptions(options: monaco_lib.editor.IStandaloneEditorConstructionOptions) {
       editor.updateOptions(options)
     }
+
+    const fileTreeLoadedEvent = createBroadcastEvent({})
     async function loadFileTree(fs: Files) {
       const {
         prefix: nPrefix,
         fileSeparator: nFileSeparator,
         files: nfiles,
         projectName: nProjectName,
-      } = fixFilesPath(fs)
+      } = prepareFiles(fs)
       prefix.value = nPrefix
       fileSeparator.value = nFileSeparator
       projectName.value = nProjectName
@@ -146,7 +135,7 @@ function createAgg(monacoInstanceId: string) {
         })
       })
       fileTree.value = tree
-      await untilMonacoImported()
+      await untilDomMounted
       keys.forEach((key) => {
         const value = nfiles[key].content
         if (typeof value === 'string') {
@@ -167,6 +156,7 @@ function createAgg(monacoInstanceId: string) {
         closeFile(key)
       }
       openedFiles.value = tmpOpenedFiles
+      fileTreeLoadedEvent.publish({})
     }
     function createOrUpdateModel(path: string, value: string, force?: boolean) {
       let model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
@@ -224,7 +214,6 @@ function createAgg(monacoInstanceId: string) {
         currentPath.value = path
         return
       }
-
       const model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
       if (path !== prePath.value && prePath.value) {
         editorStates.set(prePath.value, editor?.saveViewState())
@@ -380,20 +369,22 @@ function createAgg(monacoInstanceId: string) {
     }
 
     return {
+      events: {
+        fileTreeLoaded: fileTreeLoadedEvent,
+      },
       states: {
         _prefix: prefix,
         _fileSeparator: fileSeparator,
         _fileTree: fileTree,
-        monaco,
         currentPath,
         openedFiles,
-        isReady,
+        initialized: context.initialized,
         prefix,
         fileSeparator,
         projectName,
       },
       actions: {
-        _init: init,
+        _mount: mountMonacoToDom,
         _restoreModel: restoreModel,
         _openOrFocusPath: openOrFocusPath,
         _hasChanged: hasChanged,
@@ -407,7 +398,6 @@ function createAgg(monacoInstanceId: string) {
         },
         _resize: resize,
         _loadFileTree: loadFileTree,
-        _untilMonacoImported: untilMonacoImported,
         _setProjectName(p: string) {
           projectName.value = p
         },
@@ -416,9 +406,6 @@ function createAgg(monacoInstanceId: string) {
         },
         _setFileSeparator(s: string) {
           fileSeparator.value = s
-        },
-        _setMonaco(m: MonacoLib) {
-          monaco.value = m
         },
         _getAbsolutePath(relativePath: string): string {
           if (relativePath in BuiltInPage) {
@@ -430,7 +417,14 @@ function createAgg(monacoInstanceId: string) {
           }
           return path
         },
+        untilDomMounted: async () => {
+          await untilDomMounted
+        },
+        getMonaco() {
+          return monaco.value
+        },
         defineTheme,
+        setTheme,
         getEditor(): monaco_lib.editor.IStandaloneCodeEditor {
           return editor
         },
@@ -445,19 +439,21 @@ function createAgg(monacoInstanceId: string) {
           monaco.value = m
         },
       },
-      events: {},
     }
   })
 }
 
-function useAgg(monacoInstanceId: string) {
+function useAgg(monacoInstanceId: string, monaco?: MonacoLib) {
   if (!aggMap[monacoInstanceId]) {
-    const agg = createAgg(monacoInstanceId)
+    if (!monaco) {
+      throw new Error('monaco is required')
+    }
+    const agg = createAgg(monacoInstanceId, monaco)
     aggMap[monacoInstanceId] = agg
   }
   return aggMap[monacoInstanceId]
 }
 
-export function useMonaco(monacoInstanceId: string = 'default') {
-  return useAgg(monacoInstanceId).api
+export function useMonaco(monaco?: MonacoLib, monacoInstanceId: string = 'default') {
+  return useAgg(monacoInstanceId, monaco).api
 }
