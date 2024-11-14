@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "nanoid": "^5.0.8",
-    "vue-fn": "0.0.3-aplha.13"
+    "vue-fn": "0.0.3-aplha.19"
   },
   "peerDependencies": {
     "monaco-editor": ">=0.52.0",
