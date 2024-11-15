@@ -12,8 +12,8 @@ importers:
         specifier: ^5.0.8
         version: 5.0.8
       vue-fn:
-        specifier: 0.0.3-aplha.19
-        version: 0.0.3-aplha.19(@vue/reactivity@3.5.12)(vue@3.5.12(typescript@5.6.3))
+        specifier: 0.0.3-aplha.21
+        version: 0.0.3-aplha.21(@vue/reactivity@3.5.12)(vue@3.5.12(typescript@5.6.3))
     devDependencies:
       '@ant-design/icons-vue':
         specifier: ^7.0.1
@@ -1336,8 +1336,8 @@ packages:
   vscode-uri@3.0.8:
     resolution: {integrity: sha512-AyFQ0EVmsOZOlAnxoFOGOq1SQDWAB7C6aqMGS23svWAllfOaxbuFvcT8D1i8z3Gyn8fraVeZNNmN6e9bxxXkKw==}
 
-  vue-fn@0.0.3-aplha.19:
-    resolution: {integrity: sha512-EKVO3raGeWe2uL3zyHQ3GfsWjOqOg84a17y076fn6FYq1+/Vzt3BGunDjybTg/WXM/uvuQRV8M9RF6hDpQ+7lA==}
+  vue-fn@0.0.3-aplha.21:
+    resolution: {integrity: sha512-AKuWzO/2iTOcegA7HNv0NIK3Jcxv6mi2Fe5/sk2qU7hQep+ZoAVaAKhmMWLte59YBTxk2G9iVcZ35+WtOU8xPw==}
     peerDependencies:
       '@vue/reactivity': '>=3.5.0'
       vue: '>=3.5.0'
@@ -2572,7 +2572,7 @@ snapshots:
 
   vscode-uri@3.0.8: {}
 
-  vue-fn@0.0.3-aplha.19(@vue/reactivity@3.5.12)(vue@3.5.12(typescript@5.6.3)):
+  vue-fn@0.0.3-aplha.21(@vue/reactivity@3.5.12)(vue@3.5.12(typescript@5.6.3)):
     dependencies:
       '@vue/reactivity': 3.5.12
       vue: 3.5.12(typescript@5.6.3)
