@@ -1,26 +1,24 @@
-import { createBroadcastEvent, createRequestEvent, createUnmountableAgg } from 'vue-fn/domain'
-import { onBeforeUnmount, reactive, ref, type WatchHandle } from 'vue'
+import {
+  createBroadcastEvent,
+  createRequestEvent,
+  createMultiInstanceAgg,
+  type DomainSetupPlugin,
+  createPluginHelperByCreator,
+} from 'vue-fn/domain'
+import { onBeforeUnmount, reactive, ref } from 'vue'
 import { type KeyName, toFacadeKey } from '../define'
 export * from './define'
 import type { Command, CommandsHandler, IHotkey, When } from './define'
 import { Hotkey } from './define'
-import type { HotkeyStorePlugin } from './plugins'
 
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
-const storePlugins: HotkeyStorePlugin[] = []
-const aggHandleMap: Record<string, WatchHandle[]> = {}
+const plugins: DomainSetupPlugin<any>[] = []
 
 function createAgg(monacoInstanceId: string) {
-  return createUnmountableAgg(monacoInstanceId, (context) => {
+  return createMultiInstanceAgg(monacoInstanceId, (context) => {
     // ============================ 销毁逻辑 ============================
     context.onScopeDispose(() => {
       delete aggMap[monacoInstanceId]
-      if (aggHandleMap[monacoInstanceId]) {
-        for (const handle of aggHandleMap[monacoInstanceId]) {
-          handle.stop()
-        }
-      }
-      delete aggHandleMap[monacoInstanceId]
     })
 
     // ============================ 定义变量和默认值 ============================
@@ -155,27 +153,16 @@ function createAgg(monacoInstanceId: string) {
 export function useHotkey(monacoInstanceId: string = 'default') {
   if (!aggMap[monacoInstanceId]) {
     const agg = createAgg(monacoInstanceId)
+    for (const p of plugins) {
+      agg.trySetupPlugin(p)
+    }
     aggMap[monacoInstanceId] = agg
-    if (aggHandleMap[monacoInstanceId] === undefined) {
-      aggHandleMap[monacoInstanceId] = []
-    }
-    for (const plugin of storePlugins) {
-      aggHandleMap[monacoInstanceId].push(
-        agg.api.events.needLoadCache.watchPublishRequest(({ reply }) => {
-          console.debug('加载hotkey缓存')
-          reply(plugin.getCachedHotkeys())
-        })
-      )
-      aggHandleMap[monacoInstanceId].push(
-        agg.api.events.onSaveTriggered.watchPublish(({ data }) => {
-          plugin.saveHotkeys(data.hotkeyMap)
-        })
-      )
-    }
   }
   return aggMap[monacoInstanceId].api
 }
 
-export function registerHotkeyStorePlugin(plugin: HotkeyStorePlugin) {
-  storePlugins.push(plugin)
+export const HotkeyPluginHelper = createPluginHelperByCreator(createAgg)
+
+export function registerHotkeyPlugin(plugin: DomainSetupPlugin<ReturnType<typeof createAgg>>) {
+  plugins.push(plugin)
 }

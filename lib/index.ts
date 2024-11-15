@@ -6,9 +6,9 @@ import { useMonaco } from './domain/monaco-agg'
 import { useMessage } from './domain/message-agg'
 
 // ================ 加载插件 plugin ================
-import { registerHotkeyStorePlugin } from './domain/hotkey-agg'
+import { registerHotkeyPlugin } from './domain/hotkey-agg'
 import { HOTKEY_STORE_PLUGIN } from './plugins/hotkey-store'
-registerHotkeyStorePlugin(HOTKEY_STORE_PLUGIN)
+registerHotkeyPlugin(HOTKEY_STORE_PLUGIN)
 
 export type { Files, FileInfo }
 export { Editor, useGlobalSettings, useMessage, useMonaco, useHotkey }

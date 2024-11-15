@@ -1,9 +1,9 @@
 import { ref } from 'vue'
 import { type LeftSiderBarItem, type ThemeMode } from '../define'
 import { useI18n } from '../i18n-agg'
-import { createAgg } from 'vue-fn/domain'
+import { createSingletonAgg } from 'vue-fn/domain'
 
-const agg = createAgg(() => {
+const agg = createSingletonAgg(() => {
   const contextMenuVisble = ref(false)
   const savingFiles = new Set<string>()
   const savingTasks = ref<{ [k: string]: NodeJS.Timeout }>({})

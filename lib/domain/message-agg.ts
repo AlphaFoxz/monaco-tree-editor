@@ -2,11 +2,11 @@ import { nanoid } from 'nanoid'
 import { ref } from 'vue'
 import { type MessageOptions } from './define'
 import { debounce } from '../common'
-import { createUnmountableAgg } from 'vue-fn/domain'
+import { createMultiInstanceAgg } from 'vue-fn/domain'
 
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 function createAgg(monacoId: string) {
-  return createUnmountableAgg(monacoId, (context) => {
+  return createMultiInstanceAgg(monacoId, (context) => {
     context.onScopeDispose(() => {
       delete aggMap[monacoId]
     })

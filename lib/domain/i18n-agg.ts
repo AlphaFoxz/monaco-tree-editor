@@ -1,4 +1,4 @@
-import { createAgg } from 'vue-fn/domain'
+import { createSingletonAgg } from 'vue-fn/domain'
 import { type ComputedRef, computed, ref } from 'vue'
 import enUS from '../locale/en-US'
 import zhCN from '../locale/zh-CN'
@@ -7,7 +7,7 @@ import { type Messages } from './define'
 export const validLanguages = ['en-US', 'zh-CN'] as const
 export type Language = (typeof validLanguages)[number]
 
-const i18nAgg = createAgg(() => {
+const i18nAgg = createSingletonAgg(() => {
   const locale = ref<Messages>(enUS)
   const currentLanguage = ref<Language>('en-US')
 

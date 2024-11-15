@@ -1,7 +1,7 @@
 import * as monaco_lib from 'monaco-editor'
 import { nextTick, reactive, ref, shallowRef, watch } from 'vue'
 import { useGlobalSettings } from '../global-settings-agg'
-import { createBroadcastEvent, createUnmountableAgg, Utils as AggUtils } from 'vue-fn/domain'
+import { createBroadcastEvent, createMultiInstanceAgg, Utils as AggUtils } from 'vue-fn/domain'
 import { type ThemeMode, BuiltInPage } from '../define'
 import { type Files, type MonacoLib, type OpenedFileInfo, type FileInfo, TYPE_MAP } from './types'
 import { prepareFiles, getTabSizeByExtension } from './functions'
@@ -11,7 +11,7 @@ export * from './types'
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(monacoInstanceId: string, m: MonacoLib) {
-  return createUnmountableAgg(monacoInstanceId, (context) => {
+  return createMultiInstanceAgg(monacoInstanceId, (context) => {
     context.onScopeDispose(() => {
       delete aggMap[monacoInstanceId]
     })

@@ -1,20 +1,38 @@
-import { hotkeyToJsonString, jsonStringToHotkey, type IHotkey } from '../domain/hotkey-agg/define'
-import type { HotkeyStorePlugin } from '../domain/hotkey-agg/plugins'
+import { type WatchHandle } from 'vue'
+import { HotkeyPluginHelper } from '../domain/hotkey-agg'
+import { type Command, hotkeyToJsonString, jsonStringToHotkey } from '../domain/hotkey-agg/define'
 
-export const HOTKEY_STORE_PLUGIN: HotkeyStorePlugin = {
-  getCachedHotkeys() {
-    const cache = localStorage.getItem('hotkeys')
-    if (cache) {
-      return JSON.parse(cache).map((i: string) => jsonStringToHotkey(i))
-    }
-    return []
-  },
-  saveHotkeys(hotkeyMap: Record<string, IHotkey>) {
-    console.log('hotkeyStore保存快捷键')
-    const json: string[] = []
-    for (const hotykey in hotkeyMap) {
-      json.push(hotkeyToJsonString(hotkeyMap[hotykey]))
-    }
-    localStorage.setItem('hotkeys', JSON.stringify(json))
-  },
-}
+export const HOTKEY_STORE_PLUGIN = HotkeyPluginHelper.defineSetupPlugin(() => {
+  const handlesMap: Record<string, WatchHandle[]> = {}
+  return {
+    register(agg) {
+      console.debug('加载插件')
+      handlesMap[agg.id] = []
+      handlesMap[agg.id].push(
+        agg.api.events.needLoadCache.watchPublishRequest(({ reply }) => {
+          const cache = localStorage.getItem('hotkeys')
+          if (cache) {
+            return reply(JSON.parse(cache).map((i: string) => jsonStringToHotkey(i)))
+          }
+          return reply([])
+        })
+      )
+      handlesMap[agg.id].push(
+        agg.api.events.onSaveTriggered.watchPublish(({ data }) => {
+          console.log('hotkeyStore保存快捷键')
+          const json: string[] = []
+          for (const hotykey in data.hotkeyMap) {
+            json.push(hotkeyToJsonString(data.hotkeyMap[hotykey as Command]))
+          }
+          localStorage.setItem('hotkeys', JSON.stringify(json))
+        })
+      )
+      agg.api.events.destroyed.watchPublish(() => {
+        for (const handle of handlesMap[agg.id]) {
+          handle()
+        }
+        delete handlesMap[agg.id]
+      })
+    },
+  }
+})

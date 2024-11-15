@@ -1,4 +1,4 @@
-import { createUnmountableAgg } from 'vue-fn/domain'
+import { createMultiInstanceAgg } from 'vue-fn/domain'
 import { computed, ref } from 'vue'
 import { nanoid } from 'nanoid'
 import { type KeyName, toFacadeKey } from './define'
@@ -7,7 +7,7 @@ import { type Command, type When, Hotkey } from './hotkey-agg'
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(id: string) {
-  return createUnmountableAgg(id, (context) => {
+  return createMultiInstanceAgg(id, (context) => {
     context.onScopeDispose(() => {
       delete aggMap[id]
     })
