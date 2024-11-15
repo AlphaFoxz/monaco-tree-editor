@@ -1,6 +1,6 @@
 import { type WatchHandle } from 'vue'
-import { HotkeyPluginHelper } from '../domain/hotkey-agg'
-import { type Command, hotkeyToJsonString, jsonStringToHotkey } from '../domain/hotkey-agg/define'
+import { HotkeyPluginHelper } from '../domains/hotkey-agg'
+import { type Command, hotkeyToJsonString, jsonStringToHotkey } from '../domains/hotkey-agg/define'
 
 export const HOTKEY_STORE_PLUGIN = HotkeyPluginHelper.defineSetupPlugin(() => {
   const handlesMap: Record<string, WatchHandle[]> = {}

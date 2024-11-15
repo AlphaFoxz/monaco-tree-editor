@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import './index.scss'
-import { useI18n } from '../domain/i18n-agg'
-import { type When, type Command, type IHotkey, useHotkey, IDEA_KEYBINDINGS } from '../domain/hotkey-agg'
-import { useKeyboardShortcuts } from '../domain/keyboard-shortcuts-agg'
+import { useI18n } from '../domains/i18n-agg'
+import { type When, type Command, type IHotkey, useHotkey, IDEA_KEYBINDINGS } from '../domains/hotkey-agg'
+import { useKeyboardShortcuts } from '../domains/keyboard-shortcuts-agg'
 import Modal from '../components/modal/Index.vue'
 import { nextTick, ref } from 'vue'
 

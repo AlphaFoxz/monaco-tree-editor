@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
 import './index.scss'
-import { Hotkey, useHotkey } from '../../domain/hotkey-agg'
+import { Hotkey, useHotkey } from '../../domains/hotkey-agg'
 const porps = defineProps({
   monacoId: {
     type: String,
@@ -15,7 +15,7 @@ const porps = defineProps({
 })
 const emit = defineEmits({ close: () => true, 'update:visible': (_: boolean) => true })
 
-const esc = new Hotkey({ command: 'Delete', key: 'Escape', when: 'editor' })
+const esc = new Hotkey({ command: 'Format', key: 'Escape', when: 'editor' })
 const hotkeyStore = useHotkey(porps.monacoId)
 const handleKeypress = (e: KeyboardEvent) => {
   if (esc.isMatch(e)) {

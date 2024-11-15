@@ -2,7 +2,7 @@
 import './index.scss'
 import IconLoading from '../icons/Loading.vue'
 import IconClose from '../icons/Close.vue'
-import { type MessageType } from '../domain/define'
+import { type MessageType } from '../domains/define'
 
 defineProps({
   id: {

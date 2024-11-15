@@ -5,8 +5,8 @@ import Confirm from '../components/modal/Confirm.vue'
 import Icons from '../icons/Index.vue'
 import Close from '../icons/Close.vue'
 import { type ContextMenuItem } from '../components/context-menu/define'
-import { useMonaco } from '../domain/monaco-agg'
-import { useI18n } from '../domain/i18n-agg'
+import { useMonaco } from '../domains/monaco-agg'
+import { useI18n } from '../domains/i18n-agg'
 
 const props = defineProps({
   monacoId: {

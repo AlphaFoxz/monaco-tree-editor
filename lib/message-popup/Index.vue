@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import './index.scss'
 import BoxTemp from './Box.vue'
-import { useMessage } from '../domain/message-agg'
+import { useMessage } from '../domains/message-agg'
 import { ref, onMounted } from 'vue'
 
 const messageStore = useMessage()

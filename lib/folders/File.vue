@@ -8,9 +8,9 @@ import IconAddfolder from '../icons/Addfolder.vue'
 import Icons from '../icons/Index.vue'
 import FileTemp from './File.vue'
 import { computed, nextTick, onMounted, ref, watch, type ComputedRef } from 'vue'
-import { type Files, useMonaco } from '../domain/monaco-agg'
+import { type Files, useMonaco } from '../domains/monaco-agg'
 import { type ContextMenuItem } from '../components/context-menu/define'
-import { useI18n } from '../domain/i18n-agg'
+import { useI18n } from '../domains/i18n-agg'
 
 const props = defineProps({
   monacoId: {

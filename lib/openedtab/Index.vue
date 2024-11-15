@@ -2,7 +2,7 @@
 import { onMounted, ref, getCurrentInstance, type ComponentInternalInstance, nextTick } from 'vue'
 import TabItem from './TabItem.vue'
 import './index.scss'
-import { type OpenedFileInfo, useMonaco } from '../domain/monaco-agg'
+import { type OpenedFileInfo, useMonaco } from '../domains/monaco-agg'
 
 const props = defineProps({
   monacoId: {
