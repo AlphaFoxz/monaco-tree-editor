@@ -36,19 +36,19 @@ onMounted(() => {
 })
 
 // ================ 推送消息 push message ================
-const messageStore = useMessage()
+const messageAgg = useMessage()
 onMounted(() => {
-  const id = messageStore.actions.info({
-    content: 'testing..',
+  const id = messageAgg.actions.info({
+    content: 'loading..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.actions.close(id)
-    messageStore.actions.success({
+    messageAgg.actions.close(id)
+    messageAgg.actions.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
-      textTip: 'testing successed!',
+      textTip: 'loading successed!',
     })
   }, 2000)
 })

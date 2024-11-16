@@ -178,7 +178,7 @@ onBeforeUnmount(() => {
 })
 
 // ================ 回调事件 callback events ================
-const messageStore = useMessage()
+const messageAgg = useMessage()
 const toOriginPath = (path: string): string => {
   let oriPath = monacoStore.states.prefix.value + path
   if (monacoStore.states.fileSeparator.value === '\\') {
@@ -188,8 +188,8 @@ const toOriginPath = (path: string): string => {
 }
 const lockFile = (filePath: string, loadingMsgId: string) => {
   globalSettingsStore.actions._lockFile(filePath, () => {
-    messageStore.actions.close(loadingMsgId)
-    messageStore.actions.error({
+    messageAgg.actions.close(loadingMsgId)
+    messageAgg.actions.error({
       content: t('msg.timeout'),
       closeable: true,
     })
@@ -198,31 +198,31 @@ const lockFile = (filePath: string, loadingMsgId: string) => {
 }
 const handleReload = (
   resolve = () => {
-    messageStore.actions.success({
+    messageAgg.actions.success({
       content: t('msg.reloadSuccessed'),
       closeable: true,
       timeoutMs: 3000,
     })
   },
   reject = (msg = '') => {
-    messageStore.actions.error({
+    messageAgg.actions.error({
       content: t('msg.reloadFailed', { msg }),
       closeable: true,
     })
   }
 ) => {
-  const msgId = messageStore.actions.info({
+  const msgId = messageAgg.actions.info({
     content: t('msg.reloading'),
     loading: true,
   })
   emit(
     'reload',
     () => {
-      messageStore.actions.close(msgId)
+      messageAgg.actions.close(msgId)
       resolve()
     },
     (msg = '') => {
-      messageStore.actions.close(msgId)
+      messageAgg.actions.close(msgId)
       reject(msg)
     }
   )
@@ -233,7 +233,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.actions.info({
+  const msgId = messageAgg.actions.info({
     content: t('msg.creating{path}', { path }),
     loading: true,
   })
@@ -243,8 +243,8 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
     oriPath,
     () => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.success({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.success({
         content: t('msg.createSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -254,8 +254,8 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
     },
     (msg = '') => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.error({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.error({
         content: t('msg.createFailed', { msg }),
         closeable: true,
       })
@@ -269,7 +269,7 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.actions.info({
+  const msgId = messageAgg.actions.info({
     content: t('msg.creating{path}', { path }),
     loading: true,
   })
@@ -279,8 +279,8 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
     oriPath,
     () => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.success({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.success({
         content: t('msg.createSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -290,8 +290,8 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
     },
     (msg = '') => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.error({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.error({
         content: t('msg.createFailed', { msg }),
         closeable: true,
       })
@@ -315,7 +315,7 @@ const handleSaveFile = (
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.actions.info({
+  const msgId = messageAgg.actions.info({
     content: t('msg.saving{path}', { path }),
     loading: true,
   })
@@ -326,8 +326,8 @@ const handleSaveFile = (
     value,
     () => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.success({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.success({
         content: t('msg.saveSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -337,8 +337,8 @@ const handleSaveFile = (
     },
     (msg = '') => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.error({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.error({
         content: t('msg.saveFailed', { msg }),
         closeable: true,
       })
@@ -353,7 +353,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.actions.info({
+  const msgId = messageAgg.actions.info({
     content: t('msg.deletingFile{path}', { path }),
     loading: true,
   })
@@ -363,8 +363,8 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
     oriPath,
     () => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.success({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.success({
         content: t('msg.deleteSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -374,8 +374,8 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
     },
     (msg = '') => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.error({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.error({
         content: t('msg.deleteFailed{msg}', { msg }),
         closeable: true,
       })
@@ -390,7 +390,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
     return
   }
   const oriPath = toOriginPath(path)
-  const msgId = messageStore.actions.info({
+  const msgId = messageAgg.actions.info({
     content: t('msg.deletingFolder{path}', { path }),
     loading: true,
   })
@@ -400,8 +400,8 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
     oriPath,
     () => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.success({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.success({
         content: t('msg.deleteSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -411,8 +411,8 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
     },
     (msg = '') => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.error({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.error({
         content: t('msg.deleteFailed{msg}', { msg }),
         closeable: true,
       })
@@ -432,7 +432,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
   tmpArr.pop()
   tmpArr.push(newName)
   const newPath = tmpArr.join(fileSeparator)
-  const msgId = messageStore.actions.info({
+  const msgId = messageAgg.actions.info({
     content: t('msg.renamingFile{path}', { path }),
     loading: true,
   })
@@ -443,8 +443,8 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
     newPath,
     () => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.success({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.success({
         content: t('msg.renameSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -454,8 +454,8 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
     },
     (msg = '') => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.error({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.error({
         content: t('msg.renameFailed', { msg }),
         closeable: true,
       })
@@ -475,7 +475,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
   tmpArr.pop()
   tmpArr.push(newName)
   const newPath = tmpArr.join(fileSeparator)
-  const msgId = messageStore.actions.info({
+  const msgId = messageAgg.actions.info({
     content: t('msg.renamingFolder{path}', { path }),
     loading: true,
   })
@@ -486,8 +486,8 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
     newPath,
     () => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.success({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.success({
         content: t('msg.renameSuccessed'),
         timeoutMs: 3000,
         closeable: true,
@@ -497,8 +497,8 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
     },
     (msg = '') => {
       globalSettingsStore.actions._unlockFile(path)
-      messageStore.actions.close(msgId)
-      messageStore.actions.error({
+      messageAgg.actions.close(msgId)
+      messageAgg.actions.error({
         content: t('msg.renameFailed', { msg }),
         closeable: true,
       })

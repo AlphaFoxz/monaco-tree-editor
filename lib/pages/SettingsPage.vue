@@ -14,7 +14,7 @@ const props = defineProps({
 
 const { currentLanguage } = useI18n().states
 const { setLanguage, $t } = useI18n().actions
-const messageStore = useMessage()
+const messageAgg = useMessage()
 const globalSettingsStore = useGlobalSettings()
 
 function handleSelectLanguage(e: Event) {
@@ -27,7 +27,7 @@ function handleSelectLanguage(e: Event) {
       break
     }
   }
-  messageStore.actions.success({
+  messageAgg.actions.success({
     content: $t('msg.languageChanged{lang}', { lang: inner }).value,
     closeable: true,
     timeoutMs: 3000,

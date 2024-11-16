@@ -5,15 +5,15 @@ import { ref, onMounted } from 'vue'
 import * as monaco from 'monaco-editor'
 import * as server from './mock-server'
 
-const messageStore = useMessage()
+const messageAgg = useMessage()
 onMounted(() => {
-  const id = messageStore.actions.info({
+  const id = messageAgg.actions.info({
     content: 'testing..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.actions.close(id)
-    messageStore.actions.success({
+    messageAgg.actions.close(id)
+    messageAgg.actions.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
