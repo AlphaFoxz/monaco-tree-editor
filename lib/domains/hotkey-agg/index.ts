@@ -48,7 +48,7 @@ function createAgg(monacoInstanceId: string) {
     context.onBeforeInitialize(() => {
       needLoadCacheEvent.publishRequest({})
     })
-    const onSaveTriggeredEvent = createBroadcastEvent({ hotkeyMap })
+    const onKeybindingChangedByUserEvent = createBroadcastEvent({ hotkeyMap })
 
     function listenKeyDown(when: When) {
       return function (e: KeyboardEvent) {
@@ -98,9 +98,9 @@ function createAgg(monacoInstanceId: string) {
         bind.removeEventListener('keydown', onKeyDown)
       })
     }
-    function addKeybinding(hotkey: IHotkey) {
+    function addKeybindingByUser(hotkey: IHotkey) {
       hotkeyMap[hotkey.command] = hotkey
-      onSaveTriggeredEvent.publish({ hotkeyMap })
+      onKeybindingChangedByUserEvent.publish({ hotkeyMap })
     }
     function addKeybindings(keybindings: IHotkey[]) {
       for (const hotkey of keybindings) {
@@ -130,7 +130,7 @@ function createAgg(monacoInstanceId: string) {
     return {
       events: {
         needLoadCache: needLoadCacheEvent,
-        onSaveTriggered: onSaveTriggeredEvent,
+        onKeybindingChangedByUser: onKeybindingChangedByUserEvent,
       },
       states: {
         hotkeyMap,
@@ -140,7 +140,7 @@ function createAgg(monacoInstanceId: string) {
         _setCommandHandler(handler: CommandsHandler) {
           commandHandler.value = handler
         },
-        addKeybinding,
+        addKeybindingByUser,
         addKeybindings,
         clearKeybindings,
         listen,

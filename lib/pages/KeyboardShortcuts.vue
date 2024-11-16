@@ -53,7 +53,7 @@ function handleKeyboardShortcutsKeydown(e: Event) {
   console.debug('input')
   const event = e as KeyboardEvent
   if (!event.ctrlKey && !event.altKey && !event.shiftKey && event.key === 'Enter') {
-    hotkeyStore.actions.addKeybinding(keyboardShortcutsStore.actions.getHotkey())
+    hotkeyStore.actions.addKeybindingByUser(keyboardShortcutsStore.actions.getHotkey())
     modalVisible.value = false
   } else {
     keyboardShortcutsStore.actions.onKeyboardEvent(event)

@@ -18,7 +18,7 @@ export const HOTKEY_STORE_PLUGIN = HotkeyPluginHelper.defineSetupPlugin(() => {
         })
       )
       handlesMap[agg.id].push(
-        agg.api.events.onSaveTriggered.watchPublish(({ data }) => {
+        agg.api.events.onKeybindingChangedByUser.watchPublish(({ data }) => {
           console.log('hotkeyStore保存快捷键')
           const json: string[] = []
           for (const hotykey in data.hotkeyMap) {
@@ -27,12 +27,14 @@ export const HOTKEY_STORE_PLUGIN = HotkeyPluginHelper.defineSetupPlugin(() => {
           localStorage.setItem('hotkeys', JSON.stringify(json))
         })
       )
-      agg.api.events.destroyed.watchPublish(() => {
-        for (const handle of handlesMap[agg.id]) {
-          handle()
-        }
-        delete handlesMap[agg.id]
-      })
+      handlesMap[agg.id].push(
+        agg.api.events.destroyed.watchPublish(() => {
+          for (const handle of handlesMap[agg.id]) {
+            handle()
+          }
+          delete handlesMap[agg.id]
+        })
+      )
     },
   }
 })
