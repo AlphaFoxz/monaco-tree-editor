@@ -29,54 +29,30 @@ function createAgg(monacoId: string) {
       }
       return id
     }
-    /**
-     * Popup info message
-     * @param options
-     * @returns id
-     */
     function info(options: MessageOptions): string {
       return pushMessage({
         ...options,
         type: 'info',
       })
     }
-    /**
-     * Popup success message
-     * @param options
-     * @returns id
-     */
     function success(options: MessageOptions): string {
       return pushMessage({
         ...options,
         type: 'success',
       })
     }
-    /**
-     * Popup warn message
-     * @param options
-     * @returns id
-     */
     function warn(options: MessageOptions): string {
       return pushMessage({
         ...options,
         type: 'warn',
       })
     }
-    /**
-     * Popup error message
-     * @param options
-     * @returns id
-     */
     function error(options: MessageOptions): string {
       return pushMessage({
         ...options,
         type: 'error',
       })
     }
-    /**
-     * Close message by id
-     * @param id
-     */
     function close(id: string) {
       messages.value = messages.value.filter((item) => item.id !== id)
       debounceMap.delete(id)
@@ -87,10 +63,6 @@ function createAgg(monacoId: string) {
         close(id)
       }
     }
-    /**
-     * Update message options by id
-     * @param options
-     */
     function updateOptions(options: MessageOptions & {}) {
       messages.value.forEach((item) => {
         if (item.id === options.id) {

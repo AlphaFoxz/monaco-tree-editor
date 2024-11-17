@@ -1,16 +1,21 @@
 import { ref } from 'vue'
 import { type LeftSiderBarItem, type ThemeMode } from '../define'
 import { useI18n } from '../i18n-agg'
-import { createSingletonAgg } from 'vue-fn/domain'
+import { createBroadcastEvent, createSingletonAgg } from 'vue-fn/domain'
 
 const agg = createSingletonAgg(() => {
+  // =================== 主题颜色 ==================
+  const currentThemeMode = ref<ThemeMode>('dark')
+
+  // ================== 国际化 i18n ==================
+  const { currentLanguage } = useI18n().states
+  const { setLanguage } = useI18n().actions
+
+  // =================== 其他 ==================
   const contextMenuVisble = ref(false)
   const savingFiles = new Set<string>()
   const savingTasks = ref<{ [k: string]: NodeJS.Timeout }>({})
   const opendLeftSiderBar = ref<LeftSiderBarItem | undefined>('Explorer')
-  const currentThemeMode = ref<ThemeMode>('dark')
-  const { currentLanguage } = useI18n().states
-  const { setLanguage } = useI18n().actions
 
   function lockFile(path: string, timeout: () => void, timeoutMs = 8 * 1000) {
     if (isFileLocked(path)) {
@@ -38,12 +43,6 @@ const agg = createSingletonAgg(() => {
   function getOpenedTabsHeight(): number {
     return document.getElementsByClassName('monaco-tree-editor-opened-tab')[0].clientHeight
   }
-  /**
-   * Switch current active left sider bar, if `autoClose` = true and the param `item` is
-   * the same as currentLeftSiderBar.value, it will close
-   * @param item
-   * @param autoClose
-   */
   function switchCurrentLeftSiderBar(item: LeftSiderBarItem | undefined, autoClose = true) {
     if (autoClose && opendLeftSiderBar.value === item) {
       opendLeftSiderBar.value = undefined

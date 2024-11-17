@@ -42,11 +42,17 @@ function createAgg(monacoInstanceId: string) {
     const preventKeys: KeyName[] = ['F1', 'F3', 'F5', 'F12']
 
     // ============================ 定义事件 ============================
-    const needLoadCacheEvent = createRequestEvent({}, (hotkeys: IHotkey[]) => {
-      addKeybindings(hotkeys)
-    })
-    context.onBeforeInitialize(() => {
-      needLoadCacheEvent.publishRequest({})
+    // 初始化
+    const needLoadCacheEvent = createRequestEvent(
+      {},
+      (hotkeys: IHotkey[]) => {
+        addKeybindings(hotkeys)
+      },
+      true,
+      500
+    )
+    context.onBeforeInitialize(async () => {
+      await needLoadCacheEvent.publishRequest({}).catch((_: Error) => {})
     })
     const onKeybindingChangedByUserEvent = createBroadcastEvent({ hotkeyMap })
 
