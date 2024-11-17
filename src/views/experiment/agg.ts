@@ -1,12 +1,12 @@
 import { createSharedSingletonAgg } from 'vue-fn/shared-domain'
 
 const agg = createSharedSingletonAgg('agg', (context) => {
-  const name = context.sharedRef('name', 'Hello World!')
+  const sharedRefs = context.sharedRefs({ name: 'Hello World!' })
   return {
-    states: { name },
+    states: { name: sharedRefs.name },
     actions: {
       setName(n: string) {
-        name.value = n
+        sharedRefs.name.value = n
       },
     },
   }
