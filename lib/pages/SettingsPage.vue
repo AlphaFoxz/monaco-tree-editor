@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import './index.scss'
-import { type Language, useI18n } from '../domains/i18n-agg'
-import { useMessage } from '../domains/message-agg'
-import { useGlobalSettings } from '../domains/global-settings-agg'
-import { type ThemeMode } from '../domains/define'
+import { type Language, useI18n } from '#domain/i18n-agg'
+import { useMessage } from '#domain/message-agg'
+import { useGlobalSettings } from '#domain/global-settings-agg'
+import { type ThemeMode } from '#domain/define'
 
 const props = defineProps({
   customMenu: {

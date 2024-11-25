@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import './index.scss'
-import { type LeftSiderBarItem, type BuiltInPageType } from '../domains/define'
-import { type ContextMenuItem } from '../components/context-menu/define'
-import ContextMenu from '../components/context-menu/Index.vue'
-import IconsSetting from '../icons/Setting.vue'
-import IconsFile from '../icons/File.vue'
+import { type LeftSiderBarItem, type BuiltInPageType } from '#domain/define'
+import { type ContextMenuItem } from '#components/context-menu/define'
+import ContextMenu from '#components/context-menu/Index.vue'
+import IconsSetting from '#icons/Setting.vue'
+import IconsFile from '#icons/File.vue'
 import ItemTemp from './ItemTemp.vue'
-import { useGlobalSettings } from '../domains/global-settings-agg'
-import { useI18n } from '../domains/i18n-agg'
-import { useMonaco } from '../domains/monaco-agg'
+import { useGlobalSettings } from '#domain/global-settings-agg'
+import { useI18n } from '#domain/i18n-agg'
+import { useMonaco } from '#domain/monaco-agg'
 
 const props = defineProps({
   monacoId: {

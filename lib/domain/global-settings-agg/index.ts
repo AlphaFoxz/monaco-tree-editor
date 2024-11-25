@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { type LeftSiderBarItem, type ThemeMode } from '../define'
 import { useI18n } from '../i18n-agg'
-import { createBroadcastEvent, createSingletonAgg } from 'vue-fn/domain'
+import { createSingletonAgg } from 'vue-fn/domain'
 
 const agg = createSingletonAgg(() => {
   // =================== 主题颜色 ==================

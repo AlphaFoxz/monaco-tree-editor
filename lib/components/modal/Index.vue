@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
 import './index.scss'
-import { Hotkey, useHotkey } from '../../domains/hotkey-agg'
+import { Hotkey, useHotkey } from '#domain/hotkey-agg'
 const porps = defineProps({
   monacoId: {
     type: String,

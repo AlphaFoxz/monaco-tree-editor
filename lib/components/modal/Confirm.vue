@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import './index.scss'
-import CloseIcon from '../../icons/Close.vue'
-import Button from '../button/Index.vue'
-import { useHotkey } from '../../domains/hotkey-agg'
+import CloseIcon from '#icons/Close.vue'
+import Button from '#components/button/Index.vue'
+import { useHotkey } from '#domain/hotkey-agg'
 import { onBeforeUnmount } from 'vue'
 const props = defineProps({
   monacoId: {

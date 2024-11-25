@@ -1,6 +1,8 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "include": [
+    "lib/*",
+    "lib/**/*",
     "vite.config.*",
     "vitest.config.*",
     "cypress.config.*",
@@ -14,5 +16,28 @@
     "types": [
       "node"
     ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "#lib/*": [
+        "./lib/*"
+      ],
+      "#domain/*": [
+        "./lib/domain/*"
+      ],
+      "#domain-plugin/*": [
+        "./lib/domain-plugin/*"
+      ],
+      "#icons/*": [
+        "./lib/icons/*"
+      ],
+      "#components/*": [
+        "./lib/components/*"
+      ],
+      "#pages/*": [
+        "./lib/pages/*"
+      ]
+    },
   }
 }

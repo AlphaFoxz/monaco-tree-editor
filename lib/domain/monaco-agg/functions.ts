@@ -1,5 +1,5 @@
 import type { Files } from './types'
-import { longestCommonPrefix } from '../../common'
+import { longestCommonPrefix } from '#lib/common'
 
 export function getTabSizeByExtension(ext: string): number {
   return ['java', 'sql', 'py', 'sh', 'cpp', 'cs', 'c', 'h'].includes(ext) ? 4 : 2
