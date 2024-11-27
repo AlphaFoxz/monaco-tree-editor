@@ -12,8 +12,8 @@ importers:
         specifier: ^5.0.8
         version: 5.0.8
       vue-fn:
-        specifier: 0.0.3-aplha.26
-        version: 0.0.3-aplha.26(@vue/reactivity@3.5.12)(vue@3.5.12(typescript@5.6.3))
+        specifier: 0.0.3-aplha.30
+        version: 0.0.3-aplha.30(@vue/reactivity@3.5.12)(vue@3.5.12(typescript@5.6.3))
     devDependencies:
       '@ant-design/icons-vue':
         specifier: ^7.0.1
@@ -1350,6 +1350,10 @@ packages:
     resolution: {integrity: sha512-KK8xQ1mkzZeg9inewmFVDNkg3l5LUhoq9kN6iWYB/CC9YMG8HA+c1Q8HwDe6dEX7kErrEVNVBO3fWsVq5iDgtw==}
     engines: {node: '>=8'}
 
+  uuid@11.0.3:
+    resolution: {integrity: sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==}
+    hasBin: true
+
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
@@ -1395,8 +1399,8 @@ packages:
   vscode-uri@3.0.8:
     resolution: {integrity: sha512-AyFQ0EVmsOZOlAnxoFOGOq1SQDWAB7C6aqMGS23svWAllfOaxbuFvcT8D1i8z3Gyn8fraVeZNNmN6e9bxxXkKw==}
 
-  vue-fn@0.0.3-aplha.26:
-    resolution: {integrity: sha512-eRLDgSGcF5jKtTDsi4GU7Aql7auz2zTfpeFteJjyPeGmjnFrH7O3Pn89JIVA0v2HkAFybfRIY5CkfWzQ5oTsnQ==}
+  vue-fn@0.0.3-aplha.30:
+    resolution: {integrity: sha512-VCOE01hcKtvAm8gy1qrbJ5kq65syk67fyTtFs5LlQcwuwC3VNgRxGm6+YQpfORPKJK54avyvdp3PFnW46obf7A==}
     peerDependencies:
       '@vue/reactivity': '>=3.5.0'
       vue: '>=3.5.0'
@@ -2666,6 +2670,8 @@ snapshots:
 
   untildify@4.0.0: {}
 
+  uuid@11.0.3: {}
+
   uuid@8.3.2: {}
 
   validate-npm-package-license@3.0.4:
@@ -2692,9 +2698,10 @@ snapshots:
 
   vscode-uri@3.0.8: {}
 
-  vue-fn@0.0.3-aplha.26(@vue/reactivity@3.5.12)(vue@3.5.12(typescript@5.6.3)):
+  vue-fn@0.0.3-aplha.30(@vue/reactivity@3.5.12)(vue@3.5.12(typescript@5.6.3)):
     dependencies:
       '@vue/reactivity': 3.5.12
+      uuid: 11.0.3
       vue: 3.5.12(typescript@5.6.3)
 
   vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)):

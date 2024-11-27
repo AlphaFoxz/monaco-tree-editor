@@ -2,8 +2,7 @@ import {
   createBroadcastEvent,
   createRequestEvent,
   createMultiInstanceAgg,
-  type DomainSetupPlugin,
-  createPluginHelperByCreator,
+  createPluginHelperByAggCreator,
 } from 'vue-fn/domain'
 import { onBeforeUnmount, reactive, ref } from 'vue'
 import { type KeyName, toFacadeKey } from '../define'
@@ -12,7 +11,6 @@ import type { Command, CommandsHandler, IHotkey, When } from './define'
 import { Hotkey } from './define'
 
 const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
-const plugins: DomainSetupPlugin<any>[] = []
 
 function createAgg(monacoInstanceId: string) {
   return createMultiInstanceAgg(monacoInstanceId, (context) => {
@@ -156,19 +154,13 @@ function createAgg(monacoInstanceId: string) {
   })
 }
 
+export const HotkeyPluginHelper = createPluginHelperByAggCreator(createAgg)
+
 export function useHotkey(monacoInstanceId: string = 'default') {
   if (!aggMap[monacoInstanceId]) {
     const agg = createAgg(monacoInstanceId)
-    for (const p of plugins) {
-      agg.trySetupPlugin(p)
-    }
+    HotkeyPluginHelper.registerAgg(agg)
     aggMap[monacoInstanceId] = agg
   }
   return aggMap[monacoInstanceId].api
-}
-
-export const HotkeyPluginHelper = createPluginHelperByCreator(createAgg)
-
-export function registerHotkeyPlugin(plugin: DomainSetupPlugin<ReturnType<typeof createAgg>>) {
-  plugins.push(plugin)
 }

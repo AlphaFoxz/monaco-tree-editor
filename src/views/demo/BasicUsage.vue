@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Editor as MonacoTreeEditor, useMonaco, type Files } from '../../../lib'
+import { Editor as MonacoTreeEditor, useMonaco, type Files } from '#lib/index'
 import 'moanco-tree-editor/index.css'
 import { ref } from 'vue'
 import * as monaco from 'monaco-editor'

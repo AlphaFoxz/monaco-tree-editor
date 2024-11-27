@@ -1,10 +1,11 @@
 import * as monaco_lib from 'monaco-editor'
-import { nextTick, reactive, ref, shallowRef, watch } from 'vue'
+import { nextTick, reactive, ref, shallowRef, watchEffect } from 'vue'
 import { useGlobalSettings } from '../global-settings-agg'
 import { createBroadcastEvent, createMultiInstanceAgg, Utils as AggUtils } from 'vue-fn/domain'
 import { type ThemeMode, BuiltInPage } from '../define'
 import { type Files, type MonacoLib, type OpenedFileInfo, type FileInfo, TYPE_MAP } from './types'
-import { prepareFiles, getTabSizeByExtension } from './functions'
+import * as FileTree from './file-tree'
+import * as MonacoExt from './monaco-ext'
 export * from './types'
 
 // ============================= 定义聚合 =============================
@@ -24,9 +25,8 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
     let originalFileTree: Files
     const monaco = shallowRef(m)
     const globalSettingsStore = useGlobalSettings()
-    setTheme(globalSettingsStore.states.themeMode.value)
-    watch(globalSettingsStore.states.themeMode, (n) => {
-      setTheme(n)
+    watchEffect(() => {
+      MonacoExt.setTheme(untilDomMounted, monaco, globalSettingsStore.states.themeMode.value)
     })
 
     const valueListener = shallowRef<monaco_lib.IDisposable>()
@@ -67,31 +67,18 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       domMontedCallback()
     }
 
-    async function defineTheme(name: ThemeMode, theme: monaco_lib.editor.IStandaloneThemeData) {
-      await untilDomMounted
-      monaco.value!.editor.defineTheme(name, theme)
-    }
-
-    async function setTheme(name: ThemeMode) {
-      await untilDomMounted
-      // 定义主题
-      console.debug('切换monaco主题', name)
-      // 设置主题
-      monaco.value!.editor.setTheme(name)
-    }
-
     function updateOptions(options: monaco_lib.editor.IStandaloneEditorConstructionOptions) {
       editor.updateOptions(options)
     }
 
-    const fileTreeLoadedEvent = createBroadcastEvent({})
+    const onFileTreeLoaded = createBroadcastEvent({})
     async function loadFileTree(fs: Files) {
       const {
         prefix: nPrefix,
         fileSeparator: nFileSeparator,
         files: nfiles,
         projectName: nProjectName,
-      } = prepareFiles(fs)
+      } = FileTree.prepareFiles(fs)
       prefix.value = nPrefix
       fileSeparator.value = nFileSeparator
       projectName.value = nProjectName
@@ -156,7 +143,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
         closeFile(key)
       }
       openedFiles.value = tmpOpenedFiles
-      fileTreeLoadedEvent.publish({})
+      onFileTreeLoaded.publish({})
     }
     function createOrUpdateModel(path: string, value: string, force?: boolean) {
       let model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
@@ -193,7 +180,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
         if (path.indexOf('.') !== -1) {
           const extName = path.split('.').slice(-1)[0]
           type = extName
-          tabSize = getTabSizeByExtension(extName)
+          tabSize = MonacoExt.getTabSizeByExtension(extName)
         } else {
           type = 'javascript'
         }
@@ -248,6 +235,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       }
       return undefined
     }
+    const onFileOpened = createBroadcastEvent({ path: '' })
     function openOrFocusPath(path: string) {
       let exist = false
       openedFiles.value.forEach((v) => {
@@ -257,6 +245,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       })
       if (!exist) {
         openedFiles.value = [...openedFiles.value, { path }]
+        onFileOpened.publish({ path })
       }
       currentPath.value = path
       nextTick(resize)
@@ -301,61 +290,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       }
       nextTick(resize)
     }
-    function newFile(path: string) {
-      const paths = path.startsWith('/') ? path.slice(1).split('/') : path.split('/')
-      const tree = fileTree.value
-      let temp: Files = tree.children!
-      paths.forEach((v, index) => {
-        if (index === paths.length - 1) {
-          temp[''] = {
-            name: '',
-            path,
-            content: '',
-            readonly: false,
-            isFile: true,
-            isFolder: false,
-            children: undefined,
-          }
-        } else if (temp[v]) {
-          temp = temp[v].children!
-        }
-      })
-      fileTree.value = tree
-    }
-    function newFolder(path: string) {
-      const paths = path.startsWith('/') ? path.slice(1).split('/') : path.split('/')
-      const tree = fileTree.value
-      let temp: Files = tree.children!
-      paths.forEach((v, index) => {
-        if (index === paths.length - 1) {
-          temp[''] = {
-            name: '',
-            path,
-            content: '',
-            readonly: false,
-            isFile: false,
-            isFolder: true,
-            children: {},
-          }
-        } else if (temp[v]) {
-          temp = temp[v].children!
-        }
-      })
-      fileTree.value = tree
-    }
-    function removeBlank(path: string) {
-      const paths = path.startsWith('/') ? path.slice(1).split('/') : path.split('/')
-      const tree = fileTree.value
-      let temp: Files = tree.children!
-      paths.forEach((v, index) => {
-        if (index === paths.length - 1) {
-          delete temp[v]
-        } else if (temp[v]) {
-          temp = temp[v].children!
-        }
-      })
-      fileTree.value = tree
-    }
+
     function hasChanged(path: string): boolean {
       const m = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
       if (!m?.uri.authority) {
@@ -363,14 +298,16 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       }
       return originalFileTree[path].content !== m?.getValue()
     }
-    function resize(): void {
-      editorDom.style.height = `calc(100% - ${globalSettingsStore.actions._getOpenedTabsHeight() + 6}px)`
-      editor?.layout()
+
+    function resize() {
+      const tabsHeightCss = globalSettingsStore.actions._getOpenedTabsHeight() + 6 + 'px'
+      MonacoExt.resize(tabsHeightCss, editorDom, editor)
     }
 
     return {
       events: {
-        fileTreeLoaded: fileTreeLoadedEvent,
+        onFileTreeLoaded,
+        onFileOpened,
       },
       states: {
         _prefix: prefix,
@@ -378,7 +315,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
         _fileTree: fileTree,
         currentPath,
         openedFiles,
-        initialized: context.initialized,
+        isInitialized: context.isInitialized,
         prefix,
         fileSeparator,
         projectName,
@@ -389,9 +326,15 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
         _openOrFocusPath: openOrFocusPath,
         _hasChanged: hasChanged,
         _closeFile: closeFile,
-        _newFile: newFile,
-        _newFolder: newFolder,
-        _removeBlank: removeBlank,
+        _newFile(path: string) {
+          return FileTree.newFile({ fileTree, path })
+        },
+        _newFolder(path: string) {
+          return FileTree.newFolder({ fileTree, path })
+        },
+        _removeInvalidFileByPath(path: string) {
+          return FileTree.removeInvalidFileByPath(fileTree, path)
+        },
         _getValue(path: string) {
           const model = monaco.value!.editor.getModels().find((model) => model.uri.path === path)
           return model?.getValue()
@@ -418,13 +361,22 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
           return path
         },
         untilDomMounted: async () => {
-          await untilDomMounted
+          return await untilDomMounted
         },
         getMonaco() {
           return monaco.value
         },
-        defineTheme,
-        setTheme,
+        async defineTheme(themeName: ThemeMode, theme: monaco_lib.editor.IStandaloneThemeData) {
+          return MonacoExt.defineTheme({
+            untilDomMounted,
+            monaco,
+            themeName: themeName,
+            theme: theme,
+          })
+        },
+        setTheme(themeName: ThemeMode) {
+          return MonacoExt.setTheme(untilDomMounted, monaco, themeName)
+        },
         getEditor(): monaco_lib.editor.IStandaloneCodeEditor {
           return editor
         },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import '../../../dist/index.css'
-import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '../../../lib'
+import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '#lib/index'
 import { type ComputedRef, onMounted, ref } from 'vue'
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'

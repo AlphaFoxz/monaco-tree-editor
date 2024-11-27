@@ -227,7 +227,7 @@ const handleBlur = (_e?: Event) => {
   let name = nameRef.value?.textContent
   if (!name || /^\s*$/.test(name)) {
     //remove component
-    monacoStore.actions._removeBlank(props.file.path)
+    monacoStore.actions._removeInvalidFileByPath(props.file.path)
     return
   }
   name = name.trim()
@@ -247,7 +247,7 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore.actions._removeBlank(props.file.path)
+          monacoStore.actions._removeInvalidFileByPath(props.file.path)
         }
       )
     } else {
@@ -256,14 +256,14 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore.actions._removeBlank(props.file.path)
+          monacoStore.actions._removeInvalidFileByPath(props.file.path)
         }
       )
     }
   }
 }
 const handlePathChange = (_e?: MouseEvent) => {
-  if (editing.value || !monacoStore.states.initialized.value) {
+  if (editing.value || !monacoStore.states.isInitialized.value) {
     return
   }
   const key = props.file.path

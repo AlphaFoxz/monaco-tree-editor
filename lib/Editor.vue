@@ -612,7 +612,7 @@ defineExpose({
         }"
       ></div>
       <div
-        v-show="!monacoStore.states.initialized.value || !monacoStore.states.currentPath.value"
+        v-show="!monacoStore.states.isInitialized.value || !monacoStore.states.currentPath.value"
         class="monaco-tree-editor-area-empty"
       >
         <label>
