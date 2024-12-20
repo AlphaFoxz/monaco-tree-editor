@@ -24,9 +24,9 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
     const projectName = ref<any>('project')
     let originalFileTree: Files
     const monaco = shallowRef(m)
-    const globalSettingsStore = useGlobalSettings()
+    const globalSettingsAgg = useGlobalSettings()
     watchEffect(() => {
-      MonacoExt.setTheme(untilDomMounted, monaco, globalSettingsStore.states.themeMode.value)
+      MonacoExt.setTheme(untilDomMounted, monaco, globalSettingsAgg.states.themeMode.value)
     })
 
     const valueListener = shallowRef<monaco_lib.IDisposable>()
@@ -300,7 +300,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
     }
 
     function resize() {
-      const tabsHeightCss = globalSettingsStore.commands._getOpenedTabsHeight() + 6 + 'px'
+      const tabsHeightCss = globalSettingsAgg.commands._getOpenedTabsHeight() + 6 + 'px'
       MonacoExt.resize(tabsHeightCss, editorDom, editor)
     }
 

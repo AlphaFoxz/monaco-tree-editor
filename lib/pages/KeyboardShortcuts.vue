@@ -14,12 +14,12 @@ const props = defineProps({
 })
 
 const { t } = useI18n().commands
-const hotkeyStore = useHotkey(props.monacoId)
+const hotkeyAgg = useHotkey(props.monacoId)
 const componentRef = ref<HTMLDivElement>()
 const keyboardShortcutsRef = ref<HTMLInputElement>()
 const search = ref('')
 const modalVisible = ref(false)
-const keyboardShortcutsStore = useKeyboardShortcuts()
+const keyboardShortcutsAgg = useKeyboardShortcuts()
 function displayHotkey(hotkey: IHotkey): string {
   if (!hotkey.key) {
     return '-'
@@ -38,13 +38,13 @@ function displayHotkey(hotkey: IHotkey): string {
   return str.join(' + ')
 }
 function displayModalHotkey(): string {
-  return keyboardShortcutsStore.states.display.value
+  return keyboardShortcutsAgg.states.display.value
 }
 function resetHotkeys() {
-  hotkeyStore.commands.addKeybindings(IDEA_KEYBINDINGS)
+  hotkeyAgg.commands.addKeybindings(IDEA_KEYBINDINGS)
 }
 function handleOpenModal(when: When, command: Command) {
-  keyboardShortcutsStore.commands.reset(when, command)
+  keyboardShortcutsAgg.commands.reset(when, command)
   modalVisible.value = true
   nextTick(() => keyboardShortcutsRef.value!.focus())
 }
@@ -53,10 +53,10 @@ function handleKeyboardShortcutsKeydown(e: Event) {
   console.debug('input')
   const event = e as KeyboardEvent
   if (!event.ctrlKey && !event.altKey && !event.shiftKey && event.key === 'Enter') {
-    hotkeyStore.commands.addKeybindingByUser(keyboardShortcutsStore.commands.getHotkey())
+    hotkeyAgg.commands.addKeybindingByUser(keyboardShortcutsAgg.commands.getHotkey())
     modalVisible.value = false
   } else {
-    keyboardShortcutsStore.commands.onKeyboardEvent(event)
+    keyboardShortcutsAgg.commands.onKeyboardEvent(event)
   }
 }
 </script>
@@ -72,7 +72,7 @@ function handleKeyboardShortcutsKeydown(e: Event) {
         <div>{{ t('keybindings.options.header.command') }}</div>
         <div>{{ t('keybindings.options.header.keybinding') }}</div>
       </div>
-      <div class="content" v-for="(hotkey, i) in hotkeyStore.states.hotkeyMap" :key="i">
+      <div class="content" v-for="(hotkey, i) in hotkeyAgg.states.hotkeyMap" :key="i">
         <div
           v-show="!search || hotkey.command.toLowerCase().includes(search.toLowerCase().trim())"
           class="content-item"

@@ -79,32 +79,32 @@ const emit = defineEmits({
 })
 
 // ================ 国际化 i18n ================
-const globalSettingsStore = useGlobalSettings()
-globalSettingsStore.commands.setThemeMode(props.theme as ThemeMode)
-const i18nStore = useI18n()
-i18nStore.commands.setLanguage(props.language as Language)
+const globalSettingsAgg = useGlobalSettings()
+globalSettingsAgg.commands.setThemeMode(props.theme as ThemeMode)
+const i18nAgg = useI18n()
+i18nAgg.commands.setLanguage(props.language as Language)
 watch(
   () => props.language,
   (n) => {
     if (n) {
-      i18nStore.commands.setLanguage(n as Language)
+      i18nAgg.commands.setLanguage(n as Language)
     }
   }
 )
-const { t } = i18nStore.commands
+const { t } = i18nAgg.commands
 
 // ================ 主题 theme ================
 watch(
   () => props.theme,
   (n) => {
     if (n) {
-      globalSettingsStore.commands.setThemeMode(n as ThemeMode)
+      globalSettingsAgg.commands.setThemeMode(n as ThemeMode)
     }
   }
 )
 
 // =============== 左边栏 left-sider-bar ================
-const currentLeftSiderBar = globalSettingsStore.states.opendLeftSiderBar
+const currentLeftSiderBar = globalSettingsAgg.states.opendLeftSiderBar
 
 // ================ 拖拽功能 dragging ================
 const filelistWidth = ref(props.siderMinWidth)
@@ -113,12 +113,12 @@ const throttleResize = throttle((e: MouseEvent) => {
     const w = dragInfo.width + (e.pageX - dragInfo.pageX)
     console.debug('Dragging', w)
     if (w < props.siderMinWidth / 2) {
-      globalSettingsStore.commands.switchCurrentLeftSiderBar(undefined)
+      globalSettingsAgg.commands.switchCurrentLeftSiderBar(undefined)
     } else if (w >= props.siderMinWidth / 2) {
-      globalSettingsStore.commands.switchCurrentLeftSiderBar('Explorer', false)
+      globalSettingsAgg.commands.switchCurrentLeftSiderBar('Explorer', false)
     }
     filelistWidth.value = w < props.siderMinWidth ? props.siderMinWidth : w
-    monacoStore.commands._resize()
+    monacoAgg.commands._resize()
   }
 }, 5)
 let dragInfo = {
@@ -150,11 +150,11 @@ watch(
 )
 
 // ================ 编辑器部分 editor ================
-const monacoStore = useMonaco(undefined, props.monacoId)
+const monacoAgg = useMonaco(undefined, props.monacoId)
 watch(
   () => props.files,
   async (v) => {
-    await monacoStore.commands._loadFileTree(v)
+    await monacoAgg.commands._loadFileTree(v)
     console.debug('fileTree loaded')
   }
 )
@@ -162,38 +162,38 @@ const editorRef = ref<HTMLElement>()
 watch(
   () => props.fontSize,
   (n) => {
-    monacoStore.commands.updateOptions({ fontSize: n })
+    monacoAgg.commands.updateOptions({ fontSize: n })
   }
 )
 onMounted(async () => {
   handleReload()
-  await monacoStore.commands._mount(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
-  monacoStore.commands.defineTheme('dark', DarkTheme)
-  monacoStore.commands.defineTheme('light', LightTheme)
-  monacoStore.commands.setTheme(globalSettingsStore.states.themeMode.value)
+  await monacoAgg.commands._mount(editorRef.value!, { fontSize: props.fontSize, automaticLayout: true })
+  monacoAgg.commands.defineTheme('dark', DarkTheme)
+  monacoAgg.commands.defineTheme('light', LightTheme)
+  monacoAgg.commands.setTheme(globalSettingsAgg.states.themeMode.value)
   console.debug('monaco mounted')
 })
 onBeforeUnmount(() => {
-  monacoStore.commands.getEditor()?.dispose()
+  monacoAgg.commands.getEditor()?.dispose()
 })
 
 // ================ 回调事件 callback events ================
 const messageAgg = useMessage()
 const toOriginPath = (path: string): string => {
-  let oriPath = monacoStore.states.prefix.value + path
-  if (monacoStore.states.fileSeparator.value === '\\') {
+  let oriPath = monacoAgg.states.prefix.value + path
+  if (monacoAgg.states.fileSeparator.value === '\\') {
     oriPath = oriPath.replace(/\//g, '\\')
   }
   return oriPath
 }
 const lockFile = (filePath: string, loadingMsgId: string) => {
-  globalSettingsStore.commands._lockFile(filePath, () => {
+  globalSettingsAgg.commands._lockFile(filePath, () => {
     messageAgg.commands.close(loadingMsgId)
     messageAgg.commands.error({
       content: t('msg.timeout'),
       closeable: true,
     })
-    globalSettingsStore.commands._unlockFile(filePath)
+    globalSettingsAgg.commands._unlockFile(filePath)
   })
 }
 const handleReload = (
@@ -228,7 +228,7 @@ const handleReload = (
   )
 }
 const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore.commands._isFileLocked(path)) {
+  if (globalSettingsAgg.commands._isFileLocked(path)) {
     reject()
     return
   }
@@ -242,7 +242,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
     'newFile',
     oriPath,
     () => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.success({
         content: t('msg.createSuccessed'),
@@ -253,7 +253,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.error({
         content: t('msg.createFailed', { msg }),
@@ -264,7 +264,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
   )
 }
 const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore.commands._isFileLocked(path)) {
+  if (globalSettingsAgg.commands._isFileLocked(path)) {
     reject()
     return
   }
@@ -278,7 +278,7 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
     'newFolder',
     oriPath,
     () => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.success({
         content: t('msg.createSuccessed'),
@@ -289,7 +289,7 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.error({
         content: t('msg.createFailed', { msg }),
@@ -301,16 +301,16 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
 }
 const handleSaveFile = (
   path: string | undefined,
-  value = path === undefined ? '' : monacoStore.commands._getValue(path),
+  value = path === undefined ? '' : monacoAgg.commands._getValue(path),
   resolve = () => {},
   reject = () => {}
 ) => {
-  if (value === undefined || path === undefined || !monacoStore.commands._hasChanged(path)) {
+  if (value === undefined || path === undefined || !monacoAgg.commands._hasChanged(path)) {
     console.debug('there is nothing changed.')
     resolve()
     return
   }
-  if (globalSettingsStore.commands._isFileLocked(path)) {
+  if (globalSettingsAgg.commands._isFileLocked(path)) {
     reject()
     return
   }
@@ -325,7 +325,7 @@ const handleSaveFile = (
     oriPath,
     value,
     () => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.success({
         content: t('msg.saveSuccessed'),
@@ -336,7 +336,7 @@ const handleSaveFile = (
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.error({
         content: t('msg.saveFailed', { msg }),
@@ -348,7 +348,7 @@ const handleSaveFile = (
 }
 
 const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore.commands._isFileLocked(path)) {
+  if (globalSettingsAgg.commands._isFileLocked(path)) {
     reject()
     return
   }
@@ -362,7 +362,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
     'deleteFile',
     oriPath,
     () => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.success({
         content: t('msg.deleteSuccessed'),
@@ -373,7 +373,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.error({
         content: t('msg.deleteFailed{msg}', { msg }),
@@ -385,7 +385,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
 }
 
 const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore.commands._isFileLocked(path)) {
+  if (globalSettingsAgg.commands._isFileLocked(path)) {
     reject()
     return
   }
@@ -399,7 +399,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
     'deleteFolder',
     oriPath,
     () => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.success({
         content: t('msg.deleteSuccessed'),
@@ -410,7 +410,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.error({
         content: t('msg.deleteFailed{msg}', { msg }),
@@ -422,11 +422,11 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
 }
 
 const handleRenameFile = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore.commands._isFileLocked(path)) {
+  if (globalSettingsAgg.commands._isFileLocked(path)) {
     reject()
     return
   }
-  const fileSeparator = monacoStore.states.fileSeparator.value
+  const fileSeparator = monacoAgg.states.fileSeparator.value
   const oriPath = toOriginPath(path)
   let tmpArr = oriPath.split(fileSeparator)
   tmpArr.pop()
@@ -442,7 +442,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
     oriPath,
     newPath,
     () => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.success({
         content: t('msg.renameSuccessed'),
@@ -453,7 +453,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.error({
         content: t('msg.renameFailed', { msg }),
@@ -465,11 +465,11 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
 }
 
 const handleRenameFolder = (path: string, newName: string, resolve = () => {}, reject = () => {}) => {
-  if (globalSettingsStore.commands._isFileLocked(path)) {
+  if (globalSettingsAgg.commands._isFileLocked(path)) {
     reject()
     return
   }
-  const fileSeparator = monacoStore.states.fileSeparator.value
+  const fileSeparator = monacoAgg.states.fileSeparator.value
   const oriPath = toOriginPath(path)
   let tmpArr = oriPath.split(fileSeparator)
   tmpArr.pop()
@@ -485,7 +485,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
     oriPath,
     newPath,
     () => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.success({
         content: t('msg.renameSuccessed'),
@@ -496,7 +496,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
       resolve()
     },
     (msg = '') => {
-      globalSettingsStore.commands._unlockFile(path)
+      globalSettingsAgg.commands._unlockFile(path)
       messageAgg.commands.close(msgId)
       messageAgg.commands.error({
         content: t('msg.renameFailed', { msg }),
@@ -520,23 +520,23 @@ const dragInEditor = (e: DragEvent) => {
   emit(
     'dragInEditor',
     toOriginPath(srcPath),
-    toOriginPath(monacoStore.states.currentPath.value!),
+    toOriginPath(monacoAgg.states.currentPath.value!),
     e.dataTransfer.getData('type') as 'file' | 'folder'
   )
 }
 
 // ================ 快捷键部分 hotkey ================
-const hotkeyStore = useHotkey(props.monacoId)
+const hotkeyAgg = useHotkey(props.monacoId)
 const fileListRef = ref()
-hotkeyStore.commands._setCommandHandler((hotkey, e) => {
+hotkeyAgg.commands._setCommandHandler((hotkey, e) => {
   const command = hotkey.command
   if (hotkey && hotkey.isMatch(e)) {
     if (command === 'Format') {
-      monacoStore.commands.format()
+      monacoAgg.commands.format()
     } else if (command === 'Save') {
-      handleSaveFile(monacoStore.states.currentPath.value)
+      handleSaveFile(monacoAgg.states.currentPath.value)
     } else if (command === 'DeleteFile') {
-      const path = monacoStore.states.currentPath.value
+      const path = monacoAgg.states.currentPath.value
       if (path && !(path in BuiltInPage)) {
         fileListRef.value.handleDeleteFile(path)
       }
@@ -547,15 +547,15 @@ hotkeyStore.commands._setCommandHandler((hotkey, e) => {
 })
 const rootRef = ref<HTMLElement>()
 onMounted(() => {
-  hotkeyStore.commands._init('root', rootRef.value!)
-  hotkeyStore.commands._init('editor', editorRef.value!)
+  hotkeyAgg.commands._init('root', rootRef.value!)
+  hotkeyAgg.commands._init('editor', editorRef.value!)
 })
 
 // 暴露方法 expose functions
 defineExpose({
-  resize: monacoStore.commands._resize,
-  getMonaco: monacoStore.commands.getMonaco,
-  getEditor: monacoStore.commands.getEditor,
+  resize: monacoAgg.commands._resize,
+  getMonaco: monacoAgg.commands.getMonaco,
+  getEditor: monacoAgg.commands.getEditor,
 })
 </script>
 <template>
@@ -564,7 +564,7 @@ defineExpose({
     id="monaco-tree-editor-root"
     @contextmenu.prevent.stop
     tabIndex="1"
-    :class="`monaco-tree-editor ${globalSettingsStore.states.themeMode.value}`"
+    :class="`monaco-tree-editor ${globalSettingsAgg.states.themeMode.value}`"
   >
     <MessagePopup></MessagePopup>
     <LeftSiderBar :monaco-id="monacoId"></LeftSiderBar>
@@ -582,7 +582,7 @@ defineExpose({
       :file-menu="fileMenu"
       :folder-menu="folderMenu"
       @contextmenu-select="handleContextmenuSelect"
-      :project-name="monacoStore.states.projectName.value"
+      :project-name="monacoAgg.states.projectName.value"
       :rootEl="rootRef"
       :title="filelistTitle"
       :fontSize="fontSize"
@@ -600,9 +600,9 @@ defineExpose({
       <div
         id="editor"
         v-show="
-          monacoStore.states.openedFiles.value.length > 0 &&
-          monacoStore.states.currentPath.value !== undefined &&
-          !(monacoStore.states.currentPath.value in BuiltInPage)
+          monacoAgg.states.openedFiles.value.length > 0 &&
+          monacoAgg.states.currentPath.value !== undefined &&
+          !(monacoAgg.states.currentPath.value in BuiltInPage)
         "
         ref="editorRef"
         @drop="dragInEditor"
@@ -612,7 +612,7 @@ defineExpose({
         }"
       ></div>
       <div
-        v-show="!monacoStore.states.isInitialized.value || !monacoStore.states.currentPath.value"
+        v-show="!monacoAgg.states.isInitialized.value || !monacoAgg.states.currentPath.value"
         class="monaco-tree-editor-area-empty"
       >
         <label>
@@ -622,12 +622,12 @@ defineExpose({
       </div>
       <SettingsPage
         :custom-menu="settingsMenu"
-        v-if="monacoStore.states.currentPath.value === BuiltInPage['<Settings>']"
+        v-if="monacoAgg.states.currentPath.value === BuiltInPage['<Settings>']"
       ></SettingsPage>
       <KeyboardShortcutsPage
         :monaco-id="monacoId"
         :custom-menu="settingsMenu"
-        v-if="monacoStore.states.currentPath.value === BuiltInPage['<KeyboardShortcuts>']"
+        v-if="monacoAgg.states.currentPath.value === BuiltInPage['<KeyboardShortcuts>']"
       ></KeyboardShortcutsPage>
     </div>
   </div>

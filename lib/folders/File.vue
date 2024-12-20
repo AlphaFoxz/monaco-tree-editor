@@ -51,7 +51,7 @@ const emit = defineEmits({
 })
 
 // =================== 初始化 handle init ===================
-const monacoStore = useMonaco(undefined, props.monacoId)
+const monacoAgg = useMonaco(undefined, props.monacoId)
 const editing = ref(false)
 const showChild = ref(false)
 const nameRef = ref<HTMLElement>()
@@ -161,7 +161,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
       editing.value = true
       break
     case '@copyPath':
-      const path = monacoStore.commands._getAbsolutePath(props.file.path)
+      const path = monacoAgg.commands._getAbsolutePath(props.file.path)
       if (navigator.clipboard) {
         navigator.clipboard.writeText(path)
       } else {
@@ -227,7 +227,7 @@ const handleBlur = (_e?: Event) => {
   let name = nameRef.value?.textContent
   if (!name || /^\s*$/.test(name)) {
     //remove component
-    monacoStore.commands._removeInvalidFileByPath(props.file.path)
+    monacoAgg.commands._removeInvalidFileByPath(props.file.path)
     return
   }
   name = name.trim()
@@ -247,7 +247,7 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore.commands._removeInvalidFileByPath(props.file.path)
+          monacoAgg.commands._removeInvalidFileByPath(props.file.path)
         }
       )
     } else {
@@ -256,20 +256,20 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore.commands._removeInvalidFileByPath(props.file.path)
+          monacoAgg.commands._removeInvalidFileByPath(props.file.path)
         }
       )
     }
   }
 }
 const handlePathChange = (_e?: MouseEvent) => {
-  if (editing.value || !monacoStore.states.isInitialized.value) {
+  if (editing.value || !monacoAgg.states.isInitialized.value) {
     return
   }
   const key = props.file.path
-  const model = monacoStore.commands._restoreModel(key)
+  const model = monacoAgg.commands._restoreModel(key)
   if (model) {
-    monacoStore.commands._openOrFocusPath(key)
+    monacoAgg.commands._openOrFocusPath(key)
   }
 }
 watch([editing, () => props.file], (v) => {
@@ -302,7 +302,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
 <template>
   <ContextMenu v-if="file.isFile" :menu="fileContextMenu" @select="handleSelectContextMenu">
     <div
-      :title="monacoStore.commands._getAbsolutePath(file.path)"
+      :title="monacoAgg.commands._getAbsolutePath(file.path)"
       :data-src="file.path"
       @click="handlePathChange"
       :key="file.path"

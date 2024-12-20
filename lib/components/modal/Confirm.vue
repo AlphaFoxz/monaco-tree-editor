@@ -32,15 +32,15 @@ const emit = defineEmits({
   ok: () => true,
 })
 
-const hotkeyStore = useHotkey(props.monacoId)
+const hotkeyAgg = useHotkey(props.monacoId)
 const keypressHandler = (e: KeyboardEvent) => {
   if (!e.ctrlKey && !e.altKey && !e.shiftKey && e.key === 'Escape') {
     emit('close')
   }
 }
-hotkeyStore.commands.listen('root', keypressHandler)
+hotkeyAgg.commands.listen('root', keypressHandler)
 onBeforeUnmount(() => {
-  hotkeyStore.commands.unlisten('root', keypressHandler)
+  hotkeyAgg.commands.unlisten('root', keypressHandler)
 })
 </script>
 

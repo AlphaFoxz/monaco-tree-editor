@@ -16,7 +16,7 @@ const porps = defineProps({
 const emit = defineEmits({ close: () => true, 'update:visible': (_: boolean) => true })
 
 const esc = new Hotkey({ command: 'Format', key: 'Escape', when: 'editor' })
-const hotkeyStore = useHotkey(porps.monacoId)
+const hotkeyAgg = useHotkey(porps.monacoId)
 const handleKeypress = (e: KeyboardEvent) => {
   if (esc.isMatch(e)) {
     handleClose()
@@ -27,11 +27,11 @@ function handleClose() {
   emit('close')
 }
 onMounted(() => {
-  hotkeyStore.commands.listen('root', handleKeypress)
+  hotkeyAgg.commands.listen('root', handleKeypress)
 })
 onBeforeUnmount(() => {
   console.debug('unmount modal')
-  hotkeyStore.commands.unlisten('root', handleKeypress)
+  hotkeyAgg.commands.unlisten('root', handleKeypress)
 })
 </script>
 

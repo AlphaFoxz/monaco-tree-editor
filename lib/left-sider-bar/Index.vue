@@ -21,24 +21,24 @@ const emit = defineEmits({
 })
 
 const { $t } = useI18n().commands
-const globalSettingsStore = useGlobalSettings()
+const globalSettingsAgg = useGlobalSettings()
 function handleClick(item: LeftSiderBarItem) {
-  const t = globalSettingsStore.states.opendLeftSiderBar.value
-  globalSettingsStore.commands.switchCurrentLeftSiderBar(item)
+  const t = globalSettingsAgg.states.opendLeftSiderBar.value
+  globalSettingsAgg.commands.switchCurrentLeftSiderBar(item)
   if (t !== item) {
     emit('triggerActive', item)
   }
 }
 
 //========================= Manage =========================
-const monacoStore = useMonaco(undefined, props.monacoId)
+const monacoAgg = useMonaco(undefined, props.monacoId)
 const manageBtnMenu: Array<ContextMenuItem<BuiltInPageType | undefined>> = [
   { label: $t('menu.settings'), value: '<Settings>' },
   { label: $t('menu.keyboardShortcuts'), value: '<KeyboardShortcuts>' },
 ]
 function handleSelectManage(selected: { label: string; value?: BuiltInPageType; onSelect?: Function }) {
   if (selected.value) {
-    monacoStore.commands._openOrFocusPath(selected.value!)
+    monacoAgg.commands._openOrFocusPath(selected.value!)
   }
 }
 </script>
@@ -47,7 +47,7 @@ function handleSelectManage(selected: { label: string; value?: BuiltInPageType; 
   <div class="left-sider-bar">
     <ItemTemp
       @click="handleClick('Explorer')"
-      :current-active="globalSettingsStore.states.opendLeftSiderBar.value || ''"
+      :current-active="globalSettingsAgg.states.opendLeftSiderBar.value || ''"
       name="Explorer"
       :title="$t('menu.folders').value"
     >
@@ -55,7 +55,7 @@ function handleSelectManage(selected: { label: string; value?: BuiltInPageType; 
     </ItemTemp>
     <ContextMenu @select="i => handleSelectManage(i as any)" position="RB" :trigger="['Click']" :menu="manageBtnMenu">
       <ItemTemp
-        :current-active="globalSettingsStore.states.opendLeftSiderBar.value || ''"
+        :current-active="globalSettingsAgg.states.opendLeftSiderBar.value || ''"
         style="position: absolute; bottom: 0"
         name="Manage"
         :title="$t('menu.manage').value"

@@ -56,9 +56,9 @@ const { $t } = useI18n().commands
 
 //=================== 初始化 init ==================
 const collapse = ref(false)
-const monacoStore = useMonaco(undefined, props.monacoId)
-const fileTree = monacoStore.states._fileTree
-const currentPath = monacoStore.states.currentPath
+const monacoAgg = useMonaco(undefined, props.monacoId)
+const fileTree = monacoAgg.states._fileTree
+const currentPath = monacoAgg.states.currentPath
 
 //=================== 回调 callback ==================
 const fileConfirmVisible = ref(false)
@@ -72,10 +72,10 @@ const handleCollapseAll = () => {
   collapseTrigger.value = new Date().getTime()
 }
 const handleConfirmNewFile = (path: string) => {
-  monacoStore.commands._newFile(path)
+  monacoAgg.commands._newFile(path)
 }
 const handleConfirmNewFolder = (path: string) => {
-  monacoStore.commands._newFolder(path)
+  monacoAgg.commands._newFolder(path)
 }
 const handleNewFile = (path: string, resolve: () => void, reject: () => void) => {
   emit('newFile', path, resolve, reject)

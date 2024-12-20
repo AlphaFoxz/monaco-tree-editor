@@ -23,11 +23,11 @@ onMounted(() => {
 })
 
 // ================ 初始化 init monaco-tree-editor ================
-let monacoStore: ReturnType<typeof useMonaco>
+let monacoAgg: ReturnType<typeof useMonaco>
 // 模拟延迟，测试健壮性 mock delay to test robustness
 server.delay().then(() => {
-  monacoStore = useMonaco()
-  monacoStore.commands.setMonaco(monaco)
+  monacoAgg = useMonaco()
+  monacoAgg.commands.setMonaco(monaco)
 })
 
 // ================ 回调函数 callback =================

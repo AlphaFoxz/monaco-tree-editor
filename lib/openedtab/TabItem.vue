@@ -32,7 +32,7 @@ const emit = defineEmits({
   abortSave: (_path: string) => true,
   closeOtherFiles: (_path?: string) => true,
 })
-const monacoStore = useMonaco(undefined, props.monacoId)
+const monacoAgg = useMonaco(undefined, props.monacoId)
 
 //========================= 国际化 i18n ==========================
 const { $t } = useI18n().commands
@@ -48,7 +48,7 @@ if (props.file!.path && props.file!.path.indexOf('.') !== -1) {
 }
 const active = ref(false)
 watchEffect(() => {
-  const b = monacoStore.states.currentPath.value === props.file!.path
+  const b = monacoAgg.states.currentPath.value === props.file!.path
   active.value = b
   if (b) {
     itemRef.value?.scrollIntoView({
@@ -91,7 +91,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_MenuValue>) => {
   } else if (v === '@closeAll') {
     emit('closeOtherFiles')
   } else if (v === '@copyPath') {
-    const path = monacoStore.commands._getAbsolutePath(props.file.path)
+    const path = monacoAgg.commands._getAbsolutePath(props.file.path)
     if (navigator.clipboard) {
       navigator.clipboard.writeText(path)
     } else {
@@ -142,7 +142,7 @@ const handleClose = async (e?: Event): Promise<void> => {
 }
 const handleSaveAndClose = () => {
   const path = props.file!.path
-  const value = monacoStore.commands._getValue(path)
+  const value = monacoAgg.commands._getValue(path)
   if (!value) {
     return
   }
@@ -199,7 +199,7 @@ defineExpose({
       @mouseover="handleOver"
       @mouseleave="handleLeave"
       @mousedown="handleClick"
-      :title="monacoStore.commands._getAbsolutePath(file.path)"
+      :title="monacoAgg.commands._getAbsolutePath(file.path)"
       :data-src="file.path"
       :class="`monaco-tree-editor-opened-tab-item ${active ? 'monaco-tree-editor-opened-tab-item-active' : ''}`"
     >

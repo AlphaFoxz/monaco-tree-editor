@@ -28,11 +28,11 @@ window.MonacoEnvironment = {
   },
   globalAPI: true,
 }
-const monacoStore = useMonaco(monaco)
+const monacoAgg = useMonaco(monaco)
 // mock delay to test robustness
 onMounted(() => {
-  monacoStore.commands.defineTheme('dark', customTheme)
-  registerRestl(monacoStore.commands.getMonaco())
+  monacoAgg.commands.defineTheme('dark', customTheme)
+  registerRestl(monacoAgg.commands.getMonaco())
 })
 
 // ================ 推送消息 push message ================
@@ -54,9 +54,9 @@ onMounted(() => {
 })
 
 // ================ 快捷键 hotkey ==================
-const hotkeyStore = useHotkey()
-hotkeyStore.commands.listen('root', (event: KeyboardEvent) => {})
-hotkeyStore.commands.listen('editor', (event: KeyboardEvent) => {
+const hotkeyAgg = useHotkey()
+hotkeyAgg.commands.listen('root', (event: KeyboardEvent) => {})
+hotkeyAgg.commands.listen('editor', (event: KeyboardEvent) => {
   if (event.ctrlKey && !event.shiftKey && !event.altKey && event.key === 's') {
     // do something...
   }
@@ -200,7 +200,7 @@ const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 
   if (!targetPath.endsWith('.ts') && !srcPath.endsWith('.js')) {
     return
   }
-  const editor = monacoStore.commands.getEditor()
+  const editor = monacoAgg.commands.getEditor()
   const lineIndex = editor.getPosition()?.lineNumber!
   let str = 'import "' + _relativePathFrom(srcPath, targetPath) + '"'
   editor.executeEdits('drop', [{ range: new monaco.Range(lineIndex, 0, lineIndex, 0), text: str }])
