@@ -20,11 +20,11 @@ const emit = defineEmits({
   triggerActive: (_: LeftSiderBarItem) => true,
 })
 
-const { $t } = useI18n().actions
+const { $t } = useI18n().commands
 const globalSettingsStore = useGlobalSettings()
 function handleClick(item: LeftSiderBarItem) {
   const t = globalSettingsStore.states.opendLeftSiderBar.value
-  globalSettingsStore.actions.switchCurrentLeftSiderBar(item)
+  globalSettingsStore.commands.switchCurrentLeftSiderBar(item)
   if (t !== item) {
     emit('triggerActive', item)
   }
@@ -38,7 +38,7 @@ const manageBtnMenu: Array<ContextMenuItem<BuiltInPageType | undefined>> = [
 ]
 function handleSelectManage(selected: { label: string; value?: BuiltInPageType; onSelect?: Function }) {
   if (selected.value) {
-    monacoStore.actions._openOrFocusPath(selected.value!)
+    monacoStore.commands._openOrFocusPath(selected.value!)
   }
 }
 </script>

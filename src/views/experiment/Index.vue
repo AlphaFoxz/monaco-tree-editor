@@ -4,7 +4,7 @@ import { useAgg } from './agg'
 const agg = useAgg()
 function handleInput(e: Event) {
   const value = (e.target as HTMLInputElement).value
-  agg.actions.setName(value)
+  agg.commands.setName(value)
   console.log(value)
 }
 </script>

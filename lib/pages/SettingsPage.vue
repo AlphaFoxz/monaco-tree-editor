@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const { currentLanguage } = useI18n().states
-const { setLanguage, $t } = useI18n().actions
+const { setLanguage, $t } = useI18n().commands
 const messageAgg = useMessage()
 const globalSettingsStore = useGlobalSettings()
 
@@ -27,7 +27,7 @@ function handleSelectLanguage(e: Event) {
       break
     }
   }
-  messageAgg.actions.success({
+  messageAgg.commands.success({
     content: $t('msg.languageChanged{lang}', { lang: inner }).value,
     closeable: true,
     timeoutMs: 3000,
@@ -35,7 +35,7 @@ function handleSelectLanguage(e: Event) {
 }
 
 function handleSelectColorTheme(e: Event) {
-  globalSettingsStore.actions.setThemeMode((e.target as HTMLSelectElement).value as ThemeMode)
+  globalSettingsStore.commands.setThemeMode((e.target as HTMLSelectElement).value as ThemeMode)
 }
 </script>
 

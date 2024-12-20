@@ -46,7 +46,7 @@ function createAgg(id: string) {
       states: {
         display,
       },
-      actions: {
+      commands: {
         onKeyboardEvent,
         reset(w: When, c: Command) {
           when.value = w

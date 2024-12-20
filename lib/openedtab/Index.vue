@@ -34,10 +34,10 @@ const handleSaveFile = (path: string, value: string, resolve?: () => void, rejec
 }
 const handlePathChange = (key: string) => {
   console.debug('pathChange', key)
-  monacoStore.actions._restoreModel(key)
+  monacoStore.commands._restoreModel(key)
 }
 const handleCloseFile = (path: string) => {
-  monacoStore.actions._closeFile(path)
+  monacoStore.commands._closeFile(path)
 }
 const handleCloseOtherFiles = async (path?: string) => {
   console.debug('handleCloseOtherFiles', path)
@@ -80,7 +80,7 @@ const swap = (srcIndex: number, tarIndex: number) => {
   const tmp = result[srcIndex]
   result.splice(srcIndex, 1)
   result.splice(tarIndex, 0, tmp)
-  monacoStore.actions.setOpenedFiles(result)
+  monacoStore.commands.setOpenedFiles(result)
   flush()
 }
 const visible = ref(true)

@@ -30,7 +30,7 @@ let monacoStore: ReturnType<typeof useMonaco>
 // 模拟延迟，测试健壮性 mock delay to test robustness
 server.delay().then(() => {
   monacoStore = useMonaco()
-  monacoStore.actions.setMonaco(monaco)
+  monacoStore.commands.setMonaco(monaco)
 })
 
 // ================ 回调函数 callback =================

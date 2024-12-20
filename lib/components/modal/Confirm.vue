@@ -38,9 +38,9 @@ const keypressHandler = (e: KeyboardEvent) => {
     emit('close')
   }
 }
-hotkeyStore.actions.listen('root', keypressHandler)
+hotkeyStore.commands.listen('root', keypressHandler)
 onBeforeUnmount(() => {
-  hotkeyStore.actions.unlisten('root', keypressHandler)
+  hotkeyStore.commands.unlisten('root', keypressHandler)
 })
 </script>
 

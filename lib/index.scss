@@ -116,6 +116,10 @@
   --monaco-border-messagepopup-box: var(--monaco-c-white-2);
 }
 
+.monaco-editor {
+  outline: none !important;
+}
+
 .monaco-tree-editor {
   display: flex;
   flex-direction: row;

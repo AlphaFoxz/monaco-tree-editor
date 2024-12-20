@@ -27,11 +27,11 @@ function handleClose() {
   emit('close')
 }
 onMounted(() => {
-  hotkeyStore.actions.listen('root', handleKeypress)
+  hotkeyStore.commands.listen('root', handleKeypress)
 })
 onBeforeUnmount(() => {
   console.debug('unmount modal')
-  hotkeyStore.actions.unlisten('root', handleKeypress)
+  hotkeyStore.commands.unlisten('root', handleKeypress)
 })
 </script>
 

@@ -52,7 +52,7 @@ const emit = defineEmits({
 })
 
 //=================== 国际化 i18n ==================
-const { $t } = useI18n().actions
+const { $t } = useI18n().commands
 
 //=================== 初始化 init ==================
 const collapse = ref(false)
@@ -72,10 +72,10 @@ const handleCollapseAll = () => {
   collapseTrigger.value = new Date().getTime()
 }
 const handleConfirmNewFile = (path: string) => {
-  monacoStore.actions._newFile(path)
+  monacoStore.commands._newFile(path)
 }
 const handleConfirmNewFolder = (path: string) => {
-  monacoStore.actions._newFolder(path)
+  monacoStore.commands._newFolder(path)
 }
 const handleNewFile = (path: string, resolve: () => void, reject: () => void) => {
   emit('newFile', path, resolve, reject)

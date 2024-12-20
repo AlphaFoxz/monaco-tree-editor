@@ -18,8 +18,8 @@ onMounted(() => {
       <div class="message-container">
         <BoxTemp
           v-for="item in messages"
-          @close="messageAgg.actions.close"
-          @mousemove="messageAgg.actions._keepAlive(item.id!)"
+          @close="messageAgg.commands.close"
+          @mousemove="messageAgg.commands._keepAlive(item.id!)"
           :id="item.id!"
           :closeable="item.closeable"
           :loading="item.loading"

@@ -32,6 +32,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    // "exactOptionalPropertyTypes": true,
     "paths": {
       "@/*": [
         "./src/*"
@@ -58,9 +59,6 @@
   },
   "files": [],
   "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
     {
       "path": "./tsconfig.app.json"
     }

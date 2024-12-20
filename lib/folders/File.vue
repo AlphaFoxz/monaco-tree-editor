@@ -89,7 +89,7 @@ watch([() => props.file, () => props.root], (v) => {
 })
 
 // ================ 右键菜单 contextmenu ================
-const { $t } = useI18n().actions
+const { $t } = useI18n().commands
 type _FileOperation = '@openFile' | '@copyPath' | '@copyRelativePath' | '@renameFile' | '@deleteFile' | string
 type _FolderOperation =
   | '@newFile'
@@ -161,7 +161,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
       editing.value = true
       break
     case '@copyPath':
-      const path = monacoStore.actions._getAbsolutePath(props.file.path)
+      const path = monacoStore.commands._getAbsolutePath(props.file.path)
       if (navigator.clipboard) {
         navigator.clipboard.writeText(path)
       } else {
@@ -227,7 +227,7 @@ const handleBlur = (_e?: Event) => {
   let name = nameRef.value?.textContent
   if (!name || /^\s*$/.test(name)) {
     //remove component
-    monacoStore.actions._removeInvalidFileByPath(props.file.path)
+    monacoStore.commands._removeInvalidFileByPath(props.file.path)
     return
   }
   name = name.trim()
@@ -247,7 +247,7 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore.actions._removeInvalidFileByPath(props.file.path)
+          monacoStore.commands._removeInvalidFileByPath(props.file.path)
         }
       )
     } else {
@@ -256,7 +256,7 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore.actions._removeInvalidFileByPath(props.file.path)
+          monacoStore.commands._removeInvalidFileByPath(props.file.path)
         }
       )
     }
@@ -267,9 +267,9 @@ const handlePathChange = (_e?: MouseEvent) => {
     return
   }
   const key = props.file.path
-  const model = monacoStore.actions._restoreModel(key)
+  const model = monacoStore.commands._restoreModel(key)
   if (model) {
-    monacoStore.actions._openOrFocusPath(key)
+    monacoStore.commands._openOrFocusPath(key)
   }
 }
 watch([editing, () => props.file], (v) => {
@@ -302,7 +302,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
 <template>
   <ContextMenu v-if="file.isFile" :menu="fileContextMenu" @select="handleSelectContextMenu">
     <div
-      :title="monacoStore.actions._getAbsolutePath(file.path)"
+      :title="monacoStore.commands._getAbsolutePath(file.path)"
       :data-src="file.path"
       @click="handlePathChange"
       :key="file.path"

@@ -300,7 +300,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
     }
 
     function resize() {
-      const tabsHeightCss = globalSettingsStore.actions._getOpenedTabsHeight() + 6 + 'px'
+      const tabsHeightCss = globalSettingsStore.commands._getOpenedTabsHeight() + 6 + 'px'
       MonacoExt.resize(tabsHeightCss, editorDom, editor)
     }
 
@@ -320,7 +320,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
         fileSeparator,
         projectName,
       },
-      actions: {
+      commands: {
         _mount: mountMonacoToDom,
         _restoreModel: restoreModel,
         _openOrFocusPath: openOrFocusPath,

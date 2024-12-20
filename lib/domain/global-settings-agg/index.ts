@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { type LeftSiderBarItem, type ThemeMode } from '../define'
-import { useI18n } from '../i18n-agg'
+import { useI18n } from '#domain/i18n-agg'
 import { createSingletonAgg } from 'vue-fn/domain'
 
 const agg = createSingletonAgg(() => {
@@ -9,7 +9,7 @@ const agg = createSingletonAgg(() => {
 
   // ================== 国际化 i18n ==================
   const { currentLanguage } = useI18n().states
-  const { setLanguage } = useI18n().actions
+  const { setLanguage } = useI18n().commands
 
   // =================== 其他 ==================
   const contextMenuVisble = ref(false)
@@ -59,7 +59,7 @@ const agg = createSingletonAgg(() => {
       opendLeftSiderBar,
       currentLanguage,
     },
-    actions: {
+    commands: {
       _lockFile: lockFile,
       _isFileLocked: isFileLocked,
       _unlockFile: unlockFile,

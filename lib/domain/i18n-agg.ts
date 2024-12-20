@@ -60,7 +60,7 @@ const i18nAgg = createSingletonAgg(() => {
     states: {
       currentLanguage,
     },
-    actions: {
+    commands: {
       setLanguage,
       t,
       $t,

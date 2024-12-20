@@ -13,7 +13,7 @@ const props = defineProps({
   },
 })
 
-const { t } = useI18n().actions
+const { t } = useI18n().commands
 const hotkeyStore = useHotkey(props.monacoId)
 const componentRef = ref<HTMLDivElement>()
 const keyboardShortcutsRef = ref<HTMLInputElement>()
@@ -41,10 +41,10 @@ function displayModalHotkey(): string {
   return keyboardShortcutsStore.states.display.value
 }
 function resetHotkeys() {
-  hotkeyStore.actions.addKeybindings(IDEA_KEYBINDINGS)
+  hotkeyStore.commands.addKeybindings(IDEA_KEYBINDINGS)
 }
 function handleOpenModal(when: When, command: Command) {
-  keyboardShortcutsStore.actions.reset(when, command)
+  keyboardShortcutsStore.commands.reset(when, command)
   modalVisible.value = true
   nextTick(() => keyboardShortcutsRef.value!.focus())
 }
@@ -53,10 +53,10 @@ function handleKeyboardShortcutsKeydown(e: Event) {
   console.debug('input')
   const event = e as KeyboardEvent
   if (!event.ctrlKey && !event.altKey && !event.shiftKey && event.key === 'Enter') {
-    hotkeyStore.actions.addKeybindingByUser(keyboardShortcutsStore.actions.getHotkey())
+    hotkeyStore.commands.addKeybindingByUser(keyboardShortcutsStore.commands.getHotkey())
     modalVisible.value = false
   } else {
-    keyboardShortcutsStore.actions.onKeyboardEvent(event)
+    keyboardShortcutsStore.commands.onKeyboardEvent(event)
   }
 }
 </script>

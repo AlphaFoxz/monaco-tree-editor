@@ -81,7 +81,7 @@ function createAgg(monacoId: string) {
       states: {
         messages,
       },
-      actions: {
+      commands: {
         _keepAlive: keepAlive,
         info,
         success,

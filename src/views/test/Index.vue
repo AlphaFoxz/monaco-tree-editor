@@ -31,20 +31,20 @@ window.MonacoEnvironment = {
 const monacoStore = useMonaco(monaco)
 // mock delay to test robustness
 onMounted(() => {
-  monacoStore.actions.defineTheme('dark', customTheme)
-  registerRestl(monacoStore.actions.getMonaco())
+  monacoStore.commands.defineTheme('dark', customTheme)
+  registerRestl(monacoStore.commands.getMonaco())
 })
 
 // ================ 推送消息 push message ================
 const messageAgg = useMessage()
 onMounted(() => {
-  const id = messageAgg.actions.info({
+  const id = messageAgg.commands.info({
     content: 'loading..',
     loading: true,
   })
   setTimeout(() => {
-    messageAgg.actions.close(id)
-    messageAgg.actions.success({
+    messageAgg.commands.close(id)
+    messageAgg.commands.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
@@ -55,8 +55,8 @@ onMounted(() => {
 
 // ================ 快捷键 hotkey ==================
 const hotkeyStore = useHotkey()
-hotkeyStore.actions.listen('root', (event: KeyboardEvent) => {})
-hotkeyStore.actions.listen('editor', (event: KeyboardEvent) => {
+hotkeyStore.commands.listen('root', (event: KeyboardEvent) => {})
+hotkeyStore.commands.listen('editor', (event: KeyboardEvent) => {
   if (event.ctrlKey && !event.shiftKey && !event.altKey && event.key === 's') {
     // do something...
   }
@@ -200,7 +200,7 @@ const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 
   if (!targetPath.endsWith('.ts') && !srcPath.endsWith('.js')) {
     return
   }
-  const editor = monacoStore.actions.getEditor()
+  const editor = monacoStore.commands.getEditor()
   const lineIndex = editor.getPosition()?.lineNumber!
   let str = 'import "' + _relativePathFrom(srcPath, targetPath) + '"'
   editor.executeEdits('drop', [{ range: new monaco.Range(lineIndex, 0, lineIndex, 0), text: str }])

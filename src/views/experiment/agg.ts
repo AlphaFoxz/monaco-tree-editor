@@ -4,7 +4,7 @@ const agg = createSharedSingletonAgg('agg', (context) => {
   const sharedRefs = context.sharedRefs({ name: 'Hello World!' })
   return {
     states: { name: sharedRefs.name },
-    actions: {
+    commands: {
       setName(n: string) {
         sharedRefs.name.value = n
       },

@@ -139,7 +139,7 @@ function createAgg(monacoInstanceId: string) {
       states: {
         hotkeyMap,
       },
-      actions: {
+      commands: {
         _init: bindDom,
         _setCommandHandler(handler: CommandsHandler) {
           commandHandler.value = handler
