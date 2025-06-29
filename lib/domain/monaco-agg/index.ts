@@ -1,7 +1,12 @@
 import * as monaco_lib from 'monaco-editor'
 import { nextTick, reactive, ref, shallowRef, watchEffect } from 'vue'
 import { useGlobalSettings } from '../global-settings-agg'
-import { createBroadcastEvent, createMultiInstanceAgg, Utils as AggUtils } from 'vue-fn/domain'
+import {
+  createBroadcastEvent,
+  createMultiInstanceAgg,
+  Utils as AggUtils,
+  createPluginHelperByAggCreator,
+} from 'vue-fn/domain'
 import { type ThemeMode, BuiltInPage } from '../define'
 import { type Files, type MonacoLib, type OpenedFileInfo, type FileInfo, TYPE_MAP } from './types'
 import * as FileTree from './file-tree'
@@ -13,10 +18,6 @@ const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(monacoInstanceId: string, m: MonacoLib) {
   return createMultiInstanceAgg(monacoInstanceId, (context) => {
-    context.onScopeDispose(() => {
-      delete aggMap[monacoInstanceId]
-    })
-
     // ================================= 声明变量 ===============================
     const { promise: untilDomMounted, callback: domMontedCallback } = AggUtils.createPromiseCallback(() => {})
     const {} = context
@@ -394,6 +395,10 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
     }
   })
 }
+
+export const MonacoAggPluginHelper = createPluginHelperByAggCreator(createAgg, (agg) => {
+  delete aggMap[agg.id]
+})
 
 function useAgg(monacoInstanceId: string, monaco?: MonacoLib) {
   if (!aggMap[monacoInstanceId]) {

@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "nanoid": "^5.0.9",
-    "vue-fn": "0.0.3-aplha.36"
+    "vue-fn": "0.1.0-beta.2"
   },
   "peerDependencies": {
     "monaco-editor": ">=0.52.2",
@@ -62,6 +62,5 @@
     "vue": "=3.5.12",
     "vue-router": "^4.5.0",
     "vue-tsc": "^2.1.10"
-  },
-  "packageManager": "pnpm@9.14.4+sha512.c8180b3fbe4e4bca02c94234717896b5529740a6cbadf19fa78254270403ea2f27d4e1d46a08a0f56c89b63dc8ebfd3ee53326da720273794e6200fcf0d184ab"
+  }
 }

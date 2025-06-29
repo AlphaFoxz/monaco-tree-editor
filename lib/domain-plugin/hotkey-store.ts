@@ -5,10 +5,10 @@ import { type Command, hotkeyToJsonString, jsonStringToHotkey } from '../domain/
 export const HOTKEY_STORE_PLUGIN = HotkeyPluginHelper.createSetupPlugin(() => {
   const handlesMap: Record<string, WatchHandle[]> = {}
   return {
-    mount({ api, aggHash }) {
+    mount({ api, __aggId }) {
       console.debug('加载插件')
-      handlesMap[aggHash] = []
-      handlesMap[aggHash].push(
+      handlesMap[__aggId] = []
+      handlesMap[__aggId].push(
         watch(api.states.hotkeyMap, () => {
           console.debug('更新快捷键')
         })
@@ -28,12 +28,12 @@ export const HOTKEY_STORE_PLUGIN = HotkeyPluginHelper.createSetupPlugin(() => {
         }
         localStorage.setItem('hotkeys', JSON.stringify(json))
       })
-      handlesMap[aggHash].push(
+      handlesMap[__aggId].push(
         api.events.destroyed.watchPublish(() => {
-          for (const handle of handlesMap[aggHash]) {
+          for (const handle of handlesMap[__aggId]) {
             handle()
           }
-          delete handlesMap[aggHash]
+          delete handlesMap[__aggId]
         })
       )
     },

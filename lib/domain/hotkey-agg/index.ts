@@ -14,11 +14,6 @@ const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 
 function createAgg(monacoInstanceId: string) {
   return createMultiInstanceAgg(monacoInstanceId, (context) => {
-    // ============================ 销毁逻辑 ============================
-    context.onScopeDispose(() => {
-      delete aggMap[monacoInstanceId]
-    })
-
     // ============================ 定义变量和默认值 ============================
     const commandHandler = ref<CommandsHandler>(() => {})
     const hotkeyMap = reactive<{ [key in Command]: IHotkey }>({
@@ -154,7 +149,9 @@ function createAgg(monacoInstanceId: string) {
   })
 }
 
-export const HotkeyPluginHelper = createPluginHelperByAggCreator(createAgg)
+export const HotkeyPluginHelper = createPluginHelperByAggCreator(createAgg, (agg) => {
+  delete aggMap[agg.id]
+})
 
 export function useHotkey(monacoInstanceId: string = 'default') {
   if (!aggMap[monacoInstanceId]) {

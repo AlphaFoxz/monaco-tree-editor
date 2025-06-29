@@ -12,8 +12,8 @@ importers:
         specifier: ^5.0.9
         version: 5.0.9
       vue-fn:
-        specifier: 0.0.3-aplha.36
-        version: 0.0.3-aplha.36(@vue/reactivity@3.5.13)(vue@3.5.12(typescript@5.7.2))
+        specifier: 0.1.0-beta.2
+        version: 0.1.0-beta.2(@vue/reactivity@3.5.13)(vue@3.5.12(typescript@5.7.2))
     devDependencies:
       '@ant-design/icons-vue':
         specifier: ^7.0.1
@@ -1123,13 +1123,18 @@ packages:
   muggle-string@0.4.1:
     resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==}
 
-  nanoid@3.3.8:
-    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
+  nanoid@3.3.11:
+    resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
   nanoid@5.0.9:
     resolution: {integrity: sha512-Aooyr6MXU6HpvvWXKoVoXwKMs/KyVakWwg7xQfv5/S/RIgJMy0Ifa45H9qqYy7pTCszrHzP21Uk4PZq2HpEM8Q==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+
+  nanoid@5.1.5:
+    resolution: {integrity: sha512-Ir/+ZpE9fDsNH0hQ3C68uyThDXzYcim2EqcZ8zn8Chtt1iylPT9xXJB0kPCnqzgcEGikO9RxSrh63MsmVCU7Fw==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -1496,8 +1501,8 @@ packages:
   vscode-uri@3.0.8:
     resolution: {integrity: sha512-AyFQ0EVmsOZOlAnxoFOGOq1SQDWAB7C6aqMGS23svWAllfOaxbuFvcT8D1i8z3Gyn8fraVeZNNmN6e9bxxXkKw==}
 
-  vue-fn@0.0.3-aplha.36:
-    resolution: {integrity: sha512-MWjcehrM9J7mcqcPGN3bdCdKIJKp3dXW/Z327J7Q0DmqTGRQzK17n5UZdpIg/GEZbHT7QjelNyPKY0lWBytHCQ==}
+  vue-fn@0.1.0-beta.2:
+    resolution: {integrity: sha512-B98kfc6FVD+7pEk/WAaARcPfRC6z94Wd77aH7VYmAkSqDwx5bRWsKS/+SU9bPdqbiHuzXqbYN4xBYtAuQCiTow==}
     peerDependencies:
       '@vue/reactivity': '>=3.5.0'
       vue: '>=3.5.0'
@@ -2603,9 +2608,11 @@ snapshots:
 
   muggle-string@0.4.1: {}
 
-  nanoid@3.3.8: {}
+  nanoid@3.3.11: {}
 
   nanoid@5.0.9: {}
+
+  nanoid@5.1.5: {}
 
   ncp@2.0.0: {}
 
@@ -2679,7 +2686,7 @@ snapshots:
 
   postcss@8.4.49:
     dependencies:
-      nanoid: 3.3.8
+      nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -2955,9 +2962,9 @@ snapshots:
 
   vscode-uri@3.0.8: {}
 
-  vue-fn@0.0.3-aplha.36(@vue/reactivity@3.5.13)(vue@3.5.12(typescript@5.7.2)):
+  vue-fn@0.1.0-beta.2(@vue/reactivity@3.5.13)(vue@3.5.12(typescript@5.7.2)):
     dependencies:
-      nanoid: 5.0.9
+      nanoid: 5.1.5
     optionalDependencies:
       '@vue/reactivity': 3.5.13
       vue: 3.5.12(typescript@5.7.2)
