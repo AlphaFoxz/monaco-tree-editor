@@ -1,4 +1,4 @@
-import { type Files } from '../../../lib'
+import { type Files } from '#lib/index'
 
 const fileSeparator = '\\'
 let responseFiles: Files = {

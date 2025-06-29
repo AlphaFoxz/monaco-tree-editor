@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import ContextMenu from '../components/context-menu/Index.vue'
-import IconEdit from '../icons/Edit.vue'
-import IconDelete from '../icons/Delete.vue'
-import IconArrow from '../icons/Arrow.vue'
-import IconAddfile from '../icons/Addfile.vue'
-import IconAddfolder from '../icons/Addfolder.vue'
-import Icons from '../icons/Index.vue'
+import ContextMenu from '#components/context-menu/Index.vue'
+import IconEdit from '#icons/Edit.vue'
+import IconDelete from '#icons/Delete.vue'
+import IconArrow from '#icons/Arrow.vue'
+import IconAddfile from '#icons/Addfile.vue'
+import IconAddfolder from '#icons/Addfolder.vue'
+import Icons from '#icons/Index.vue'
 import FileTemp from './File.vue'
 import { computed, nextTick, onMounted, ref, watch, type ComputedRef } from 'vue'
-import { type Files, useMonaco } from '../stores/monaco-store'
-import { type ContextMenuItem } from '../components/context-menu/define'
-import { useI18n } from '../stores/i18n-store'
+import { type Files, useMonaco } from '#domain/monaco-agg'
+import { type ContextMenuItem } from '#components/context-menu/define'
+import { useI18n } from '#domain/i18n-agg'
 
 const props = defineProps({
+  monacoId: {
+    type: String,
+    required: true,
+  },
   collapseTrigger: {
     type: Number,
   },
@@ -47,7 +51,7 @@ const emit = defineEmits({
 })
 
 // =================== 初始化 handle init ===================
-const monacoStore = useMonaco()
+const monacoAgg = useMonaco(undefined, props.monacoId)
 const editing = ref(false)
 const showChild = ref(false)
 const nameRef = ref<HTMLElement>()
@@ -85,7 +89,7 @@ watch([() => props.file, () => props.root], (v) => {
 })
 
 // ================ 右键菜单 contextmenu ================
-const { $t } = useI18n().action
+const { $t } = useI18n().commands
 type _FileOperation = '@openFile' | '@copyPath' | '@copyRelativePath' | '@renameFile' | '@deleteFile' | string
 type _FolderOperation =
   | '@newFile'
@@ -157,7 +161,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_FileOperation | _FolderO
       editing.value = true
       break
     case '@copyPath':
-      const path = monacoStore._action.getAbsolutePath(props.file.path)
+      const path = monacoAgg.commands._getAbsolutePath(props.file.path)
       if (navigator.clipboard) {
         navigator.clipboard.writeText(path)
       } else {
@@ -223,7 +227,7 @@ const handleBlur = (_e?: Event) => {
   let name = nameRef.value?.textContent
   if (!name || /^\s*$/.test(name)) {
     //remove component
-    monacoStore._action.removeBlank(props.file.path)
+    monacoAgg.commands._removeInvalidFileByPath(props.file.path)
     return
   }
   name = name.trim()
@@ -243,7 +247,7 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore._action.removeBlank(props.file.path)
+          monacoAgg.commands._removeInvalidFileByPath(props.file.path)
         }
       )
     } else {
@@ -252,20 +256,20 @@ const handleBlur = (_e?: Event) => {
         props.file.path + name,
         () => {},
         () => {
-          monacoStore._action.removeBlank(props.file.path)
+          monacoAgg.commands._removeInvalidFileByPath(props.file.path)
         }
       )
     }
   }
 }
 const handlePathChange = (_e?: MouseEvent) => {
-  if (editing.value || !monacoStore.state.isReady.value) {
+  if (editing.value || !monacoAgg.states.isInitialized.value) {
     return
   }
   const key = props.file.path
-  const model = monacoStore._action.restoreModel(key)
+  const model = monacoAgg.commands._restoreModel(key)
   if (model) {
-    monacoStore._action.openOrFocusPath(key)
+    monacoAgg.commands._openOrFocusPath(key)
   }
 }
 watch([editing, () => props.file], (v) => {
@@ -298,7 +302,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
 <template>
   <ContextMenu v-if="file.isFile" :menu="fileContextMenu" @select="handleSelectContextMenu">
     <div
-      :title="file.name"
+      :title="monacoAgg.commands._getAbsolutePath(file.path)"
       :data-src="file.path"
       @click="handlePathChange"
       :key="file.path"
@@ -383,6 +387,7 @@ watch([() => props.currentPath, () => props.file], (v) => {
       v-for="(item, _index) in keys"
     >
       <FileTemp
+        :monaco-id="monacoId"
         @rename-file="(path, name) => emit('renameFile', path, name)"
         @rename-folder="(path, name) => emit('renameFolder', path, name)"
         @delete-file="(path) => emit('deleteFile', path)"

@@ -32,17 +32,33 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    // "exactOptionalPropertyTypes": true,
     "paths": {
       "@/*": [
-        "/src/*"
+        "./src/*"
+      ],
+      "#lib/*": [
+        "./lib/*"
+      ],
+      "#domain/*": [
+        "./lib/domain/*"
+      ],
+      "#domain-plugin/*": [
+        "./lib/domain-plugin/*"
+      ],
+      "#icons/*": [
+        "./lib/icons/*"
+      ],
+      "#components/*": [
+        "./lib/components/*"
+      ],
+      "#pages/*": [
+        "./lib/pages/*"
       ]
     },
   },
   "files": [],
   "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
     {
       "path": "./tsconfig.app.json"
     }

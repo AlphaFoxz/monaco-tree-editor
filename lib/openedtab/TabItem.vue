@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect, nextTick } from 'vue'
-import ContextMenu from '../components/context-menu/Index.vue'
-import Confirm from '../components/modal/Confirm.vue'
-import Icons from '../icons/Index.vue'
-import Close from '../icons/Close.vue'
-import { type ContextMenuItem } from '../components/context-menu/define'
-import { useMonaco } from '../stores/monaco-store'
-import { useI18n } from '../stores/i18n-store'
+import ContextMenu from '#components/context-menu/Index.vue'
+import Confirm from '#components/modal/Confirm.vue'
+import Icons from '#icons/Index.vue'
+import Close from '#icons/Close.vue'
+import { type ContextMenuItem } from '#components/context-menu/define'
+import { useMonaco } from '#domain/monaco-agg'
+import { useI18n } from '#domain/i18n-agg'
 
 const props = defineProps({
+  monacoId: {
+    type: String,
+    required: true,
+  },
   file: {
     type: Object,
     required: true,
@@ -28,10 +32,10 @@ const emit = defineEmits({
   abortSave: (_path: string) => true,
   closeOtherFiles: (_path?: string) => true,
 })
-const monacoStore = useMonaco()
+const monacoAgg = useMonaco(undefined, props.monacoId)
 
 //========================= 国际化 i18n ==========================
-const { $t } = useI18n().action
+const { $t } = useI18n().commands
 
 //========================= 点击标签 click tab ==========================
 const itemRef = ref<HTMLDivElement>()
@@ -44,7 +48,7 @@ if (props.file!.path && props.file!.path.indexOf('.') !== -1) {
 }
 const active = ref(false)
 watchEffect(() => {
-  const b = monacoStore.state.currentPath.value === props.file!.path
+  const b = monacoAgg.states.currentPath.value === props.file!.path
   active.value = b
   if (b) {
     itemRef.value?.scrollIntoView({
@@ -87,7 +91,7 @@ const handleSelectContextMenu = (item: ContextMenuItem<_MenuValue>) => {
   } else if (v === '@closeAll') {
     emit('closeOtherFiles')
   } else if (v === '@copyPath') {
-    const path = monacoStore._action.getAbsolutePath(props.file.path)
+    const path = monacoAgg.commands._getAbsolutePath(props.file.path)
     if (navigator.clipboard) {
       navigator.clipboard.writeText(path)
     } else {
@@ -138,7 +142,7 @@ const handleClose = async (e?: Event): Promise<void> => {
 }
 const handleSaveAndClose = () => {
   const path = props.file!.path
-  const value = monacoStore._action.getValue(path)
+  const value = monacoAgg.commands._getValue(path)
   if (!value) {
     return
   }
@@ -173,6 +177,7 @@ defineExpose({
 </script>
 <template>
   <Confirm
+    :monaco-id="monacoId"
     @ok="handleSaveAndClose"
     @cancel="handleCloseWithoutSave"
     @close="confirmVisible = false"
@@ -194,7 +199,7 @@ defineExpose({
       @mouseover="handleOver"
       @mouseleave="handleLeave"
       @mousedown="handleClick"
-      :title="monacoStore._action.getAbsolutePath(file.path)"
+      :title="monacoAgg.commands._getAbsolutePath(file.path)"
       :data-src="file.path"
       :class="`monaco-tree-editor-opened-tab-item ${active ? 'monaco-tree-editor-opened-tab-item-active' : ''}`"
     >

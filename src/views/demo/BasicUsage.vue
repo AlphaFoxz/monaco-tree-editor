@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Editor as MonacoTreeEditor, useMonaco, type Files } from '../../../lib'
+import { Editor as MonacoTreeEditor, useMonaco, type Files } from '#lib/index'
 import 'moanco-tree-editor/index.css'
 import { ref } from 'vue'
 import * as monaco from 'monaco-editor'
@@ -26,10 +26,11 @@ window.MonacoEnvironment = {
   },
   globalAPI: true,
 }
-let monacoStore: ReturnType<typeof useMonaco>
+let monacoAgg: ReturnType<typeof useMonaco>
 // 模拟延迟，测试健壮性 mock delay to test robustness
 server.delay().then(() => {
-  monacoStore = useMonaco(monaco)
+  monacoAgg = useMonaco()
+  monacoAgg.commands.setMonaco(monaco)
 })
 
 // ================ 回调函数 callback =================

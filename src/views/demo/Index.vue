@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '../../../lib'
+import { Editor as MonacoTreeEditor, useMessage, useHotkey, useMonaco, type Files } from '#lib/index'
 import { type ComputedRef, onMounted, ref } from 'vue'
 import * as monaco from 'monaco-editor'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
@@ -27,37 +27,35 @@ window.MonacoEnvironment = {
   },
   globalAPI: true,
 }
-let monacoStore: ReturnType<typeof useMonaco>
+const monacoAgg = useMonaco(monaco)
 // mock delay to test robustness
-server.delay().then(async () => {
-  monacoStore = useMonaco(monaco)
-  await monacoStore._action.untilMonacoImported()
-  monacoStore.action.defineTheme('dark', customTheme)
-  registerRestl(monacoStore.state.monaco.value!)
+onMounted(() => {
+  monacoAgg.commands.defineTheme('dark', customTheme)
+  registerRestl(monacoAgg.commands.getMonaco())
 })
 
 // ================ 推送消息 push message ================
-const messageStore = useMessage()
+const messageAgg = useMessage()
 onMounted(() => {
-  const id = messageStore.action.info({
-    content: 'testing..',
+  const id = messageAgg.commands.info({
+    content: 'loading..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.action.close(id)
-    messageStore.action.success({
+    messageAgg.commands.close(id)
+    messageAgg.commands.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
-      textTip: 'testing successed!',
+      textTip: 'loading successed!',
     })
   }, 2000)
 })
 
 // ================ 快捷键 hotkey ==================
-const hotkeyStore = useHotkey()
-hotkeyStore.listen('root', (event: KeyboardEvent) => {})
-hotkeyStore.listen('editor', (event: KeyboardEvent) => {
+const hotkeyAgg = useHotkey()
+hotkeyAgg.commands.listen('root', (event: KeyboardEvent) => {})
+hotkeyAgg.commands.listen('editor', (event: KeyboardEvent) => {
   if (event.ctrlKey && !event.shiftKey && !event.altKey && event.key === 's') {
     // do something...
   }
@@ -201,7 +199,7 @@ const handleDragInEditor = (srcPath: string, targetPath: string, type: 'file' | 
   if (!targetPath.endsWith('.ts') && !srcPath.endsWith('.js')) {
     return
   }
-  const editor = monacoStore.action.getEditor()
+  const editor = monacoAgg.commands.getEditor()
   const lineIndex = editor.getPosition()?.lineNumber!
   let str = 'import "' + _relativePathFrom(srcPath, targetPath) + '"'
   editor.executeEdits('drop', [{ range: new monaco.Range(lineIndex, 0, lineIndex, 0), text: str }])

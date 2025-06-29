@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import './index.scss'
-import { type Language, useI18n } from '../stores/i18n-store'
-import { useMessage } from '../stores/message-store'
-import { useGlobalSettings } from '../stores/global-settings-store'
-import { type ThemeMode } from '../themes/define'
+import { type Language, useI18n } from '#domain/i18n-agg'
+import { useMessage } from '#domain/message-agg'
+import { useGlobalSettings } from '#domain/global-settings-agg'
+import { type ThemeMode } from '#domain/define'
 
 const props = defineProps({
   customMenu: {
@@ -12,10 +12,10 @@ const props = defineProps({
   },
 })
 
-const { currentLanguage } = useI18n().state
-const { setLanguage, $t } = useI18n().action
-const messageStore = useMessage()
-const globalSettingsStore = useGlobalSettings()
+const { currentLanguage } = useI18n().states
+const { setLanguage, $t } = useI18n().commands
+const messageAgg = useMessage()
+const globalSettingsAgg = useGlobalSettings()
 
 function handleSelectLanguage(e: Event) {
   const target = e.target as HTMLSelectElement
@@ -27,7 +27,7 @@ function handleSelectLanguage(e: Event) {
       break
     }
   }
-  messageStore.action.success({
+  messageAgg.commands.success({
     content: $t('msg.languageChanged{lang}', { lang: inner }).value,
     closeable: true,
     timeoutMs: 3000,
@@ -35,7 +35,7 @@ function handleSelectLanguage(e: Event) {
 }
 
 function handleSelectColorTheme(e: Event) {
-  globalSettingsStore.action.setThemeMode((e.target as HTMLSelectElement).value as ThemeMode)
+  globalSettingsAgg.commands.setThemeMode((e.target as HTMLSelectElement).value as ThemeMode)
 }
 </script>
 
@@ -53,7 +53,7 @@ function handleSelectColorTheme(e: Event) {
     <div class="monaco-tree-editor-pages-item">
       <select
         class="monaco-tree-editor-pages-item-select"
-        :value="globalSettingsStore.state.themeMode.value"
+        :value="globalSettingsAgg.states.themeMode.value"
         @change="handleSelectColorTheme"
       >
         <option value="dark">{{ $t('settings.colorTheme.dark').value }}</option>

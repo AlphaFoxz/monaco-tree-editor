@@ -10,6 +10,12 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
+        '#lib': fileURLToPath(new URL('./lib', import.meta.url)),
+        '#domain': fileURLToPath(new URL('./lib/domain', import.meta.url)),
+        '#domain-plugin': fileURLToPath(new URL('./lib/domain-plugin', import.meta.url)),
+        '#icons': fileURLToPath(new URL('./lib/icons', import.meta.url)),
+        '#components': fileURLToPath(new URL('./lib/components', import.meta.url)),
+        '#pages': fileURLToPath(new URL('./lib/pages', import.meta.url)),
       },
     },
     server: {
@@ -49,8 +55,8 @@ export default defineConfig(({ mode }) => {
         external: ['vue', 'monaco-editor'],
         output: {
           globals: {
-            vue: 'Vue',
-            'monaco-editor': '__external_monaco-editor__',
+            vue: '__Vue',
+            'monaco-editor': '__MonacoEditor',
           },
         },
       },

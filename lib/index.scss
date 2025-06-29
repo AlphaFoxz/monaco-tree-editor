@@ -30,6 +30,7 @@
 
   --monaco-bg-base-1: var(--monaco-c-black-3);
   --monaco-bg-base-2: var(--monaco-c-black-2);
+  --monaco-bg-base-3: var(--monaco-c-black-5);
   --monaco-bg-button: var(--monaco-c-white-1);
   --monaco-bg-button-hover: var(--monaco-c-blue-7);
   --monaco-text-base-1: var(--monaco-c-white-2);
@@ -80,6 +81,7 @@
 .light {
   --monaco-bg-base-1: var(--monaco-c-white-1);
   --monaco-bg-base-2: var(--monaco-c-white-3);
+  --monaco-bg-base-3: var(--monaco-c-white-2);
   --monaco-text-base-1: var(--monaco-c-black-4);
   --monaco-text-base-2: var(--monaco-c-black-6);
   --monaco-border-base-1: var(--monaco-c-white-2);
@@ -114,6 +116,10 @@
   --monaco-border-messagepopup-box: var(--monaco-c-white-2);
 }
 
+.monaco-editor {
+  outline: none !important;
+}
+
 .monaco-tree-editor {
   display: flex;
   flex-direction: row;
@@ -125,6 +131,13 @@
   color: var(--monaco-text-base-1);
   background-color: var(--monaco-bg-base-1);
 
+  input {
+    font-size: 14px;
+    line-height: 24px;
+    border: none;
+    color: var(--monaco-text-base-2);
+    background-color: var(--monaco-bg-base-2);
+  }
   .minimap {
     z-index: 0 !important;
   }

@@ -2,9 +2,13 @@
 import { onMounted, ref, getCurrentInstance, type ComponentInternalInstance, nextTick } from 'vue'
 import TabItem from './TabItem.vue'
 import './index.scss'
-import { useMonaco } from '../stores/monaco-store'
+import { type OpenedFileInfo, useMonaco } from '#domain/monaco-agg'
 
-defineProps({
+const props = defineProps({
+  monacoId: {
+    type: String,
+    required: true,
+  },
   rootEl: HTMLElement,
   fontSize: {
     type: Number,
@@ -16,9 +20,9 @@ const emit = defineEmits({
 })
 
 //========================= 初始化 init =========================
-const monacoStore = useMonaco()
-const openedFiles = monacoStore.state.openedFiles
-const currentPath = monacoStore.state.currentPath
+const monacoAgg = useMonaco(undefined, props.monacoId)
+const openedFiles = monacoAgg.states.openedFiles
+const currentPath = monacoAgg.states.currentPath
 let instanceRef: ComponentInternalInstance | null
 onMounted(() => {
   instanceRef = getCurrentInstance()
@@ -30,10 +34,10 @@ const handleSaveFile = (path: string, value: string, resolve?: () => void, rejec
 }
 const handlePathChange = (key: string) => {
   console.debug('pathChange', key)
-  monacoStore._action.restoreModel(key)
+  monacoAgg.commands._restoreModel(key)
 }
 const handleCloseFile = (path: string) => {
-  monacoStore._action.closeFile(path)
+  monacoAgg.commands._closeFile(path)
 }
 const handleCloseOtherFiles = async (path?: string) => {
   console.debug('handleCloseOtherFiles', path)
@@ -72,11 +76,11 @@ const handleDrop = (e: DragEvent, index: number) => {
   swap(srcIndex, index)
 }
 const swap = (srcIndex: number, tarIndex: number) => {
-  const result = openedFiles.value
+  const result = JSON.parse(JSON.stringify(openedFiles.value)) as Array<OpenedFileInfo>
   const tmp = result[srcIndex]
   result.splice(srcIndex, 1)
   result.splice(tarIndex, 0, tmp)
-  monacoStore.action.setOpenedFiles(result)
+  monacoAgg.commands.setOpenedFiles(result)
   flush()
 }
 const visible = ref(true)
@@ -99,6 +103,7 @@ const flush = () => {
         v-for="(file, index) in openedFiles"
       >
         <TabItem
+          :monaco-id="monacoId"
           :rootEl="rootEl"
           :file="file"
           :key="file.path"

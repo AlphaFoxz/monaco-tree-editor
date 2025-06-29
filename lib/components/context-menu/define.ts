@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref, type ComputedRef, type Ref } from 'vue'
+import { onMounted, onBeforeUnmount, ref, type ComputedRef, type Ref } from 'vue'
 
 let visibleHistory: Ref<boolean>[] = []
 function clear() {
@@ -56,7 +56,7 @@ export function useContextMenu(
     window.addEventListener('contextmenu', closeMenu)
     window.addEventListener('click', closeMenu, true)
   })
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     if (trigger.includes('RClick')) {
       container.value?.removeEventListener('contextmenu', openMenu)
     }

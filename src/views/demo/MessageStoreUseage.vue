@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { Editor as MonacoTreeEditor, useMonaco, type Files } from '../../../lib'
+import { Editor as MonacoTreeEditor, useMonaco, type Files } from '#lib/index'
 import { useMessage } from '../../../lib'
 import { ref, onMounted } from 'vue'
 import * as monaco from 'monaco-editor'
 import * as server from './mock-server'
 
-const messageStore = useMessage()
+const messageAgg = useMessage()
 onMounted(() => {
-  const id = messageStore.action.info({
+  const id = messageAgg.commands.info({
     content: 'testing..',
     loading: true,
   })
   setTimeout(() => {
-    messageStore.action.close(id)
-    messageStore.action.success({
+    messageAgg.commands.close(id)
+    messageAgg.commands.success({
       content: 'Hello Editor',
       closeable: true,
       timeoutMs: 15000,
@@ -23,10 +23,11 @@ onMounted(() => {
 })
 
 // ================ 初始化 init monaco-tree-editor ================
-let monacoStore: ReturnType<typeof useMonaco>
+let monacoAgg: ReturnType<typeof useMonaco>
 // 模拟延迟，测试健壮性 mock delay to test robustness
 server.delay().then(() => {
-  monacoStore = useMonaco(monaco)
+  monacoAgg = useMonaco()
+  monacoAgg.commands.setMonaco(monaco)
 })
 
 // ================ 回调函数 callback =================

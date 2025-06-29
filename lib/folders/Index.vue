@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import './index.scss'
-import IconAddfolder from '../icons/Addfolder.vue'
-import IconAddfile from '../icons/Addfile.vue'
-import ReloadOutlined from '../icons/ReloadOutlined.vue'
-import MinusSquareOutlined from '../icons/MinusSquareOutlined.vue'
-import IconArrow from '../icons/Arrow.vue'
+import IconAddfolder from '#icons/Addfolder.vue'
+import IconAddfile from '#icons/Addfile.vue'
+import ReloadOutlined from '#icons/ReloadOutlined.vue'
+import MinusSquareOutlined from '#icons/MinusSquareOutlined.vue'
+import IconArrow from '#icons/Arrow.vue'
 import FileTemp from './File.vue'
-import Confirm from '../components/modal/Confirm.vue'
-import ContextMenu from '../components/context-menu/Index.vue'
+import Confirm from '#components/modal/Confirm.vue'
+import ContextMenu from '#components/context-menu/Index.vue'
 import { ref, type ComputedRef } from 'vue'
-import { useMonaco } from '../stores/monaco-store'
-import { useI18n } from '../stores/i18n-store'
+import { useMonaco } from '#domain/monaco-agg'
+import { useI18n } from '#domain/i18n-agg'
 
-defineProps({
+const props = defineProps({
+  monacoId: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     default: 'EXPLORER',
@@ -48,13 +52,13 @@ const emit = defineEmits({
 })
 
 //=================== 国际化 i18n ==================
-const { $t } = useI18n().action
+const { $t } = useI18n().commands
 
 //=================== 初始化 init ==================
 const collapse = ref(false)
-const monacoStore = useMonaco()
-const fileTree = monacoStore._state.fileTree
-const currentPath = monacoStore.state.currentPath
+const monacoAgg = useMonaco(undefined, props.monacoId)
+const fileTree = monacoAgg.states._fileTree
+const currentPath = monacoAgg.states.currentPath
 
 //=================== 回调 callback ==================
 const fileConfirmVisible = ref(false)
@@ -68,10 +72,10 @@ const handleCollapseAll = () => {
   collapseTrigger.value = new Date().getTime()
 }
 const handleConfirmNewFile = (path: string) => {
-  monacoStore._action.newFile(path)
+  monacoAgg.commands._newFile(path)
 }
 const handleConfirmNewFolder = (path: string) => {
-  monacoStore._action.newFolder(path)
+  monacoAgg.commands._newFolder(path)
 }
 const handleNewFile = (path: string, resolve: () => void, reject: () => void) => {
   emit('newFile', path, resolve, reject)
@@ -93,11 +97,16 @@ const handleRenameFile = (path: string, name: string) => {
 const handleRenameFolder = (path: string, name: string) => {
   emit('renameFolder', path, name)
 }
+
+defineExpose({
+  handleDeleteFile,
+})
 </script>
 <template>
   <div class="monaco-tree-editor-list-wrapper" :style="{ fontSize: `${fontSize}px` }">
     <Confirm
       v-if="fileConfirmVisible"
+      :monaco-id="monacoId"
       type="warn"
       @ok="
         () => {
@@ -119,6 +128,7 @@ const handleRenameFolder = (path: string, name: string) => {
     </Confirm>
     <Confirm
       v-if="folderConfirmVisible"
+      :monaco-id="monacoId"
       type="warn"
       @ok="
         () => {
@@ -167,6 +177,7 @@ const handleRenameFolder = (path: string, name: string) => {
     </ContextMenu>
     <div v-show="!collapse" class="monaco-tree-editor-list-files">
       <FileTemp
+        :monaco-id="monacoId"
         @confirm-new-file="handleConfirmNewFile"
         @confirm-new-folder="handleConfirmNewFolder"
         @new-file="handleNewFile"
