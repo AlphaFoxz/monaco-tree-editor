@@ -1,12 +1,8 @@
 import * as monaco_lib from 'monaco-editor'
 import { nextTick, reactive, ref, shallowRef, watchEffect } from 'vue'
 import { useGlobalSettings } from '../global-settings-agg'
-import {
-  createBroadcastEvent,
-  createMultiInstanceAgg,
-  Utils as AggUtils,
-  createPluginHelperByAggCreator,
-} from 'vue-fn/domain'
+import { createBroadcastEvent, createMultiInstanceAgg, createPluginHelperByAggCreator } from 'vue-fn/domain'
+import { createDeferred } from 'vue-fn/timer'
 import { type ThemeMode, BuiltInPage } from '../define'
 import { type Files, type MonacoLib, type OpenedFileInfo, type FileInfo, TYPE_MAP } from './types'
 import * as FileTree from './file-tree'
@@ -19,7 +15,7 @@ const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
 function createAgg(monacoInstanceId: string, m: MonacoLib) {
   return createMultiInstanceAgg(monacoInstanceId, (context) => {
     // ================================= 声明变量 ===============================
-    const { promise: untilDomMounted, callback: domMontedCallback } = AggUtils.createPromiseCallback(() => {})
+    const { promise: untilDomMounted, resolve: domMontedCallback } = createDeferred<void>()
     const {} = context
 
     const projectName = ref<any>('project')
@@ -72,7 +68,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       editor.updateOptions(options)
     }
 
-    const onFileTreeLoaded = createBroadcastEvent({})
+    const onFileTreeLoaded = createBroadcastEvent<{}>()
     async function loadFileTree(fs: Files) {
       const {
         prefix: nPrefix,
@@ -101,21 +97,23 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
           if (temp[v]) {
             temp = temp[v].children!
           } else if (index === path.length - 1) {
+            const file = nfiles[key]
             temp[v] = {
               name: v,
               path: key,
-              content: nfiles[key].isFile ? nfiles[key].content || '' : undefined,
-              readonly: nfiles[key].readonly,
-              isFile: nfiles[key].isFile,
-              isFolder: nfiles[key].isFolder,
-              children: nfiles[key].isFolder ? {} : undefined,
+              content: file?.isFile ? file.content ?? '' : undefined,
+              readonly: file?.readonly,
+              isFile: file?.isFile,
+              isFolder: file?.isFolder,
+              children: file?.isFolder ? {} : undefined,
             }
           } else {
+            const file = nfiles[key]
             temp[v] = {
               isFolder: true,
               children: {},
               path: '/' + path.slice(0, index + 1).join('/'),
-              readonly: nfiles[key].readonly,
+              readonly: file?.readonly,
               name: v,
             }
             temp = temp[v].children!
@@ -125,7 +123,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       fileTree.value = tree
       await untilDomMounted
       keys.forEach((key) => {
-        const value = nfiles[key].content
+        const value = nfiles[key]?.content
         if (typeof value === 'string') {
           createOrUpdateModel(key, value, true)
         }
@@ -179,7 +177,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
         let type = ''
         let tabSize = 2
         if (path.indexOf('.') !== -1) {
-          const extName = path.split('.').slice(-1)[0]
+          const extName = path.split('.').slice(-1)[0] ?? ''
           type = extName
           tabSize = MonacoExt.getTabSizeByExtension(extName)
         } else {
@@ -236,7 +234,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       }
       return undefined
     }
-    const onFileOpened = createBroadcastEvent({ path: '' })
+    const onFileOpened = createBroadcastEvent<{ path: string }>()
     function openOrFocusPath(path: string) {
       let exist = false
       openedFiles.value.forEach((v) => {
@@ -270,10 +268,11 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
           if (activePath) {
             return false
           }
-          if (pre[index + 1]) {
-            activePath = pre[index + 1].path
+          const suggest = pre[index + 1]
+          if (suggest) {
+            activePath = suggest.path
           } else if (index > 0) {
-            activePath = pre[index - 1].path
+            activePath = pre[index - 1]?.path
           }
           return false
         })
@@ -297,7 +296,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       if (!m?.uri.authority) {
         return false
       }
-      return originalFileTree[path].content !== m?.getValue()
+      return originalFileTree[path]?.content !== m?.getValue()
     }
 
     function resize() {

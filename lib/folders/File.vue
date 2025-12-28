@@ -68,10 +68,10 @@ const keys = computed<string[]>(() => {
   }
   const childs: Files = props.file.children
   const folders = Object.keys(childs)
-    .filter((key) => !childs[key].isFile)
+    .filter((key) => !childs[key]!.isFile)
     .sort()
   const files = Object.keys(childs)
-    .filter((key) => childs[key].isFile)
+    .filter((key) => childs[key]!.isFile)
     .sort()
   return folders.concat(files)
 })

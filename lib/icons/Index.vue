@@ -144,7 +144,7 @@ const fileTypeMap = (fileType: string) => {
     zig: zigComp,
     zip: zipComp,
   }
-  return config[type] ? config[type] : defaultFileComp
+  return type && config[type] ? config[type] : defaultFileComp
 }
 const svg = shallowRef(fileTypeMap(props.type))
 watch(

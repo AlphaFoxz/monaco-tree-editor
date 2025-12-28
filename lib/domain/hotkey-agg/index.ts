@@ -36,18 +36,15 @@ function createAgg(monacoInstanceId: string) {
 
     // ============================ 定义事件 ============================
     // 初始化
-    const needLoadCacheEvent = createRequestEvent(
-      {},
-      (hotkeys: IHotkey[]) => {
+    const needLoadCacheEvent = createRequestEvent<{}, IHotkey[]>().options({
+      onReply(hotkeys) {
         addKeybindings(hotkeys)
       },
-      true,
-      500
-    )
+    })
     context.onBeforeInitialize(async () => {
       await needLoadCacheEvent.publishRequest({}).catch((_: Error) => {})
     })
-    const onKeybindingChangedByUserEvent = createBroadcastEvent({ hotkeyMap })
+    const onKeybindingChangedByUserEvent = createBroadcastEvent<{ hotkeyMap: typeof hotkeyMap }>()
 
     function listenKeyDown(when: When) {
       return function (e: KeyboardEvent) {

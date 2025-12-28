@@ -41,7 +41,11 @@ const agg = createSingletonAgg(() => {
     }
   }
   function getOpenedTabsHeight(): number {
-    return document.getElementsByClassName('monaco-tree-editor-opened-tab')[0].clientHeight
+    const h = document.getElementsByClassName('monaco-tree-editor-opened-tab')[0]?.clientHeight
+    if (!h) {
+      throw new Error('getOpenedTabsHeight error')
+    }
+    return h
   }
   function switchCurrentLeftSiderBar(item: LeftSiderBarItem | undefined, autoClose = true) {
     if (autoClose && opendLeftSiderBar.value === item) {

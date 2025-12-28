@@ -33,6 +33,9 @@ export function throttle(fn: Function, delay: number = 500): Function {
 export function longestCommonPrefix(strs: string[]): string {
   if (!strs.length) return ''
   let [a, ...b] = strs
+  if (!a || !b) {
+    return ''
+  }
   let result = ''
   for (let i = 0; i < a.length; i++) {
     let flag = b.every((item) => item[i] === a[i])

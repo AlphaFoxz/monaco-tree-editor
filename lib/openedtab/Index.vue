@@ -77,7 +77,10 @@ const handleDrop = (e: DragEvent, index: number) => {
 }
 const swap = (srcIndex: number, tarIndex: number) => {
   const result = JSON.parse(JSON.stringify(openedFiles.value)) as Array<OpenedFileInfo>
-  const tmp = result[srcIndex]
+  const tmp = result[srcIndex] ?? undefined
+  if (!tmp) {
+    return
+  }
   result.splice(srcIndex, 1)
   result.splice(tarIndex, 0, tmp)
   monacoAgg.commands.setOpenedFiles(result)

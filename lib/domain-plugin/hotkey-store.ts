@@ -13,14 +13,14 @@ export const HOTKEY_STORE_PLUGIN = HotkeyPluginHelper.createSetupPlugin(() => {
           console.debug('更新快捷键')
         })
       )
-      api.events.needLoadCache.watchPublishRequest(({ reply }) => {
+      api.events.needLoadCache.listenAndReply(({}) => {
         const cache = localStorage.getItem('hotkeys')
         if (cache) {
-          return reply(JSON.parse(cache).map((i: string) => jsonStringToHotkey(i)))
+          return JSON.parse(cache).map((i: string) => jsonStringToHotkey(i))
         }
-        return reply([])
+        return []
       })
-      api.events.onKeybindingChangedByUser.watchPublish(({ data }) => {
+      api.events.onKeybindingChangedByUser.listen(({ data }) => {
         console.log('hotkeyStore保存快捷键')
         const json: string[] = []
         for (const hotykey in data.hotkeyMap) {
@@ -28,14 +28,12 @@ export const HOTKEY_STORE_PLUGIN = HotkeyPluginHelper.createSetupPlugin(() => {
         }
         localStorage.setItem('hotkeys', JSON.stringify(json))
       })
-      handlesMap[__aggId].push(
-        api.events.destroyed.watchPublish(() => {
-          for (const handle of handlesMap[__aggId]) {
-            handle()
-          }
-          delete handlesMap[__aggId]
-        })
-      )
+      api.events.destroyed.listen(() => {
+        for (const handle of handlesMap[__aggId] ?? []) {
+          handle()
+        }
+        delete handlesMap[__aggId]
+      })
     },
   }
 })
