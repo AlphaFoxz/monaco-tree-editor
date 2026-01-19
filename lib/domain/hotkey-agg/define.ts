@@ -13,12 +13,12 @@ export function hotkeyToJsonString(hotkey: IHotkey) {
     shiftKey: hotkey.shiftKey,
   })
 }
-export function jsonStringToHotkey(json: string) {
+export function jsonStringToHotkey(json: string): IHotkey {
   const { when, key, command, ctrlKey, altKey, shiftKey } = JSON.parse(json)
   return new Hotkey({ when, key, command, ctrlKey, altKey, shiftKey })
 }
-export function jsonToHotkey<T extends object>(json: T) {
-  const { when, key, command, ctrlKey, altKey, shiftKey } = json as any
+export function jsonToHotkey<T extends IHotkey>(json: T) {
+  const { when, key, command, ctrlKey, altKey, shiftKey } = json
   return new Hotkey({ when, key, command, ctrlKey, altKey, shiftKey })
 }
 

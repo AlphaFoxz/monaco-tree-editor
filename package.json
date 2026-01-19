@@ -47,21 +47,21 @@
   "devDependencies": {
     "@ant-design/icons-vue": "^7.0.1",
     "@tsconfig/node22": "^22.0.5",
-    "@types/node": "^22.19.3",
+    "@types/node": "^22.19.7",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vue/tsconfig": "^0.8.1",
-    "cypress": "^15.8.1",
+    "cypress": "^15.9.0",
     "cypress-real-events": "^1.15.0",
     "get-port": "^7.1.0",
     "jsdom": "^27.4.0",
     "monaco-editor": "^0.52.2",
     "ncp": "^2.0.0",
     "read-pkg": "^10.0.0",
-    "sass": "^1.97.1",
+    "sass": "^1.97.2",
     "typescript": "^5.9.3",
     "vite": "^6.4.1",
-    "vue": "^3.5.12",
+    "vue": "^3.5.26",
     "vue-router": "^4.6.4",
-    "vue-tsc": "^3.2.1"
+    "vue-tsc": "^3.2.2"
   }
 }
