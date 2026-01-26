@@ -1,46 +1,67 @@
-# https://github.com/actions/deploy-pages#usage
-# https://nuxt.com/deploy/github-pages
-name: Deploy to GitHub Pages
+# Sample workflow for building and deploying a VitePress site to GitHub Pages
+#
+name: Deploy VitePress site to Pages
+
 on:
-  workflow_dispatch:
+  # Runs on pushes targeting the `main` branch. Change this to `master` if you're
+  # using the `master` branch as the default branch.
   push:
-    branches:
-      - dev-1.2
+    branches: [main]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
+  # Build job
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: corepack enable
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          node-version: '20'
-      # Pick your own package manager and build script
-      - run: cd ./.github-pages && npm install
-      # Setup environment variables
-      # NUXT_APP_BASE_URL is your GitHub Repo Name.
-      - run: cd ./.github-pages && echo 'NUXT_APP_BASE_URL=/monaco-tree-editor' > ./.env
-      # Build project
-      - run: cd ./.github-pages && npx nuxt build --preset github_pages
-      - name: Upload artifact 🚀
+          fetch-depth: 0 # Not needed if lastUpdated is not enabled
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: github-pages/pnpm-lock.yaml # 指定 lockfile 路径
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: github-pages # 指定工作目录
+      - name: Build with VitePress
+        run: pnpm docs:build
+        working-directory: github-pages # 指定工作目录
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./.github-pages/.output/public
+          path: github-pages/docs/.vitepress/dist # 修改为实际的构建输出路径
 
   # Deployment job
   deploy:
-    # Add a dependency to the build job
-    needs: build
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write # to deploy to Pages
-      id-token: write # to verify the deployment originates from an appropriate source
-    # Deploy to the github_pages environment
     environment:
-      name: github_pages
+      name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    # Specify runner + deployment step
+    needs: build
     runs-on: ubuntu-latest
+    name: Deploy
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
