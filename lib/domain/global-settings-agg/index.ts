@@ -40,6 +40,14 @@ const agg = createSingletonAgg(() => {
       clearInterval(intervalId)
     }
   }
+  // 清理所有定时器
+  function clearAllTimers() {
+    for (const path in savingTasks.value) {
+      clearInterval(savingTasks.value[path])
+    }
+    savingTasks.value = {}
+    savingFiles.clear()
+  }
   function getOpenedTabsHeight(): number {
     const h = document.getElementsByClassName('monaco-tree-editor-opened-tab')[0]?.clientHeight
     if (!h) {
@@ -67,6 +75,7 @@ const agg = createSingletonAgg(() => {
       _lockFile: lockFile,
       _isFileLocked: isFileLocked,
       _unlockFile: unlockFile,
+      _clearAllTimers: clearAllTimers,
       _getOpenedTabsHeight: getOpenedTabsHeight,
       switchCurrentLeftSiderBar,
       setLanguage,

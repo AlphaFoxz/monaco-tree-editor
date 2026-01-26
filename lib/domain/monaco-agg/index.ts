@@ -231,16 +231,13 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
           // 聚焦editor
           editor.focus()
           valueListener.value = model.onDidChangeContent(() => {
-            openedFiles.value = openedFiles.value.map((item) => {
-              if (item.path === path) {
-                if (hasChanged(path)) {
-                  item.status = 'editing'
-                } else {
-                  item.status = 'saved'
-                }
+            const item = openedFiles.value.find((f) => f.path === path)
+            if (item) {
+              const newStatus = hasChanged(path) ? 'editing' : 'saved'
+              if (item.status !== newStatus) {
+                item.status = newStatus
               }
-              return item
-            })
+            }
           })
         }
         prePath.value = path
