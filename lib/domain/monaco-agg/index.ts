@@ -12,7 +12,6 @@ import {
   TYPE_MAP,
   type MonacoEditorWithService,
   type MonacoEditorInput,
-  type MonacoCodeEditorService,
 } from './types'
 import * as FileTree from './file-tree'
 import * as MonacoExt from './monaco-ext'
