@@ -89,7 +89,7 @@ watch(
     if (n) {
       i18nAgg.commands.setLanguage(n as Language)
     }
-  }
+  },
 )
 const { t } = i18nAgg.commands
 
@@ -100,7 +100,7 @@ watch(
     if (n) {
       globalSettingsAgg.commands.setThemeMode(n as ThemeMode)
     }
-  }
+  },
 )
 
 // =============== 左边栏 left-sider-bar ================
@@ -146,7 +146,7 @@ watch(
   () => props.siderMinWidth,
   (n) => {
     filelistWidth.value = filelistWidth.value < n ? n : filelistWidth.value
-  }
+  },
 )
 
 // ================ 编辑器部分 editor ================
@@ -156,14 +156,14 @@ watch(
   async (v) => {
     await monacoAgg.commands._loadFileTree(v)
     console.debug('fileTree loaded')
-  }
+  },
 )
 const editorRef = ref<HTMLElement>()
 watch(
   () => props.fontSize,
   (n) => {
     monacoAgg.commands.updateOptions({ fontSize: n })
-  }
+  },
 )
 onMounted(async () => {
   handleReload()
@@ -209,7 +209,7 @@ const handleReload = (
       content: t('msg.reloadFailed', { msg }),
       closeable: true,
     })
-  }
+  },
 ) => {
   const msgId = messageAgg.commands.info({
     content: t('msg.reloading'),
@@ -224,7 +224,7 @@ const handleReload = (
     (msg = '') => {
       messageAgg.commands.close(msgId)
       reject(msg)
-    }
+    },
   )
 }
 const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
@@ -260,7 +260,7 @@ const handleNewFile = (path: string, resolve = () => {}, reject = () => {}) => {
         closeable: true,
       })
       reject()
-    }
+    },
   )
 }
 const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) => {
@@ -296,14 +296,14 @@ const handleNewFolder = (path: string, resolve = () => {}, reject = () => {}) =>
         closeable: true,
       })
       reject()
-    }
+    },
   )
 }
 const handleSaveFile = (
   path: string | undefined,
   value = path === undefined ? '' : monacoAgg.commands._getValue(path),
   resolve = () => {},
-  reject = () => {}
+  reject = () => {},
 ) => {
   if (value === undefined || path === undefined || !monacoAgg.commands._hasChanged(path)) {
     console.debug('there is nothing changed.')
@@ -343,7 +343,7 @@ const handleSaveFile = (
         closeable: true,
       })
       reject()
-    }
+    },
   )
 }
 
@@ -380,7 +380,7 @@ const handleDeleteFile = (path: string, resolve = () => {}, reject = () => {}) =
         closeable: true,
       })
       reject()
-    }
+    },
   )
 }
 
@@ -417,7 +417,7 @@ const handleDeleteFolder = (path: string, resolve = () => {}, reject = () => {})
         closeable: true,
       })
       reject()
-    }
+    },
   )
 }
 
@@ -460,7 +460,7 @@ const handleRenameFile = (path: string, newName: string, resolve = () => {}, rej
         closeable: true,
       })
       reject()
-    }
+    },
   )
 }
 
@@ -503,7 +503,7 @@ const handleRenameFolder = (path: string, newName: string, resolve = () => {}, r
         closeable: true,
       })
       reject()
-    }
+    },
   )
 }
 
@@ -521,7 +521,7 @@ const dragInEditor = (e: DragEvent) => {
     'dragInEditor',
     toOriginPath(srcPath),
     toOriginPath(monacoAgg.states.currentPath.value!),
-    e.dataTransfer.getData('type') as 'file' | 'folder'
+    e.dataTransfer.getData('type') as 'file' | 'folder',
   )
 }
 
@@ -622,12 +622,12 @@ defineExpose({
       </div>
       <SettingsPage
         :custom-menu="settingsMenu"
-        v-if="monacoAgg.states.currentPath.value === BuiltInPage['<Settings>']"
+        v-if="monacoAgg.states.currentPath.value === BuiltInPage.Settings"
       ></SettingsPage>
       <KeyboardShortcutsPage
         :monaco-id="monacoId"
         :custom-menu="settingsMenu"
-        v-if="monacoAgg.states.currentPath.value === BuiltInPage['<KeyboardShortcuts>']"
+        v-if="monacoAgg.states.currentPath.value === BuiltInPage.KeyboardShortcuts"
       ></KeyboardShortcutsPage>
     </div>
   </div>

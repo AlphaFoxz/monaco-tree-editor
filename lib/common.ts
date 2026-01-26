@@ -18,16 +18,16 @@ export function debounce(fn: Function, delay: number = 500): Function {
  * 函数节流（每次触发后，在delay毫秒内不再触发）
  * @param fn 目标函数
  */
-export function throttle(fn: Function, delay: number = 500): Function {
+export function throttle<T extends (...args: any[]) => any>(fn: Function, delay: number = 500): T {
   let refuse = false
-  return function () {
+  return function (...args: any[]) {
     if (refuse) return
     refuse = true
-    fn(...arguments)
     setTimeout(() => {
       refuse = false
     }, delay)
-  }
+    return fn(...args)
+  } as T
 }
 
 export function longestCommonPrefix(strs: string[]): string {

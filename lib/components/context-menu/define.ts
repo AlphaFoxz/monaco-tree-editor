@@ -10,7 +10,7 @@ function clear() {
 export function useContextMenu(
   container: Ref<HTMLElement | undefined>,
   trigger: TriggerType[] | undefined,
-  position: PositionType | undefined
+  position: PositionType | undefined,
 ) {
   if (trigger === undefined) {
     trigger = ['RClick']
@@ -63,8 +63,8 @@ export function useContextMenu(
     if (trigger.includes('Click')) {
       container.value?.removeEventListener('click', openMenu)
     }
-    window.removeEventListener('contextmenu', closeMenu)
-    window.removeEventListener('click', closeMenu)
+    window.removeEventListener('contextmenu', closeMenu, { capture: true })
+    window.removeEventListener('click', closeMenu, { capture: true })
   })
 
   return { left, right, top, bottom, visible }

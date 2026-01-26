@@ -4,7 +4,16 @@ import { useGlobalSettings } from '../global-settings-agg'
 import { createBroadcastEvent, createMultiInstanceAgg, createPluginHelperByAggCreator } from 'vue-fn/domain'
 import { createDeferred } from 'vue-fn/timer'
 import { type ThemeMode, BuiltInPage } from '../define'
-import { type Files, type MonacoLib, type OpenedFileInfo, type FileInfo, TYPE_MAP, type MonacoEditorWithService, type MonacoEditorInput, type MonacoCodeEditorService } from './types'
+import {
+  type Files,
+  type MonacoLib,
+  type OpenedFileInfo,
+  type FileInfo,
+  TYPE_MAP,
+  type MonacoEditorWithService,
+  type MonacoEditorInput,
+  type MonacoCodeEditorService,
+} from './types'
 import * as FileTree from './file-tree'
 import * as MonacoExt from './monaco-ext'
 export * from './types'
@@ -44,19 +53,25 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
     // ================================= 聚合初始化 =================================
     async function mountMonacoToDom(
       dom: HTMLElement,
-      options?: monaco_lib.editor.IStandaloneEditorConstructionOptions
+      options?: monaco_lib.editor.IStandaloneEditorConstructionOptions,
     ) {
       editor = monaco.value!.editor.create(dom, { ...options, model: null })
       editorDom = dom
       const editorService = (editor as MonacoEditorWithService)._codeEditorService
       const openEditorBase = editorService.openCodeEditor.bind(editorService)
-      editorService.openCodeEditor = async (input: MonacoEditorInput, source: monaco_lib.editor.ICodeEditor, _sideBySide?: boolean) => {
+      editorService.openCodeEditor = async (
+        input: MonacoEditorInput,
+        source: monaco_lib.editor.ICodeEditor,
+        _sideBySide?: boolean,
+      ) => {
         const result = await openEditorBase(input, source)
         if (result == null) {
           const fullPath = input.resource.path
           source.setModel(monaco.value!.editor.getModel(input.resource))
           openOrFocusPath(fullPath)
-          source.setSelection(input.options?.selection)
+          if (input.options?.selection) {
+            source.setSelection(input.options.selection)
+          }
           source.revealLine(input.options?.selection?.startLineNumber ?? 1)
         }
         return result
@@ -101,7 +116,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
             temp[v] = {
               name: v,
               path: key,
-              content: file?.isFile ? file.content ?? '' : undefined,
+              content: file?.isFile ? (file.content ?? '') : undefined,
               readonly: file?.readonly,
               isFile: file?.isFile,
               isFolder: file?.isFolder,
@@ -157,17 +172,17 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
                 text: value,
               },
             ],
-            () => []
+            () => [],
           )
           if (force) {
-            openedFiles.value.map((t) => {
+            openedFiles.value.forEach((t) => {
               if (t.path === path) {
                 t.status = undefined
               }
             })
           }
         } else {
-          openedFiles.value.map((t) => {
+          openedFiles.value.forEach((t) => {
             if (t.path === path) {
               t.status = undefined
             }
@@ -187,7 +202,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
         model = monaco.value!.editor.createModel(
           value ?? '',
           type,
-          new monaco_lib.Uri().with({ path, authority: 'server', scheme: 'file' })
+          new monaco_lib.Uri().with({ path, authority: 'server', scheme: 'file' }),
         )
         model.updateOptions({
           tabSize,

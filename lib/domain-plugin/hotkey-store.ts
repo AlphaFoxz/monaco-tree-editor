@@ -11,7 +11,7 @@ export const HOTKEY_STORE_PLUGIN = HotkeyPluginHelper.createSetupPlugin(() => {
       handlesMap[__aggId].push(
         watch(api.states.hotkeyMap, () => {
           console.debug('更新快捷键')
-        })
+        }),
       )
       api.events.needLoadCache.listenAndReply(({}) => {
         const cache = localStorage.getItem('hotkeys')

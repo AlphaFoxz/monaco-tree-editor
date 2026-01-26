@@ -9,7 +9,7 @@ export function getTabSizeByExtension(ext: string): number {
 export function resize(
   tabsHeightCss: string,
   editorDom: HTMLElement,
-  editor: monaco_lib.editor.IStandaloneCodeEditor
+  editor: monaco_lib.editor.IStandaloneCodeEditor,
 ): void {
   editorDom.style.height = `calc(100% - ${tabsHeightCss})`
   editor?.layout()
@@ -28,7 +28,7 @@ export async function defineTheme(param: {
 export async function setTheme(untilDomMounted: Promise<void>, monaco: Ref<typeof monaco_lib>, themeName: ThemeMode) {
   await untilDomMounted
   // 定义主题
-  console.debug('切换monaco主题', name)
+  console.debug('切换monaco主题', themeName)
   // 设置主题
   monaco.value!.editor.setTheme(themeName)
 }

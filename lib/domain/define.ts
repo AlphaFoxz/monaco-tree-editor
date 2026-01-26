@@ -199,20 +199,33 @@ export function toFacadeKey(key: string | undefined): KeyName | undefined {
   }
   const length = key.length
   if (length !== 1) {
-    return key as KeyName
+    if (FACADE_KEY_MAP[key]) {
+      return FACADE_KEY_MAP[key]
+    }
+    // 验证多字符键是否为有效的 KeyName（如 ArrowLeft, Shift 等）
+    const validMultiCharKeys: KeyName[] = [
+      'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+      'Backspace', 'Delete', 'Escape', 'Enter', 'Space', 'Tab',
+      'Home', 'End', 'PageUp', 'PageDown', 'Insert',
+      'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
+      'Shift', 'Ctrl', 'Alt'
+    ]
+    if (validMultiCharKeys.includes(key as KeyName)) {
+      return key as KeyName
+    }
+    return undefined
   }
   if (FACADE_KEY_MAP[key]) {
-    return FACADE_KEY_MAP[key] as KeyName
+    return FACADE_KEY_MAP[key]
   }
-  return key as KeyName
+  return
 }
 
-export enum BuiltInPage {
-  '<Settings>' = '<Settings>',
-  '<KeyboardShortcuts>' = '<KeyboardShortcuts>',
-}
-
-export type BuiltInPageType = keyof typeof BuiltInPage
+export const BuiltInPage = {
+  Settings: '<Settings>',
+  KeyboardShortcuts: '<KeyboardShortcuts>',
+} as const
+export type BuiltInPage = (typeof BuiltInPage)[keyof typeof BuiltInPage]
 
 export const VALID_LEFT_SIDER_BAR_ITEMS = Object.freeze(['Explorer', 'Setting'] as const)
 export type LeftSiderBarItem = (typeof VALID_LEFT_SIDER_BAR_ITEMS)[number]

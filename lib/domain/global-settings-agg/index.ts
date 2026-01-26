@@ -43,7 +43,7 @@ const agg = createSingletonAgg(() => {
   function getOpenedTabsHeight(): number {
     const h = document.getElementsByClassName('monaco-tree-editor-opened-tab')[0]?.clientHeight
     if (!h) {
-      throw new Error('getOpenedTabsHeight error')
+      throw new Error('Failed to get opened tabs height: DOM element not found or has no height')
     }
     return h
   }

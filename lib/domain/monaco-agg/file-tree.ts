@@ -39,6 +39,9 @@ export function removeInvalidFileByPath(fileTree: Ref<FileInfo>, path: string) {
   if (!paths || !paths[paths.length - 1]) {
     return
   }
+  if (!fileTree.value.children) {
+    throw new Error('File tree children is undefined')
+  }
   let children: Files = fileTree.value.children!
   paths.forEach((v, index) => {
     if (index === paths.length - 1) {

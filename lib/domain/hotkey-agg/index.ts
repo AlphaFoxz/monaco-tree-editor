@@ -4,7 +4,7 @@ import {
   createMultiInstanceAgg,
   createPluginHelperByAggCreator,
 } from 'vue-fn/domain'
-import { onBeforeUnmount, reactive, ref } from 'vue'
+import { onUnmounted, reactive, ref } from 'vue'
 import { type KeyName, toFacadeKey } from '../define'
 export * from './define'
 import type { Command, CommandsHandler, IHotkey, When } from './define'
@@ -42,7 +42,9 @@ function createAgg(monacoInstanceId: string) {
       },
     })
     context.onBeforeInitialize(async () => {
-      await needLoadCacheEvent.publishRequest({}).catch((_: Error) => {})
+      void (await needLoadCacheEvent.publishRequest({}).catch((err: Error) => {
+        console.warn('Failed to load hotkey cache:', err)
+      }))
     })
     const onKeybindingChangedByUserEvent = createBroadcastEvent<{ hotkeyMap: typeof hotkeyMap }>()
 
@@ -90,7 +92,7 @@ function createAgg(monacoInstanceId: string) {
       domMap.set(name, bind)
       const onKeyDown = listenKeyDown(name)
       bind.addEventListener('keydown', onKeyDown)
-      onBeforeUnmount(() => {
+      onUnmounted(() => {
         bind.removeEventListener('keydown', onKeyDown)
       })
     }

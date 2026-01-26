@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './index.scss'
-import { type LeftSiderBarItem, type BuiltInPageType } from '#domain/define'
+import { type LeftSiderBarItem, BuiltInPage } from '#domain/define'
 import { type ContextMenuItem } from '#components/context-menu/define'
 import ContextMenu from '#components/context-menu/Index.vue'
 import IconsSetting from '#icons/Setting.vue'
@@ -32,11 +32,11 @@ function handleClick(item: LeftSiderBarItem) {
 
 //========================= Manage =========================
 const monacoAgg = useMonaco(undefined, props.monacoId)
-const manageBtnMenu: Array<ContextMenuItem<BuiltInPageType | undefined>> = [
-  { label: $t('menu.settings'), value: '<Settings>' },
-  { label: $t('menu.keyboardShortcuts'), value: '<KeyboardShortcuts>' },
+const manageBtnMenu: Array<ContextMenuItem<BuiltInPage | undefined>> = [
+  { label: $t('menu.settings'), value: BuiltInPage.Settings },
+  { label: $t('menu.keyboardShortcuts'), value: BuiltInPage.KeyboardShortcuts },
 ]
-function handleSelectManage(selected: { label: string; value?: BuiltInPageType; onSelect?: Function }) {
+function handleSelectManage(selected: { label: string; value?: BuiltInPage; onSelect?: Function }) {
   if (selected.value) {
     monacoAgg.commands._openOrFocusPath(selected.value!)
   }
@@ -53,7 +53,7 @@ function handleSelectManage(selected: { label: string; value?: BuiltInPageType; 
     >
       <IconsFile />
     </ItemTemp>
-    <ContextMenu @select="i => handleSelectManage(i as any)" position="RB" :trigger="['Click']" :menu="manageBtnMenu">
+    <ContextMenu @select="(i) => handleSelectManage(i as any)" position="RB" :trigger="['Click']" :menu="manageBtnMenu">
       <ItemTemp
         :current-active="globalSettingsAgg.states.opendLeftSiderBar.value || ''"
         style="position: absolute; bottom: 0"
