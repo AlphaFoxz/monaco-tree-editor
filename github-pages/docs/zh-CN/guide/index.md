@@ -9,14 +9,14 @@
 ## 前置要求
 
 - [Node.js v18.18+](https://nodejs.org/zh-cn)
-- [vue3 v3.5.12+](https://cn.vuejs.org/){target="\_blank"} 或者 [nuxt3 v3.0+](https://nuxt.com.cn/){target="\_blank"}
-- [monaco-editor v0.52.2+](https://microsoft.github.io/monaco-editor/){target="\_blank"}
-- 【推荐】[pnpm 包管理器](https://www.pnpm.cn/){target="\_blank"}
+- <a href="https://cn.vuejs.org/" target="_blank">vue3 v3.5.12+</a> 或者 <a href="https://nuxt.com.cn/" target="_blank">nuxt3 v3.0+</a>
+- <a href="https://microsoft.github.io/monaco-editor/" target="_blank">monaco-editor v0.52.2+</a>
+- 【推荐】<a href="https://www.pnpm.cn/" target="_blank">pnpm 包管理器</a>
 
 ## 在线预览地址
 
-[在 Stackblitz 中运行](https://stackblitz.com/~/github.com/AlphaFoxz/monaco-tree-editor){target="\_blank"}
+<a href="https://stackblitz.com/~/github.com/AlphaFoxz/monaco-tree-editor" target="_blank">在 Stackblitz 中运行</a>
 
 ## TODO 已知问题与待优化
 
-[monaco-tree-editor/issues](https://github.com/AlphaFoxz/monaco-tree-editor/issues){target="\_blank"}
+<a href="https://github.com/AlphaFoxz/monaco-tree-editor/issues" target="_blank">monaco-tree-editor/issues</a>
