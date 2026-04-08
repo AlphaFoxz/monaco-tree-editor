@@ -537,7 +537,7 @@ hotkeyAgg.commands._setCommandHandler((hotkey, e) => {
       handleSaveFile(monacoAgg.states.currentPath.value)
     } else if (command === 'DeleteFile') {
       const path = monacoAgg.states.currentPath.value
-      if (path && !(path in BuiltInPage)) {
+      if (path && !(Object.values(BuiltInPage) as readonly string[]).includes(path)) {
         fileListRef.value.handleDeleteFile(path)
       }
     } else {
@@ -602,7 +602,7 @@ defineExpose({
         v-show="
           monacoAgg.states.openedFiles.value.length > 0 &&
           monacoAgg.states.currentPath.value !== undefined &&
-          !(monacoAgg.states.currentPath.value in BuiltInPage)
+          !(Object.values(BuiltInPage) as readonly string[]).includes(monacoAgg.states.currentPath.value)
         "
         ref="editorRef"
         @drop="dragInEditor"

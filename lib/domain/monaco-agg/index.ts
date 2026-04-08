@@ -146,7 +146,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
       const notExsist: string[] = []
       for (const item of openedFiles.value) {
         const tmpPath = item.path
-        if (nfiles[tmpPath] || tmpPath in BuiltInPage) {
+        if (nfiles[tmpPath] || (Object.values(BuiltInPage) as readonly string[]).includes(tmpPath)) {
           tmpOpenedFiles.push(item)
         } else {
           notExsist.push(tmpPath)
@@ -210,7 +210,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
     }
     //恢复视图
     function restoreModel(path: string | undefined): monaco_lib.editor.ITextModel | undefined {
-      if (path === undefined || path in BuiltInPage) {
+      if (path === undefined || (Object.values(BuiltInPage) as readonly string[]).includes(path)) {
         currentPath.value = path
         return
       }
@@ -362,7 +362,7 @@ function createAgg(monacoInstanceId: string, m: MonacoLib) {
           fileSeparator.value = s
         },
         _getAbsolutePath(relativePath: string): string {
-          if (relativePath in BuiltInPage) {
+          if ((Object.values(BuiltInPage) as readonly string[]).includes(relativePath)) {
             return relativePath
           }
           let path = prefix.value + relativePath
