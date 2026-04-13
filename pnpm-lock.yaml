@@ -15,8 +15,8 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4
       vue-fn:
-        specifier: 0.3.0-rc
-        version: 0.3.0-rc(@vue/reactivity@3.5.26)(vue@3.5.26(typescript@5.9.3))
+        specifier: 0.4.1-rc
+        version: 0.4.1-rc(@vue/reactivity@3.5.26)(vue@3.5.26(typescript@5.9.3))
     devDependencies:
       '@ant-design/icons-vue':
         specifier: ^7.0.1
@@ -1509,8 +1509,8 @@ packages:
     resolution: {integrity: sha512-zIdGUrPRFTUELUvr3Gmc7KZ2Sw/h1PiVM0Af/oHB6zgnV1ikqSfRk+TOufi79aHYCW3NiOXmr1BP5nWbzojLaA==}
     hasBin: true
 
-  needle@3.3.1:
-    resolution: {integrity: sha512-6k0YULvhpw+RoLNiQCRKOl09Rv1dPLr8hHnVjHqdolKwDrdNyk+Hmrthi4lIGPPz3r39dLx0hsF5s40sZ3Us4Q==}
+  needle@3.5.0:
+    resolution: {integrity: sha512-jaQyPKKk2YokHrEg+vFDYxXIHTCBgiZwSHOoVx/8V3GIBS8/VN6NdVRmg8q1ERtPkMvmOvebsgga4sAj5hls/w==}
     engines: {node: '>= 4.4.x'}
     hasBin: true
 
@@ -1672,8 +1672,8 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  sax@1.4.4:
-    resolution: {integrity: sha512-1n3r/tGXO6b6VXMdFT54SHzT9ytu9yr7TaELowdYpMqY/Ao7EnlQGmAQ1+RatX7Tkkdm6hONI2owqNx2aZj5Sw==}
+  sax@1.6.0:
+    resolution: {integrity: sha512-6R3J5M4AcbtLUdZmRv2SygeVaM7IhrLXu9BmnOGmmACak8fiUtOsYNWUS4uK7upbmHIBbLBeFeI//477BKLBzA==}
     engines: {node: '>=11.0.0'}
 
   saxes@6.0.0:
@@ -1981,8 +1981,8 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
-  vue-fn@0.3.0-rc:
-    resolution: {integrity: sha512-FPn7sniVcri+Qt+lXM8mQxpyk9V4hzwXaYFrueM/i2lLHxIseYekgyG+smsiWPLa/tWBFu8hu2UALUMQqKkeNQ==}
+  vue-fn@0.4.1-rc:
+    resolution: {integrity: sha512-Z5/g+s9hOHQFTZrLavdOPTkv65ILkSBMnKX+eOwCv3mjOgIBVBW7jeSibtz4aCDXuziS5HB8taxIuxKiCSImiA==}
     peerDependencies:
       '@vue/reactivity': '>=3.5.0'
       vue: '>=3.5.0'
@@ -3383,7 +3383,7 @@ snapshots:
       image-size: 0.5.5
       make-dir: 2.1.0
       mime: 1.6.0
-      needle: 3.3.1
+      needle: 3.5.0
       source-map: 0.6.1
     optional: true
 
@@ -3465,10 +3465,10 @@ snapshots:
 
   ncp@2.0.0: {}
 
-  needle@3.3.1:
+  needle@3.5.0:
     dependencies:
       iconv-lite: 0.6.3
-      sax: 1.4.4
+      sax: 1.6.0
     optional: true
 
   node-addon-api@7.1.1:
@@ -3643,7 +3643,7 @@ snapshots:
     optionalDependencies:
       '@parcel/watcher': 2.5.4
 
-  sax@1.4.4:
+  sax@1.6.0:
     optional: true
 
   saxes@6.0.0:
@@ -3931,7 +3931,7 @@ snapshots:
 
   vscode-uri@3.1.0: {}
 
-  vue-fn@0.3.0-rc(@vue/reactivity@3.5.26)(vue@3.5.26(typescript@5.9.3)):
+  vue-fn@0.4.1-rc(@vue/reactivity@3.5.26)(vue@3.5.26(typescript@5.9.3)):
     dependencies:
       immer: 10.2.0
       ts-deferred: 1.0.4

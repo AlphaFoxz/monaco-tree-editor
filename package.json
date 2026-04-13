@@ -35,7 +35,7 @@
   "dependencies": {
     "nanoid": "^5.1.6",
     "ts-deferred": "^1.0.4",
-    "vue-fn": "0.3.0-rc"
+    "vue-fn": "0.4.1-rc"
   },
   "peerDependencies": {
     "monaco-editor": ">=0.52.2",
